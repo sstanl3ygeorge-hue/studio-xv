@@ -1,0 +1,46 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	background: #000;
+	color: #fff;
+}
+
+.hero {
+	background: transparent;
+	min-height: 100vh;
+}
+/* Mobile menu styles moved from index.html */
+.menu-toggle {
+	display: none;
+	background: none;
+	border: none;
+	font-size: 1.8rem;
+	color: white;
+	cursor: pointer;
+}
+
+@media (max-width: 768px) {
+	.menu-toggle {
+		display: block;
+	}
+
+	.nav-links {
+		display: none;
+		flex-direction: column;
+		position: absolute;
+		top: 64px;
+		right: 0;
+		width: 100%;
+		background: black;
+		padding: 1rem 0;
+	}
+
+	.nav-links a {
+		padding: 1rem;
+		text-align: center;
+	}
+
+	.nav-links.active {
+		display: flex;
+	}
+}
