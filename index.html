@@ -18,8 +18,8 @@
     <!-- Logo -->
     <span class="text-xl font-bold">Studio XV</span>
 
-    <!-- Desktop Links -->
-    <div class="hidden md:flex space-x-8 nav-links">
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex space-x-8">
       <a href="#home" class="nav-link">Home</a>
       <a href="#services" class="nav-link">Services</a>
       <a href="#portfolio" class="nav-link">Portfolio</a>
@@ -30,24 +30,40 @@
     <!-- Mobile Menu Button -->
     <button
       id="menu-toggle"
-      class="md:hidden text-2xl focus:outline-none"
-      aria-label="Toggle menu">
+      class="md:hidden text-3xl"
+      aria-label="Open menu">
       ☰
     </button>
-
-  </div>
-
-  <!-- Mobile Menu -->
-  <div
-    id="mobile-menu"
-    class="hidden flex-col bg-black text-center md:hidden">
-    <a href="#home" class="py-4 border-b border-white/10">Home</a>
-    <a href="#services" class="py-4 border-b border-white/10">Services</a>
-    <a href="#portfolio" class="py-4 border-b border-white/10">Portfolio</a>
-    <a href="#booking" class="py-4 border-b border-white/10">Booking</a>
-    <a href="#about" class="py-4">About</a>
   </div>
 </nav>
+
+<!-- Mobile Fullscreen Menu -->
+<div
+  id="mobile-menu"
+  class="fixed inset-0 bg-black z-40 hidden flex-col items-center justify-center space-y-8 text-2xl">
+
+  <button
+    id="menu-close"
+    class="absolute top-6 right-6 text-3xl"
+    aria-label="Close menu">
+    ✕
+  </button>
+
+  <a href="#home" class="mobile-link">Home</a>
+  <a href="#services" class="mobile-link">Services</a>
+  <a href="#portfolio" class="mobile-link">Portfolio</a>
+  <a href="#booking" class="mobile-link">Booking</a>
+  <a href="#about" class="mobile-link">About</a>
+</div>
+  .mobile-link {
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+  }
+
+  .mobile-link:hover {
+    color: #ff0055;
+  }
 
 <!-- HERO -->
 <section
@@ -416,11 +432,23 @@
 </div>
 
 <script>
-  const toggle = document.getElementById('menu-toggle');
+  const openBtn = document.getElementById('menu-toggle');
+  const closeBtn = document.getElementById('menu-close');
   const menu = document.getElementById('mobile-menu');
+  const links = document.querySelectorAll('.mobile-link');
 
-  toggle.addEventListener('click', () => {
-    menu.classList.toggle('hidden');
+  openBtn.addEventListener('click', () => {
+    menu.classList.remove('hidden');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    menu.classList.add('hidden');
+  });
+
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+    });
   });
 </script>
 
