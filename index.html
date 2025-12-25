@@ -252,46 +252,108 @@
     <div class="rounded-2xl p-10 shadow-xl"
          style="background: var(--bg-soft);">
 
-      <form name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-netlify-recaptcha="true" class="space-y-6">
-        <input type="hidden" name="form-name" value="booking">
+      <form
+        name="booking"
+        method="POST"
+        action="/success.html"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        data-netlify-recaptcha="true"
+        class="space-y-7"
+      >
+        <!-- Netlify form name -->
+        <input type="hidden" name="form-name" value="booking" />
 
+        <!-- Honeypot (invisible) -->
         <p class="hidden">
           <label>
             Don't fill this out:
-            <input name="bot-field">
+            <input name="bot-field" />
           </label>
         </p>
 
-        <input type="text" name="name" placeholder="Full Name"
-          class="w-full px-4 py-3 rounded-lg transition outline-none focus:ring-2 focus:ring-pink-500"
-          style="background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft);">
+        <!-- Full Name -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Full Name</label>
+          <input
+            type="text"
+            name="full-name"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          />
+        </div>
 
-        <input type="email" name="email" placeholder="Email"
-          class="w-full px-4 py-3 rounded-lg transition outline-none focus:ring-2 focus:ring-pink-500"
-          style="background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft);">
+        <!-- Email -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Email</label>
+          <input
+            type="email"
+            name="email"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          />
+        </div>
 
-        <input type="tel" name="phone" placeholder="Phone"
-          class="w-full px-4 py-3 rounded-lg transition outline-none focus:ring-2 focus:ring-pink-500"
-          style="background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft);">
+        <!-- Phone -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Phone</label>
+          <input
+            type="tel"
+            name="phone"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          />
+        </div>
 
-        <select name="service"
-          class="w-full px-4 py-3 rounded-lg transition outline-none focus:ring-2 focus:ring-pink-500"
-          style="background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft);">
-          <option>Select a service</option>
-          <option>Recording</option>
-          <option>Mixing</option>
-          <option>Mastering</option>
-          <option>Production</option>
-          <option>Lessons</option>
-        </select>
+        <!-- Service -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Service Type</label>
+          <select
+            name="service"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          >
+            <option value="">Select a service…</option>
+            <option>Recording – Hourly</option>
+            <option>Recording – Half Day</option>
+            <option>Recording – Full Day</option>
+            <option>Mixing</option>
+            <option>Mastering</option>
+            <option>Production</option>
+            <option>Lessons</option>
+          </select>
+        </div>
 
-        <textarea name="details" rows="4" placeholder="Tell us about your project..."
-          class="w-full px-4 py-3 rounded-lg transition outline-none focus:ring-2 focus:ring-pink-500"
-          style="background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border-soft);"></textarea>
+        <!-- Preferred Date -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Preferred Date</label>
+          <input
+            type="date"
+            name="preferred-date"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          />
+        </div>
 
-        <button type="submit"
-          class="w-full h-14 rounded-lg font-bold text-lg transition text-white hover:opacity-90"
-          style="background: var(--accent);">
+        <!-- Details -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Additional Details</label>
+          <textarea
+            name="details"
+            rows="4"
+            placeholder="Tell us about your project…"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          ></textarea>
+        </div>
+
+        <!-- reCAPTCHA -->
+        <div data-netlify-recaptcha="true"></div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition"
+        >
           Submit Booking Request
         </button>
       </form>
