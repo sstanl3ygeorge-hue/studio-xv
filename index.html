@@ -260,6 +260,26 @@
           </select>
         </section>
 
+        <!-- STEP: Duration (Hourly services only) -->
+        <section id="duration-section" class="hidden">
+          <h3 class="text-xl font-semibold mb-4">Session Length</h3>
+
+          <select
+            id="duration-select"
+            name="duration"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20
+                   focus:border-pink-600 focus:outline-none text-lg"
+          >
+            <option value="">Select duration…</option>
+            <option value="1">1 hour</option>
+            <option value="2">2 hours</option>
+            <option value="3">3 hours</option>
+            <option value="4">4 hours</option>
+            <option value="6">6 hours</option>
+            <option value="8">8 hours</option>
+          </select>
+        </section>
+
         <!-- STEP 3: Enhance Your Session (optional) -->
         <section id="addons-section" class="hidden">
           <h3 class="text-xl font-semibold mb-2">Engineering Enhancements</h3>
@@ -433,6 +453,8 @@
 const SERVICES = {
   recording: {
     title: "Recording",
+    bookableType: "mixed",
+    hourlyRate: 30,
     items: [
       { label: "Hourly Session", price: "£30/hr" },
       { label: "Half-Day (4hrs)", price: "£110" },
@@ -458,7 +480,7 @@ const SERVICES = {
   lessons: {
     title: "Lessons",
     bookableType: "hourly",
-    rate: 40,
+    hourlyRate: 40,
     items: [
       { label: "DAW Training (1hr)", price: "£40" },
       { label: "Mixing Lesson (1hr)", price: "£45" },
@@ -494,6 +516,8 @@ const SERVICES = {
 const BOOKING_SERVICES = {
   recording: {
     label: "Recording",
+    bookableType: "mixed",
+    hourlyRate: 30,
     packages: {
       hourly: { label: "Hourly Session", price: 30 },
       half: { label: "Half-Day (4hrs)", price: 110 },
@@ -519,7 +543,7 @@ const BOOKING_SERVICES = {
   lessons: {
     label: "Lessons",
     bookableType: "hourly",
-    rate: 40
+    hourlyRate: 40
   }
 };
 
@@ -535,16 +559,25 @@ function calculateEngineeringCost(hours) {
   return hours * 40;
 }
 
-function calculateHourlyLessonTotal(serviceKey) {
-  const rate = BOOKING_SERVICES[serviceKey].rate;
-  let total = rate; // Default to 1 hour
+function calculateHourlyTotal(serviceKey) {
+  const service = BOOKING_SERVICES[serviceKey];
+  const hours = Number(durationSelect.value || 0);
+  
+  if (!hours) {
+    totalDisplay.textContent = "0";
+    depositDisplay.textContent = "0";
+    submitButton.disabled = true;
+    return;
+  }
+  
+  let total = service.hourlyRate * hours;
   
   // Add-ons
   document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
     if (box.value === "rush") {
       total *= ADDONS.rushMultiplier;
     } else if (box.value === "engineering") {
-      total += calculateEngineeringCost(1); // 1 hour for lessons
+      total += calculateEngineeringCost(hours);
     } else {
       total += ADDONS[box.value];
     }
@@ -562,7 +595,7 @@ function calculateHourlyLessonTotal(serviceKey) {
     package: "hourly",
     total: total,
     deposit: deposit,
-    serviceName: `${BOOKING_SERVICES[serviceKey].label} (1hr)`
+    serviceName: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`
   };
   
   localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
@@ -579,6 +612,8 @@ function parsePrice(price) {
 const serviceSelect = document.getElementById("service-select");
 const packageSelect = document.getElementById("package-select");
 const packageSection = document.getElementById("package-section");
+const durationSection = document.getElementById("duration-section");
+const durationSelect = document.getElementById("duration-select");
 const addonsSection = document.getElementById("addons-section");
 const totalDisplay = document.getElementById("total-display");
 const depositDisplay = document.getElementById("deposit-display");
@@ -596,18 +631,31 @@ if (serviceSelect) {
   // When service changes, populate packages
   serviceSelect.addEventListener("change", () => {
     packageSelect.innerHTML = '<option value="">Select package…</option>';
+    durationSelect.value = "";
     const serviceKey = serviceSelect.value;
+    const service = BOOKING_SERVICES[serviceKey];
 
-    if (serviceKey && BOOKING_SERVICES[serviceKey]) {
-      // Handle hourly services (like Lessons)
-      if (BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
-        packageSection.classList.add("hidden");
-        addonsSection.classList.remove("hidden");
-        calculateHourlyLessonTotal(serviceKey);
-        return;
-      }
-      
+    // Hide all sections initially
+    packageSection.classList.add("hidden");
+    durationSection.classList.add("hidden");
+    addonsSection.classList.add("hidden");
+
+    if (!service) {
+      calculateTotal();
+      return;
+    }
+
+    // Handle hourly services (like Lessons)
+    if (service.bookableType === "hourly") {
+      durationSection.classList.remove("hidden");
+      addonsSection.classList.remove("hidden");
+      return;
+    }
+
+    // Handle mixed services (like Recording)
+    if (service.bookableType === "mixed") {
       packageSection.classList.remove("hidden");
+      durationSection.classList.remove("hidden");
       addonsSection.classList.remove("hidden");
 
       Object.keys(BOOKING_SERVICES[serviceKey].packages).forEach(pkgKey => {
@@ -628,12 +676,22 @@ if (serviceSelect) {
   // When package changes, recalculate
   packageSelect.addEventListener("change", calculateTotal);
 
+  // When duration changes, recalculate
+  durationSelect.addEventListener("change", () => {
+    const serviceKey = serviceSelect.value;
+    if (serviceKey && BOOKING_SERVICES[serviceKey] && BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
+      calculateHourlyTotal(serviceKey);
+    } else {
+      calculateTotal();
+    }
+  });
+
   // When addons change, recalculate
   document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
     checkbox.addEventListener("change", () => {
       const serviceKey = serviceSelect.value;
       if (serviceKey && BOOKING_SERVICES[serviceKey] && BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
-        calculateHourlyLessonTotal(serviceKey);
+        calculateHourlyTotal(serviceKey);
       } else {
         calculateTotal();
       }
