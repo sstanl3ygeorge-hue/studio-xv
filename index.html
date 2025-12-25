@@ -577,57 +577,77 @@
 <script>
 const SERVICES = {
   recording: {
-    title: "Recording",
+    label: "Recording",
+    bookable: true,
+    type: "hours",
     minHours: 2,
     packages: {
-      hourly: { label: "Hourly Session", price: 30, unit: "hr" },
-      half: { label: "Half-Day (4hrs)", price: 110 },
-      full: { label: "Full-Day (8hrs)", price: 200 }
+      hourly: { label: "Hourly Session", price: 30 },
+      halfDay: { label: "Half-Day (4hrs)", price: 110, hours: 4 },
+      fullDay: { label: "Full-Day (8hrs)", price: 200, hours: 8 }
     }
   },
+
   mixing: {
-    title: "Mixing",
+    label: "Mixing",
+    bookable: true,
+    type: "fixed",
     packages: {
-      perTrack: { label: "Per Track", price: 50 },
+      single: { label: "Per Track", price: 50 },
       mixMaster: { label: "Mix + Master", price: 75 },
       ep: { label: "EP (4–6 tracks)", price: 280 }
     }
   },
+
   mastering: {
-    title: "Mastering",
+    label: "Mastering",
+    bookable: true,
+    type: "fixed",
     packages: {
       single: { label: "Single", price: 35 },
       ep: { label: "EP (4–6 tracks)", price: 120 },
       album: { label: "Album (10+ tracks)", price: 250 }
     }
   },
+
   lessons: {
-    title: "Lessons",
+    label: "Lessons",
+    bookable: true,
+    type: "hours",
     minHours: 1,
-    hourlyRate: 40
+    maxHours: 4,
+    hourlyRate: 40,
+    copy: "Guided, hands-on sessions tailored to your workflow."
   },
+
   production: {
-    title: "Production",
+    label: "Production",
+    bookable: true,
+    type: "fixed",
     packages: {
       lease: { label: "Beat Lease", price: 30 },
       exclusive: { label: "Exclusive Beat", price: 150 }
     }
   },
+
   engineering: {
-    title: "Engineering & Support",
+    label: "Engineering & Support",
+    bookable: false,
     items: [
       { label: "Session Engineer (per hour)", price: "£40/hr" },
       { label: "Assisted Recording Sessions", price: "Included / POA" },
       { label: "Vocal Coaching (in-session)", price: "£40/hr" }
     ]
   },
+
   addons: {
-    title: "Add-Ons",
-    items: [
-      { label: "Vocal Tuning", price: "£25" },
-      { label: "Stems Export", price: "£20" },
-      { label: "Rush Delivery", price: "+50%" }
-    ]
+    label: "Add-Ons",
+    bookable: false,
+    items: {
+      vocalTuning: { label: "Vocal Tuning", price: 25 },
+      stems: { label: "Stems Export", price: 20 },
+      rush: { label: "Rush Delivery", multiplier: 1.5 }
+    }
   }
 };
 
@@ -648,6 +668,51 @@ function renderServiceCards() {
       hover:border-pink-500
       hover:shadow-xl
     `;
+    
+    // Build items list
+    let itemsHTML = '';
+    if (service.packages) {
+      itemsHTML = Object.values(service.packages).map(pkg => 
+        `<li class="flex justify-between">
+          <span>${pkg.label}</span>
+          <span>£${pkg.price}</span>
+        </li>`
+      ).join('');
+    } else if (service.hourlyRate) {
+      itemsHTML = `<li class="flex justify-between">
+        <span>Hourly Rate</span>
+        <span>£${service.hourlyRate}/hr</span>
+      </li>`;
+    } else if (service.items) {
+      if (Array.isArray(service.items)) {
+        itemsHTML = service.items.map(item => 
+          `<li class="flex justify-between">
+            <span>${item.label}</span>
+            <span>${item.price}</span>
+          </li>`
+        ).join('');
+      } else {
+        itemsHTML = Object.values(service.items).map(item => 
+          `<li class="flex justify-between">
+            <span>${item.label}</span>
+            <span>${item.multiplier ? `+${(item.multiplier - 1) * 100}%` : `£${item.price}`}</span>
+          </li>`
+        ).join('');
+      }
+    }
+    
+    card.innerHTML = `
+      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+        ${service.label}
+      </h3>
+      <ul class="space-y-4 text-sm">
+        ${itemsHTML}
+      </ul>
+    `;
+    
+    container.appendChild(card);
+  });
+}
     
     // Build items list
     let itemsHTML = '';
@@ -693,6 +758,7 @@ if (document.getElementById("services-grid")) {
 const ADDONS = {
   vocalTuning: 25,
   stems: 20,
+  engineering: 40, // base rate per hour
   rushMultiplier: 1.5
 };
 
@@ -737,7 +803,7 @@ function calculateHourlyTotal(serviceKey) {
   
   // Build breakdown for Stripe
   const breakdown = [
-    { name: `${service.title} (${hours}hr${hours > 1 ? 's' : ''})`, amount: service.hourlyRate * hours }
+    { name: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`, amount: service.hourlyRate * hours }
   ];
   
   document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
@@ -759,7 +825,7 @@ function calculateHourlyTotal(serviceKey) {
     package: "hourly",
     total: total,
     deposit: deposit,
-    serviceName: `${service.title} (${hours}hr${hours > 1 ? 's' : ''})`,
+    serviceName: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`,
     breakdown: breakdown
   };
   
@@ -778,7 +844,7 @@ function activateStep(id) {
 function populateSummary(serviceKey, hours, total, deposit) {
   const service = SERVICES[serviceKey];
   
-  document.getElementById("summary-service").textContent = service.title;
+  document.getElementById("summary-service").textContent = service.label;
   document.getElementById("summary-duration").textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
   document.getElementById("summary-total").textContent = total.toFixed(2);
   document.getElementById("summary-deposit").textContent = deposit.toFixed(2);
@@ -828,14 +894,13 @@ const submitButton = document.getElementById("booking-submit");
 
 // Populate services
 if (serviceSelect) {
-  Object.keys(SERVICES).forEach(key => {
-    // Only show bookable services (those with packages or hourlyRate)
-    if (SERVICES[key].packages || SERVICES[key].hourlyRate) {
-      const opt = document.createElement("option");
-      opt.value = key;
-      opt.textContent = SERVICES[key].title;
-      serviceSelect.appendChild(opt);
-    }
+  Object.entries(SERVICES).forEach(([key, service]) => {
+    if (!service.bookable) return;
+    
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.textContent = service.label;
+    serviceSelect.appendChild(opt);
   });
 
   // When service changes, populate packages
@@ -849,46 +914,54 @@ if (serviceSelect) {
     durationSection.classList.add("hidden");
     addonsSection.classList.add("hidden");
 
-    if (!service) {
-      return;
-    }
+    if (!service) return;
 
     // Activate next step
     activateStep("step-package");
     activateStep("step-duration");
 
-    // If service has packages, show package dropdown
-    if (service.packages) {
-      packageSection.classList.remove("hidden");
-      durationSection.classList.add("hidden");
+    // Hours-based services (Recording, Lessons)
+    if (service.type === "hours") {
+      durationSection.classList.remove("hidden");
       addonsSection.classList.remove("hidden");
       
-      // Populate packages
+      durationSlider.min = service.minHours || 1;
+      durationSlider.max = service.maxHours || 8;
+      durationSlider.value = service.minHours || 1;
+      durationValue.textContent = durationSlider.value;
+      
+      durationHint.textContent = service.label === "Lessons"
+        ? "Most lessons run 1–2 hours for best retention."
+        : "Most artists book 3–4 hours for a focused session.";
+      
+      // For lessons or services with hourlyRate only
+      if (service.hourlyRate) {
+        packageSection.classList.add("hidden");
+        calculateHourlyTotal(serviceKey);
+      } else if (service.packages) {
+        // Recording: show both packages and hours
+        packageSection.classList.remove("hidden");
+        Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
+          const opt = document.createElement("option");
+          opt.value = pkgKey;
+          opt.textContent = `${pkg.label} — £${pkg.price}`;
+          packageSelect.appendChild(opt);
+        });
+      }
+      return;
+    }
+
+    // Fixed package services (Mixing, Mastering, Production)
+    if (service.type === "fixed" && service.packages) {
+      packageSection.classList.remove("hidden");
+      addonsSection.classList.remove("hidden");
+      
       Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
         const opt = document.createElement("option");
         opt.value = pkgKey;
         opt.textContent = `${pkg.label} — £${pkg.price}`;
         packageSelect.appendChild(opt);
       });
-      return;
-    }
-
-    // If service has hourly rate, show hours slider
-    if (service.hourlyRate) {
-      packageSection.classList.add("hidden");
-      durationSection.classList.remove("hidden");
-      addonsSection.classList.remove("hidden");
-      
-      durationSlider.min = service.minHours || 1;
-      durationSlider.max = 8;
-      durationSlider.value = service.minHours || 1;
-      durationValue.textContent = durationSlider.value;
-      
-      durationHint.textContent = service.title === "Lessons"
-        ? "Most lessons run 1–2 hours for best retention."
-        : "Most artists book 3–4 hours for a focused session.";
-      
-      calculateHourlyTotal(serviceKey);
       return;
     }
 
@@ -922,9 +995,9 @@ if (serviceSelect) {
     activateStep("step-addons");
     
     // Auto-suggest Half-Day for Recording at 4 hours
-    if (service?.title === "Recording" && hours === 4) {
+    if (service?.label === "Recording" && hours === 4) {
       durationHint.textContent = "At 4 hours, most artists choose a Half-Day session for better value.";
-    } else if (service?.title === "Lessons") {
+    } else if (service?.label === "Lessons") {
       durationHint.textContent = "Most lessons run 1–2 hours for best retention.";
     } else {
       durationHint.textContent = "Most artists book 3–4 hours for a focused session.";
@@ -1008,7 +1081,7 @@ function calculateTotal() {
 
   // Build breakdown for Stripe
   const breakdown = [
-    { name: `${service.title} - ${pkg.label}`, amount: pkg.price }
+    { name: `${service.label} - ${pkg.label}`, amount: pkg.price }
   ];
   
   document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
@@ -1030,7 +1103,7 @@ function calculateTotal() {
     package: packageKey,
     total: total,
     deposit: deposit,
-    serviceName: `${service.title} - ${pkg.label}`,
+    serviceName: `${service.label} - ${pkg.label}`,
     breakdown: breakdown
   };
 
