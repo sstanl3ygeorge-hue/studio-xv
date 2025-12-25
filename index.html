@@ -99,6 +99,30 @@
       border: 1px solid var(--border-soft);
       letter-spacing: 0.04em;
     }
+
+    .waveform {
+      height: 80px;
+      margin-bottom: 0.75rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .play-btn,
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .play-btn:hover,
+    .toggle-btn:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -647,19 +671,18 @@ document.addEventListener("DOMContentLoaded", () => {
       ` : ''}
       <p class="text-sm opacity-70 mb-3">${mix.credit}</p>
 
-      ${mix.before ? `
-        <div class="flex gap-3 mb-3 text-sm">
-          <button class="mix-toggle text-pink-500 font-semibold" data-index="${index}" data-mode="after">After</button>
-          <button class="mix-toggle opacity-50" data-index="${index}" data-mode="before">Before</button>
-        </div>
-        <p class="text-xs opacity-50 mb-3">
-          Seamless A/B comparison — playback continues uninterrupted
-        </p>
-      ` : ""}
+      <div class="waveform-player" 
+           data-before="${mix.before || ''}" 
+           data-after="${mix.after}" 
+           data-current="after" 
+           data-index="${index}">
+        <div class="waveform"></div>
 
-      <audio controls preload="metadata" class="w-full" data-mix-player="${index}">
-        <source src="${mix.after}" type="audio/mpeg">
-      </audio>
+        <div class="controls">
+          <button class="play-btn">Play</button>
+          ${mix.before ? `<button class="toggle-btn">Before / After</button>` : ''}
+        </div>
+      </div>
     `;
 
     mixesContainer.appendChild(card);
@@ -1027,6 +1050,66 @@ bookingForm.addEventListener('submit', async (e) => {
   }
 });
 });
+</script>
+
+<script src="https://unpkg.com/wavesurfer.js@7"></script>
+
+<script>
+  const players = [];
+
+  document.querySelectorAll(".waveform-player").forEach(player => {
+    const waveformEl = player.querySelector(".waveform");
+    const playBtn = player.querySelector(".play-btn");
+    const toggleBtn = player.querySelector(".toggle-btn");
+
+    const wavesurfer = WaveSurfer.create({
+      container: waveformEl,
+      waveColor: "#666",
+      progressColor: "#ec4899",
+      cursorColor: "#ec4899",
+      height: 80,
+      barWidth: 2,
+      barGap: 2,
+      responsive: true,
+    });
+
+    // Load initial track (after version)
+    wavesurfer.load(player.dataset.after);
+
+    playBtn.addEventListener("click", () => {
+      // Stop all other waveforms
+      players.forEach(p => {
+        if (p !== wavesurfer) p.pause();
+      });
+
+      wavesurfer.playPause();
+    });
+
+    // Before/After toggle with seamless playback
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", () => {
+        const isPlaying = wavesurfer.isPlaying();
+        const time = wavesurfer.getCurrentTime();
+
+        const next =
+          player.dataset.current === "after"
+            ? player.dataset.before
+            : player.dataset.after;
+
+        player.dataset.current =
+          player.dataset.current === "after" ? "before" : "after";
+
+        wavesurfer.load(next);
+
+        wavesurfer.once("ready", () => {
+          wavesurfer.setTime(time);
+          if (isPlaying) wavesurfer.play();
+        });
+      });
+    }
+
+    players.push(wavesurfer);
+  });
 </script>
 
 </body>
