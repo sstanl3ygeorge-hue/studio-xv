@@ -426,6 +426,57 @@
 <script>
 const SERVICES = {
   recording: {
+    title: "Recording",
+    items: [
+      { label: "Hourly Session", price: "£30/hr" },
+      { label: "Half-Day (4hrs)", price: "£110" },
+      { label: "Full-Day (8hrs)", price: "£200" }
+    ]
+  },
+  mixing: {
+    title: "Mixing",
+    items: [
+      { label: "Per Track", price: "£50" },
+      { label: "Mix + Master", price: "£75" },
+      { label: "EP (4–6 tracks)", price: "£280" }
+    ]
+  },
+  mastering: {
+    title: "Mastering",
+    items: [
+      { label: "Single", price: "£35" },
+      { label: "EP (4–6 tracks)", price: "£120" },
+      { label: "Album (10+ tracks)", price: "£250" }
+    ]
+  },
+  lessons: {
+    title: "Lessons",
+    items: [
+      { label: "DAW Training (1hr)", price: "£40" },
+      { label: "Mixing Lesson (1hr)", price: "£45" },
+      { label: "Beat-Making (1hr)", price: "£40" }
+    ]
+  },
+  production: {
+    title: "Production",
+    items: [
+      { label: "Beat Lease", price: "£30" },
+      { label: "Exclusive Beat", price: "£150" },
+      { label: "Custom Production", price: "POA" }
+    ]
+  },
+  addons: {
+    title: "Add-Ons",
+    items: [
+      { label: "Vocal Tuning", price: "£25" },
+      { label: "Stems Export", price: "£20" },
+      { label: "Rush Delivery", price: "+50%" }
+    ]
+  }
+};
+
+const BOOKING_SERVICES = {
+  recording: {
     label: "Recording",
     packages: {
       hourly: { label: "Hourly Session", price: 30 },
@@ -436,8 +487,8 @@ const SERVICES = {
   mixing: {
     label: "Mixing",
     packages: {
-      single: { label: "Per Track", price: 50 },
-      mixMaster: { label: "Mix + Master", price: 75 },
+      track: { label: "Per Track", price: 50 },
+      mixmaster: { label: "Mix + Master", price: 75 },
       ep: { label: "EP (4–6 tracks)", price: 280 }
     }
   },
@@ -448,22 +499,6 @@ const SERVICES = {
       ep: { label: "EP (4–6 tracks)", price: 120 },
       album: { label: "Album (10+ tracks)", price: 250 }
     }
-  },
-  lessons: {
-    label: "Lessons",
-    packages: {
-      daw: { label: "DAW Training (1hr)", price: 40 },
-      mixing: { label: "Mixing Lesson (1hr)", price: 45 },
-      beat: { label: "Beat-Making (1hr)", price: 40 }
-    }
-  },
-  production: {
-    label: "Production",
-    packages: {
-      lease: { label: "Beat Lease", price: 30 },
-      exclusive: { label: "Exclusive Beat", price: 150 },
-      custom: { label: "Custom Production", price: null }
-    }
   }
 };
 
@@ -473,9 +508,9 @@ const ADDONS = {
   rushMultiplier: 1.5
 };
 
-function formatPrice(item) {
-  if (item.price === null) return "POA";
-  return `£${item.price}`;
+function parsePrice(price) {
+  if (price === "POA" || price.includes("%")) return null;
+  return Number(price.replace(/[£/hr]/g, ""));
 }
 </script>
 
@@ -491,10 +526,10 @@ const submitButton = document.getElementById("booking-submit");
 
 // Populate services
 if (serviceSelect) {
-  Object.keys(SERVICES).forEach(key => {
+  Object.keys(BOOKING_SERVICES).forEach(key => {
     const opt = document.createElement("option");
     opt.value = key;
-    opt.textContent = SERVICES[key].label;
+    opt.textContent = BOOKING_SERVICES[key].label;
     serviceSelect.appendChild(opt);
   });
 
@@ -503,15 +538,15 @@ if (serviceSelect) {
     packageSelect.innerHTML = '<option value="">Select package…</option>';
     const serviceKey = serviceSelect.value;
 
-    if (serviceKey && SERVICES[serviceKey]) {
+    if (serviceKey && BOOKING_SERVICES[serviceKey]) {
       packageSection.classList.remove("hidden");
       addonsSection.classList.remove("hidden");
 
-      Object.keys(SERVICES[serviceKey].packages).forEach(pkgKey => {
-        const pkg = SERVICES[serviceKey].packages[pkgKey];
+      Object.keys(BOOKING_SERVICES[serviceKey].packages).forEach(pkgKey => {
+        const pkg = BOOKING_SERVICES[serviceKey].packages[pkgKey];
         const opt = document.createElement("option");
         opt.value = pkgKey;
-        opt.textContent = `${pkg.label} - ${formatPrice(pkg)}`;
+        opt.textContent = `${pkg.label} - £${pkg.price}`;
         packageSelect.appendChild(opt);
       });
     } else {
@@ -535,15 +570,15 @@ function calculateTotal() {
   const serviceKey = serviceSelect.value;
   const packageKey = packageSelect.value;
 
-  if (!serviceKey || !packageKey) {
+  if (!serviceKey || packageKey === "") {
     totalDisplay.textContent = "0";
     depositDisplay.textContent = "0";
     submitButton.disabled = true;
     return;
   }
 
-  const pkg = SERVICES[serviceKey].packages[packageKey];
-  if (!pkg.price) {
+  const pkg = BOOKING_SERVICES[serviceKey].packages[packageKey];
+  if (!pkg || !pkg.price) {
     totalDisplay.textContent = "TBD";
     depositDisplay.textContent = "TBD";
     submitButton.disabled = true;
@@ -573,7 +608,7 @@ function calculateTotal() {
     package: packageKey,
     total: total,
     deposit: deposit,
-    serviceName: `${SERVICES[serviceKey].label} - ${SERVICES[serviceKey].packages[packageKey].label}`
+    serviceName: `${BOOKING_SERVICES[serviceKey].label} - ${BOOKING_SERVICES[serviceKey].packages[packageKey].label}`
   };
 
   localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
@@ -590,24 +625,21 @@ if (bookingForm) {
 </script>
 
 <script>
-const grid = document.getElementById("services-grid");
+const container = document.getElementById("services-grid");
 
-// Convert new SERVICES object to array format for grid rendering
-const servicesArray = Object.keys(SERVICES).map(key => ({
-  id: key,
-  title: SERVICES[key].label,
-  items: Object.keys(SERVICES[key].packages).map(pkgKey => ({
-    name: SERVICES[key].packages[pkgKey].label,
-    price: formatPrice(SERVICES[key].packages[pkgKey])
-  }))
-}));
-
-servicesArray.forEach(service => {
+Object.entries(SERVICES).forEach(([key, service]) => {
   const card = document.createElement("div");
+  
+  // Make Add-Ons span full width on desktop
+  const isAddons = key === 'addons';
   card.className = `
-    group rounded-2xl p-8 bg-[#111] border border-white/10
+    ${isAddons ? 'lg:col-span-3' : ''}
+    group rounded-2xl p-8 bg-[#111]
+    border border-white/10
     transition-all duration-300
-    hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl
+    hover:-translate-y-2
+    hover:border-pink-500
+    hover:shadow-xl
   `;
 
   card.innerHTML = `
@@ -617,14 +649,14 @@ servicesArray.forEach(service => {
     <ul class="space-y-4 text-sm">
       ${service.items.map(item => `
         <li class="flex justify-between">
-          <span>${item.name}</span>
+          <span>${item.label}</span>
           <span>${item.price}</span>
         </li>
       `).join("")}
     </ul>
   `;
 
-  grid.appendChild(card);
+  container.appendChild(card);
 });
 </script>
 
