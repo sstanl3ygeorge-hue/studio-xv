@@ -525,23 +525,23 @@ const PORTFOLIO = {
     {
       title: "City Lights",
       genre: "Afro House",
-      subtitle: "Produced, Mixed & Mastered | Studio XV",
-      beforeSrc: "/audio/mixes/city-lights-before.mp3",
-      afterSrc: "/audio/mixes/city-lights-after.mp3"
+      credit: "Produced, Mixed & Mastered",
+      before: "/mixes/city-lights-before.mp3",
+      after: "/mixes/city-lights-after.mp3"
     },
     {
       title: "Midnight Drive",
       genre: "Trap",
-      subtitle: "Mastered | Studio XV",
-      beforeSrc: "/audio/mixes/midnight-drive-before.mp3",
-      afterSrc: "/audio/mixes/midnight-drive-after.mp3"
+      credit: "Mastered",
+      before: "/mixes/midnight-drive-before.mp3",
+      after: "/mixes/midnight-drive-after.mp3"
     },
     {
       title: "Elevation",
       genre: "Afrobeats",
-      subtitle: "Mixed & Mastered | Studio XV",
-      beforeSrc: "/audio/mixes/elevation-before.mp3",
-      afterSrc: "/audio/mixes/elevation-after.mp3"
+      credit: "Mixed & Mastered",
+      before: "/mixes/elevation-before.mp3",
+      after: "/mixes/elevation-after.mp3"
     }
   ],
 
@@ -550,19 +550,19 @@ const PORTFOLIO = {
       title: "Neon Dreams",
       genre: "Trap / Melodic",
       subtitle: "140 BPM · Available for lease or exclusive",
-      src: "/audio/beats/neon-dreams.mp3"
+      src: "/beats/neon-dreams.mp3"
     },
     {
       title: "Street Gospel",
       genre: "Hip Hop",
       subtitle: "85 BPM · Available for lease or exclusive",
-      src: "/audio/beats/street-gospel.mp3"
+      src: "/beats/street-gospel.mp3"
     },
     {
       title: "Summer Breeze",
       genre: "Electronic",
       subtitle: "128 BPM · Available for lease or exclusive",
-      src: "/audio/beats/summer-breeze.mp3"
+      src: "/beats/summer-breeze.mp3"
     }
   ]
 };
@@ -621,9 +621,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.innerHTML = `
       <p class="font-semibold">🎵 ${mix.title} — ${mix.genre}</p>
-      <p class="text-sm opacity-70 mb-3">${mix.subtitle}</p>
+      <p class="text-sm opacity-70 mb-3">${mix.credit}</p>
 
-      ${mix.beforeSrc ? `
+      ${mix.before ? `
         <div class="flex gap-3 mb-3 text-sm">
           <button class="mix-toggle text-pink-500 font-semibold" data-index="${index}" data-mode="after">After</button>
           <button class="mix-toggle opacity-50" data-index="${index}" data-mode="before">Before</button>
@@ -633,8 +633,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </p>
       ` : ""}
 
-      <audio controls class="w-full" data-mix-player="${index}">
-        <source src="${mix.afterSrc}" type="audio/mpeg">
+      <audio controls preload="metadata" class="w-full" data-mix-player="${index}">
+        <source src="${mix.after}" type="audio/mpeg">
       </audio>
     `;
 
@@ -658,7 +658,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${beat.subtitle}
       </p>
 
-      <audio controls class="w-full">
+      <audio controls preload="metadata" class="w-full">
         <source src="${beat.src}" type="audio/mpeg">
       </audio>
     `;
@@ -685,8 +685,8 @@ document.addEventListener("click", e => {
 
   // 2. Swap source
   source.src = mode === "before"
-    ? mix.beforeSrc
-    : mix.afterSrc;
+    ? mix.before
+    : mix.after;
 
   // 3. Reload
   player.load();
