@@ -653,7 +653,7 @@ function renderPortfolio() {
   grid.appendChild(beatsCard);
 }
 
-renderPortfolio();
+document.addEventListener("DOMContentLoaded", renderPortfolio);
 </script>
 
 <script>
@@ -699,24 +699,25 @@ document.addEventListener("DOMContentLoaded", renderServices);
 </script>
 
 <script>
-const serviceSelect = document.getElementById("service-select");
-const packageSelect = document.getElementById("package-select");
-const packageWrapper = document.getElementById("package-wrapper");
-const hoursWrapper = document.getElementById("hours-wrapper");
-const hoursInput = document.getElementById("hours-input");
-const totalDisplay = document.getElementById("total-display");
-const depositDisplay = document.getElementById("deposit-display");
-const submitButton = document.getElementById("booking-submit");
+document.addEventListener("DOMContentLoaded", () => {
+  const serviceSelect = document.getElementById("service-select");
+  const packageSelect = document.getElementById("package-select");
+  const packageWrapper = document.getElementById("package-wrapper");
+  const hoursWrapper = document.getElementById("hours-wrapper");
+  const hoursInput = document.getElementById("hours-input");
+  const totalDisplay = document.getElementById("total-display");
+  const depositDisplay = document.getElementById("deposit-display");
+  const submitButton = document.getElementById("booking-submit");
 
-// Populate service dropdown from PRICING
-Object.entries(PRICING).forEach(([key, service]) => {
-  if (service.type === "addons") return;
+  // Populate service dropdown from PRICING
+  Object.entries(PRICING).forEach(([key, service]) => {
+    if (service.type === "addons") return;
 
-  const option = document.createElement("option");
-  option.value = key;
-  option.textContent = service.label;
-  serviceSelect.appendChild(option);
-});
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = service.label;
+    serviceSelect.appendChild(option);
+  });
 
 serviceSelect.addEventListener("change", handleServiceChange);
 packageSelect.addEventListener("change", calculateTotal);
@@ -931,6 +932,7 @@ bookingForm.addEventListener('submit', async (e) => {
     submitButton.disabled = false;
     submitButton.textContent = originalText;
   }
+});
 });
 </script>
 
