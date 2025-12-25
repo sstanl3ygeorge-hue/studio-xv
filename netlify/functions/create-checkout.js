@@ -1,47 +1,79 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async (event) => {
-  const { depositAmount, serviceName, breakdown } = JSON.parse(event.body);
+  // Only allow POST
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'Method not allowed' })
+    };
+  }
 
   try {
-    // Build line items from breakdown
-    const lineItems = breakdown?.length
-      ? breakdown.map(item => ({
-          price_data: {
-            currency: "gbp",
-            product_data: { name: item.name },
-            unit_amount: Math.round(item.amount * 100)
-          },
-          quantity: 1
-        }))
-      : [];
+    const { service, packageName, hours, addons, total, deposit } = JSON.parse(event.body);
 
-    // Add deposit line (what user actually pays today)
+    // Build line items for Stripe
+    const lineItems = [];
+
+    // Main service/package as deposit line item
     lineItems.push({
       price_data: {
-        currency: "gbp",
-        product_data: { name: `Deposit (50%) – ${serviceName}` },
-        unit_amount: Math.round(depositAmount * 100)
+        currency: 'gbp',
+        product_data: {
+          name: `${service} – ${packageName}${hours ? ` (${hours}hrs)` : ''}`,
+          description: `50% deposit for Studio XV session`
+        },
+        unit_amount: Math.round(deposit * 100), // Convert to pence
       },
-      quantity: 1
+      quantity: 1,
     });
 
+    // Add each add-on as separate line item
+    if (addons && addons.length > 0) {
+      addons.forEach(addon => {
+        // Only add if it has a numeric price (skip percentage add-ons like Rush)
+        if (typeof addon.price === 'number') {
+          lineItems.push({
+            price_data: {
+              currency: 'gbp',
+              product_data: {
+                name: addon.label
+              },
+              unit_amount: Math.round(addon.price * 100), // Convert to pence
+            },
+            quantity: 1,
+          });
+        }
+      });
+    }
+
+    // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
+      payment_method_types: ['card'],
       line_items: lineItems,
-      success_url: "https://studioxv.co.uk/success",
-      cancel_url: "https://studioxv.co.uk/booking",
+      mode: 'payment',
+      success_url: `${process.env.URL}/deposit.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.URL}/#booking`,
+      metadata: {
+        service,
+        packageName,
+        hours: hours || '',
+        total,
+        deposit,
+        addons: JSON.stringify(addons)
+      }
     });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ url: session.url }),
+      body: JSON.stringify({ url: session.url })
     };
-  } catch (err) {
+
+  } catch (error) {
+    console.error('Stripe checkout error:', error);
     return {
       statusCode: 500,
-      body: err.message,
+      body: JSON.stringify({ error: error.message })
     };
   }
 };

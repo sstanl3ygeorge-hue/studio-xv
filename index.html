@@ -235,6 +235,8 @@
         class="space-y-8"
       >
         <input type="hidden" name="form-name" value="booking" />
+        <input type="hidden" name="subject" value="New Studio XV Booking Request" />
+        <input type="hidden" name="reply-to" value="email" />
 
         <!-- Honeypot -->
         <p class="hidden">
@@ -285,6 +287,38 @@
             <option value="">Choose a package…</option>
           </select>
         </section>
+
+        <!-- Add-Ons -->
+        <div class="space-y-3">
+          <label class="block font-semibold">Add-Ons (optional)</label>
+          
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              class="addon-checkbox w-5 h-5"
+              value="vocalTuning"
+            />
+            <span>Vocal Tuning — £25</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              class="addon-checkbox w-5 h-5"
+              value="stems"
+            />
+            <span>Stems Export — £20</span>
+          </label>
+
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              class="addon-checkbox w-5 h-5"
+              value="rush"
+            />
+            <span>Rush Delivery — +50%</span>
+          </label>
+        </div>
 
         <!-- Your details -->
         <div class="grid md:grid-cols-2 gap-6">
@@ -349,6 +383,8 @@
             <span class="font-semibold">£<span id="total-display">0</span></span>
           </div>
 
+          <div id="summary-addons" class="space-y-1"></div>
+
           <div class="flex justify-between text-pink-500 font-semibold">
             <span>Deposit due today (50%)</span>
             <span>£<span id="deposit-display">0</span></span>
@@ -356,6 +392,9 @@
 
           <p class="text-xs opacity-60 mt-2">
             The remaining balance is payable on the session day.
+          </p>
+          <p class="text-xs opacity-60">
+            Custom Production projects are quoted individually based on scope and timeline.
           </p>
         </div>
 
@@ -558,9 +597,15 @@ const SERVICES_BOOKING = {
     packages: {
       beatLease: { label: "Beat Lease", price: 30 },
       exclusiveBeat: { label: "Exclusive Beat", price: 150 },
-      custom: { label: "Custom Production", price: null } // POA
+      custom: { label: "Custom Production", price: null, poa: true }
     }
   }
+};
+
+const ADDONS = {
+  vocalTuning: { label: "Vocal Tuning", price: 25 },
+  stems: { label: "Stems Export", price: 20 },
+  rush: { label: "Rush Delivery", multiplier: 1.5 }
 };
 
 const serviceSelect = document.getElementById("service-select");
@@ -575,6 +620,11 @@ const submitButton = document.getElementById("booking-submit");
 serviceSelect.addEventListener("change", handleServiceChange);
 packageSelect.addEventListener("change", calculateTotal);
 document.addEventListener("input", calculateTotal);
+
+// Add-ons checkboxes trigger recalculation
+document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
+  checkbox.addEventListener("change", calculateTotal);
+});
 
 function handleServiceChange() {
   const key = serviceSelect.value.toLowerCase();
@@ -596,10 +646,13 @@ function handleServiceChange() {
   if (service.type === "packages") {
     packageWrapper.classList.remove("hidden");
     Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
-      if (pkg.price === null) return; // POA hidden from pricing
       const opt = document.createElement("option");
       opt.value = pkgKey;
-      opt.textContent = `${pkg.label} – £${pkg.price}`;
+
+      opt.textContent = pkg.price === null
+        ? `${pkg.label} – POA`
+        : `${pkg.label} – £${pkg.price}`;
+
       packageSelect.appendChild(opt);
     });
   }
@@ -611,30 +664,92 @@ function calculateTotal() {
   if (!service) return;
 
   let total = 0;
+  let hours = null;
+  let packageName = null;
 
   if (service.type === "hourly") {
-    const hours = Number(hoursInput.value);
+    hours = Number(hoursInput.value);
     if (!hours || hours < service.minHours) return resetTotals();
     total = hours * service.rate;
+    packageName = "Hourly";
   }
 
   if (service.type === "packages") {
     const pkg = service.packages[packageSelect.value];
-    if (!pkg || pkg.price === null) return resetTotals();
+    if (!pkg) return resetTotals();
+    
+    packageName = pkg.label;
+
+    // Handle POA (Price on Application)
+    if (pkg.poa) {
+      totalDisplay.textContent = "Quote required";
+      depositDisplay.textContent = "—";
+      submitButton.disabled = false;
+      submitButton.textContent = "Request Quote";
+      
+      window.bookingData = {
+        service: service.label,
+        package: pkg.label,
+        hours: null,
+        addons: [],
+        total: 0,
+        deposit: 0,
+        poa: true
+      };
+      localStorage.setItem("bookingData", JSON.stringify(window.bookingData));
+      return;
+    }
+
     total = pkg.price;
   }
+
+  // Process add-ons
+  const selectedAddons = [];
+  let addonsTotal = 0;
+
+  document.querySelectorAll(".addon-checkbox:checked").forEach(box => {
+    const addon = ADDONS[box.value];
+    
+    if (addon.multiplier) {
+      total *= addon.multiplier;
+      selectedAddons.push({ label: addon.label, price: `+${Math.round((addon.multiplier - 1) * 100)}%` });
+    } else {
+      total += addon.price;
+      addonsTotal += addon.price;
+      selectedAddons.push({ label: addon.label, price: addon.price });
+    }
+  });
 
   const deposit = Math.round(total * 0.5);
 
   totalDisplay.textContent = total.toFixed(2);
   depositDisplay.textContent = deposit.toFixed(2);
   submitButton.disabled = false;
+  submitButton.textContent = "Secure Your Session";
 
-  localStorage.setItem("bookingData", JSON.stringify({
+  // Display add-ons summary
+  const summaryAddons = document.getElementById("summary-addons");
+  if (selectedAddons.length > 0) {
+    summaryAddons.innerHTML = selectedAddons.map(a =>
+      `<div class="flex justify-between text-sm opacity-80">
+         <span>${a.label}</span>
+         <span>${typeof a.price === 'number' ? '£' + a.price : a.price}</span>
+       </div>`
+    ).join("");
+  } else {
+    summaryAddons.innerHTML = "";
+  }
+
+  window.bookingData = {
     service: service.label,
+    package: packageName,
+    hours: hours,
+    addons: selectedAddons,
     total,
     deposit
-  }));
+  };
+
+  localStorage.setItem("bookingData", JSON.stringify(window.bookingData));
 }
 
 function resetTotals() {
