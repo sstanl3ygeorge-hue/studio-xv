@@ -560,48 +560,61 @@ const PRICING = {
   recording: {
     label: "Recording",
     type: "hourly",
-    minHours: 2,
     rate: 40,
-    suggestions: "Most artists book 3–4 hours"
+    options: [
+      { label: "Hourly Session", price: "£40/hr" },
+      { label: "Half-Day (4hrs)", price: "£140" },
+      { label: "Full-Day (8hrs)", price: "£260" }
+    ]
   },
 
   mixing: {
     label: "Mixing",
     type: "packages",
-    packages: {
-      perTrack: { label: "Per Track", price: 50 },
-      mixMaster: { label: "Mix + Master", price: 75 },
-      ep: { label: "EP (4–6 tracks)", price: 280 }
-    }
+    packages: [
+      { label: "Per Track", price: 50 },
+      { label: "Mix + Master", price: 75 },
+      { label: "EP (4–6 tracks)", price: 280 }
+    ]
   },
 
   mastering: {
     label: "Mastering",
     type: "packages",
-    packages: {
-      single: { label: "Single", price: 35 },
-      ep: { label: "EP (4–6 tracks)", price: 120 },
-      album: { label: "Album (10+ tracks)", price: 250 }
-    }
-  },
-
-  lessons: {
-    label: "Lessons",
-    type: "hourly",
-    minHours: 1,
-    maxHours: 4,
-    rate: 40,
-    coachingCopy: "Structured, guided sessions focused on your goals"
+    packages: [
+      { label: "Single", price: 35 },
+      { label: "EP (4–6 tracks)", price: 120 },
+      { label: "Album (10+ tracks)", price: 250 }
+    ]
   },
 
   production: {
     label: "Production",
     type: "packages",
-    packages: {
-      beatLease: { label: "Beat Lease", price: 30 },
-      exclusiveBeat: { label: "Exclusive Beat", price: 150 },
-      custom: { label: "Custom Production", poa: true }
-    }
+    packages: [
+      { label: "Beat Lease", price: 30 },
+      { label: "Exclusive Beat", price: 150 },
+      { label: "Custom Production", poa: true }
+    ]
+  },
+
+  lessons: {
+    label: "Lessons",
+    type: "hourly",
+    rate: 40,
+    minHours: 1,
+    maxHours: 4,
+    coachingCopy: "Guided sessions focused on skill-building and workflow."
+  },
+
+  addons: {
+    label: "Add-Ons",
+    type: "addons",
+    items: [
+      { label: "Vocal Tuning", price: 25 },
+      { label: "Stems Export", price: 20 },
+      { label: "Rush Delivery", multiplier: 1.5 }
+    ]
   }
 };
 
