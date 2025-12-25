@@ -1,15 +1,111 @@
+  <!doctype html>
+  <html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio XV</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        color: #fff;
+        overflow-x: hidden;
+      }
+
+      .mobile-link {
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        transition: color 0.3s ease;
+      }
+
+      .mobile-link:hover {
+        color: #ff0055;
+      }
+    </style>
+  </head>
+
+  <body class="h-full">
+  <div id="app" class="w-full min-h-screen">
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <span class="text-xl font-bold">Studio XV</span>
+
+      <div class="hidden md:flex space-x-8">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#booking">Booking</a>
+        <a href="#about">About</a>
+      </div>
+
+      <button id="menu-toggle" class="md:hidden text-3xl">☰</button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu"
+    class="hidden fixed top-[64px] left-0 right-0 bg-black z-[9999] border-t border-white/10">
+
+    <a href="#home" class="block py-4 text-center">Home</a>
+    <a href="#services" class="block py-4 text-center">Services</a>
+    <a href="#portfolio" class="block py-4 text-center">Portfolio</a>
+    <a href="#booking" class="block py-4 text-center">Booking</a>
+    <a href="#about" class="block py-4 text-center">About</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="home" class="min-h-screen flex items-center justify-center px-6">
+    <div class="flex flex-col items-center gap-10">
+      <div class="text-center leading-none">
+        <div class="tracking-[0.3em] opacity-80">STUDIO</div>
+        <div class="text-7xl font-extrabold">XV</div>
+      </div>
+
+      <a href="#booking"
+        class="px-10 py-4 rounded-lg text-lg font-semibold bg-pink-600">
+        Book Your Session
+      </a>
+    </div>
+  </section>
+
+  <footer class="py-12 text-center opacity-70">
+    © 2024 Studio XV
+  </footer>
+
+  </div>
+
+  <script>
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  </script>
+
+  </body>
+  </html>
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
 <!doctype html>
 <html lang="en" class="h-full">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Studio XV</title>
-
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="style.css">
 
   <style>
     html, body {
@@ -30,58 +126,416 @@
       color: #ff0055;
     }
   </style>
-</head>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
 
 <body class="h-full">
 <div id="app" class="w-full min-h-screen">
 
 <!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
+<nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur relative">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+    <!-- Logo -->
     <span class="text-xl font-bold">Studio XV</span>
 
+    <!-- Desktop Nav -->
     <div class="hidden md:flex space-x-8">
-      <a href="#home">Home</a>
-      <a href="#services">Services</a>
-      <a href="#portfolio">Portfolio</a>
-      <a href="#booking">Booking</a>
-      <a href="#about">About</a>
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#portfolio" class="nav-link">Portfolio</a>
+      <a href="#booking" class="nav-link">Booking</a>
+      <a href="#about" class="nav-link">About</a>
     </div>
 
-    <button id="menu-toggle" class="md:hidden text-3xl">☰</button>
+    <!-- Mobile Menu Button -->
+    <button
+      id="menu-toggle"
+      class="md:hidden text-3xl"
+      aria-label="Open menu">
+      ☰
+    </button>
   </div>
 </nav>
 
-<!-- MOBILE MENU -->
-<div id="mobile-menu"
-  class="hidden fixed top-[64px] left-0 right-0 bg-black z-[9999] border-t border-white/10">
+<!-- Mobile Fullscreen Menu -->
+<!-- Mobile Dropdown Menu -->
+<div
+  id="mobile-menu"
+  class="hidden md:hidden fixed top-[64px] left-0 right-0 bg-black z-[9999] border-t border-white/10">
 
-  <a href="#home" class="block py-4 text-center">Home</a>
-  <a href="#services" class="block py-4 text-center">Services</a>
-  <a href="#portfolio" class="block py-4 text-center">Portfolio</a>
-  <a href="#booking" class="block py-4 text-center">Booking</a>
-  <a href="#about" class="block py-4 text-center">About</a>
+  <a href="#home" class="block py-4 text-center text-lg border-b border-white/10">Home</a>
+  <a href="#services" class="block py-4 text-center text-lg border-b border-white/10">Services</a>
+  <a href="#portfolio" class="block py-4 text-center text-lg border-b border-white/10">Portfolio</a>
+  <a href="#booking" class="block py-4 text-center text-lg border-b border-white/10">Booking</a>
+  <a href="#about" class="block py-4 text-center text-lg">About</a>
 </div>
 
 <!-- HERO -->
-<section id="home" class="min-h-screen flex items-center justify-center px-6">
-  <div class="flex flex-col items-center gap-10">
-    <div class="text-center leading-none">
-      <div class="tracking-[0.3em] opacity-80">STUDIO</div>
-      <div class="text-7xl font-extrabold">XV</div>
+<section
+  id="home"
+  class="min-h-screen flex items-center justify-center px-6"
+>
+  <div class="flex flex-col items-center text-center gap-10 fade-in">
+
+    <!-- TEXT LOGO -->
+    <div class="leading-none">
+      <div class="text-2xl md:text-3xl tracking-[0.3em] opacity-80">
+        STUDIO
+      </div>
+      <div class="text-7xl md:text-8xl font-extrabold tracking-tight">
+        XV
+      </div>
     </div>
 
-    <a href="#booking"
-      class="px-10 py-4 rounded-lg text-lg font-semibold bg-pink-600">
+    <!-- CTA -->
+    <a
+      href="#booking"
+      class="inline-block px-10 py-4 rounded-lg text-lg font-semibold bg-pink-600 hover:scale-105 transition"
+    >
       Book Your Session
     </a>
+
   </div>
 </section>
 
-<footer class="py-12 text-center opacity-70">
-  © 2024 Studio XV
-</footer>
+<!-- WHY CHOOSE STUDIO XV -->
+<section class="py-24 px-6 bg-[#101010]">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Why Artists Choose Studio XV</h2>
+    <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-8">
+      <div class="rounded-2xl p-8 bg-gradient-to-b from-[#181818] to-[#101010] shadow-xl text-center">
+        <div class="text-4xl mb-4"></div>
+        <h3 class="text-xl font-bold mb-3">15+ Years Experience</h3>
+        <p class="opacity-80">Seasoned engineers with a proven track record in music production and mixing.</p>
+      </div>
+      <div class="rounded-2xl p-8 bg-gradient-to-b from-[#181818] to-[#101010] shadow-xl text-center">
+        <div class="text-4xl mb-4"></div>
+        <h3 class="text-xl font-bold mb-3">Industry‑Standard Equipment</h3>
+        <p class="opacity-80">Top-tier microphones, preamps, and outboard gear for pristine sound quality.</p>
+      </div>
+      <div class="rounded-2xl p-8 bg-gradient-to-b from-[#181818] to-[#101010] shadow-xl text-center">
+        <div class="text-4xl mb-4"></div>
+        <h3 class="text-xl font-bold mb-3">Fully Treated Room</h3>
+        <p class="opacity-80">Acoustically treated space for accurate monitoring and recording.</p>
+      </div>
+      <div class="rounded-2xl p-8 bg-gradient-to-b from-[#181818] to-[#101010] shadow-xl text-center">
+        <div class="text-4xl mb-4"></div>
+        <h3 class="text-xl font-bold mb-3">Fast Turnaround</h3>
+        <p class="opacity-80">Quick delivery on all projects—rush options available for tight deadlines.</p>
+      </div>
+      <div class="rounded-2xl p-8 bg-gradient-to-b from-[#181818] to-[#101010] shadow-xl text-center">
+        <div class="text-4xl mb-4"></div>
+        <h3 class="text-xl font-bold mb-3">Creative Environment</h3>
+        <p class="opacity-80">A comfortable, inspiring studio space designed for artists to thrive.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- WHAT TO EXPECT -->
+<section id="what-to-expect" class="py-24 px-6 bg-[#181818] text-center">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-bold mb-12">Your Session Includes</h2>
+    <ul class="space-y-4 text-lg md:text-xl text-left mx-auto max-w-xl"></ul>
+      <li class="flex items-center gap-3"><span class="text-pink-500 text-2xl">✔️</span> Engineer included</li>
+      <li class="flex items-center gap-3"><span class="text-pink-500 text-2xl">✔️</span> Vocal comping</li>
+      <li class="flex items-center gap-3"><span class="text-pink-500 text-2xl">✔️</span> Rough mix same day</li>
+      <li class="flex items-center gap-3"><span class="text-pink-500 text-2xl">✔️</span> Guidance on performance</li>
+      <li class="flex items-center gap-3"><span class="text-pink-500 text-2xl">✔️</span> File backup for 30 days</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
+      Services
+    </h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Recording -->
+      <div class="group rounded-2xl p-8 bg-[#111] border border-white/10
+                  transition-all duration-300
+                  hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+          Recording
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between"><span>Hourly Session</span><span>£30/hr</span></li>
+          <li class="flex justify-between"><span>Half-Day (4hrs)</span><span>£110</span></li>
+          <li class="flex justify-between"><span>Full-Day (8hrs)</span><span>£200</span></li>
+        </ul>
+      </div>
+
+      <!-- Mixing -->
+      <div class="group rounded-2xl p-8 bg-[#111] border border-white/10
+                  transition-all duration-300
+                  hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+          Mixing
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between"><span>Per Track</span><span>£50</span></li>
+          <li class="flex justify-between"><span>Mix + Master</span><span>£75</span></li>
+          <li class="flex justify-between"><span>EP (4–6 tracks)</span><span>£280</span></li>
+        </ul>
+      </div>
+
+      <!-- Mastering -->
+      <div class="group rounded-2xl p-8 bg-[#111] border border-white/10
+                  transition-all duration-300
+                  hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+          Mastering
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between"><span>Single</span><span>£35</span></li>
+          <li class="flex justify-between"><span>EP (4–6 tracks)</span><span>£120</span></li>
+          <li class="flex justify-between"><span>Album (10+ tracks)</span><span>£250</span></li>
+        </ul>
+      </div>
+
+      <!-- Production -->
+      <div class="group rounded-2xl p-8 bg-[#111] border border-white/10
+                  transition-all duration-300
+                  hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+          Production
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between"><span>Beat Lease</span><span>£30</span></li>
+          <li class="flex justify-between"><span>Exclusive Beat</span><span>£150</span></li>
+          <li class="flex justify-between"><span>Custom Production</span><span>£300+</span></li>
+        </ul>
+      </div>
+
+      <!-- Lessons -->
+      <div class="group rounded-2xl p-8 bg-[#111] border border-white/10
+                  transition-all duration-300
+                  hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+          Lessons
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between"><span>DAW Training</span><span>£40/hr</span></li>
+          <li class="flex justify-between"><span>Mixing Lessons</span><span>£45/hr</span></li>
+          <li class="flex justify-between"><span>Beat-Making</span><span>£40/hr</span></li>
+        </ul>
+      </div>
+
+      <!-- Add-Ons -->
+      <div class="group rounded-2xl p-8 bg-[#111] border border-white/10
+                  transition-all duration-300
+                  hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+          Add-Ons
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between"><span>Vocal Tuning</span><span>£25</span></li>
+          <li class="flex justify-between"><span>Stems Export</span><span>£20</span></li>
+          <li class="flex justify-between"><span>Rush Delivery</span><span>+50%</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio" class="py-24 px-6 bg-[#0d0d0d]">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Portfolio</h2>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <div class="group card">
+        <h3>Recent Mixes</h3>
+        <div class="flex flex-col gap-4">
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="font-medium mb-2">🎵 "City Lights" – Hip Hop</p>
+            <audio controls class="w-full">
+              <source src="audio/city-lights.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="font-medium mb-2">🎵 "Midnight Drive" – R&amp;B</p>
+            <audio controls class="w-full">
+              <source src="audio/midnight-drive.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="font-medium mb-2">🎵 "Elevation" – Trap</p>
+            <audio controls class="w-full">
+              <source src="audio/elevation.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="group card">
+        <h3>Beat Catalogue</h3>
+        <div class="flex flex-col gap-4">
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="font-medium mb-2">🎹 "Neon Dreams" – 140 BPM</p>
+            <audio controls class="w-full">
+              <source src="audio/neon-dreams.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="font-medium mb-2">🎹 "Street Gospel" – 85 BPM</p>
+            <audio controls class="w-full">
+              <source src="audio/street-gospel.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="font-medium mb-2">🎹 "Summer Breeze" – 128 BPM</p>
+            <audio controls class="w-full">
+              <source src="audio/summer-breeze.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking" class="py-28 px-6">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-20">
+      Book Your Session
+    </h2>
+
+    <div class="rounded-2xl bg-gradient-to-b from-[#1c1c1c] to-[#121212] p-10 md:p-14 shadow-[0_40px_80px_rgba(0,0,0,0.8)]">
+
+      <form
+        name="booking"
+        method="POST"
+        data-netlify="true"
+        class="space-y-7"
+      >
+        <input type="hidden" name="form-name" value="booking" />
+
+        <!-- Full Name -->
+        <div>
+          <label class="block mb-3 text-sm font-semibold">Full Name</label>
+          <input
+            type="text"
+            name="full-name"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none focus:border-pink-600 transition"
+          />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block mb-3 text-sm font-semibold">Email</label>
+          <input
+            type="email"
+            name="email"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none focus:border-pink-600 transition"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label class="block mb-3 text-sm font-semibold">Phone</label>
+          <input
+            type="tel"
+            name="phone"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none focus:border-pink-600 transition"
+          />
+        </div>
+
+        <!-- Service Type -->
+        <div>
+          <label class="block mb-3 text-sm font-semibold">Service Type</label>
+          <select
+            name="service"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none focus:border-pink-600 transition"
+          >
+            <option>Select a service...</option>
+            <option>Recording – Hourly</option>
+            <option>Recording – Half Day</option>
+            <option>Recording – Full Day</option>
+            <option>Mixing</option>
+            <option>Mastering</option>
+            <option>Production</option>
+            <option>Lessons</option>
+          </select>
+        </div>
+
+        <!-- Preferred Date -->
+        <div>
+          <label class="block mb-3 text-sm font-semibold">Preferred Date</label>
+          <input
+            type="date"
+            name="preferred-date"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none focus:border-pink-600 transition"
+          />
+        </div>
+
+        <!-- Additional Details -->
+        <div>
+          <label class="block mb-3 text-sm font-semibold">Additional Details</label>
+          <textarea
+            name="details"
+            rows="4"
+            placeholder="Tell us about your project..."
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none focus:border-pink-600 transition"
+          ></textarea>
+        </div>
+
+        <!-- Booking Policies -->
+        <div class="mt-4 p-5 rounded-xl bg-black/40 text-sm">
+          <p class="font-semibold mb-3 flex items-center gap-2">
+            📋 Booking Policies:
+          </p>
+          <ul class="space-y-1 opacity-90"></ul>
+            <li>• 50% deposit required to confirm booking</li>
+            <li>• 48-hour cancellation notice for full refund</li>
+            <li>• Late arrivals will result in reduced session time</li>
+            <li>• Payment methods: Bank transfer, Cash, PayPal</li>
+          </ul>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="mt-6 w-full h-14 rounded-lg bg-pink-600 font-bold text-lg
+                 hover:bg-pink-500 transition"
+        >
+          Submit Booking Request
+        </button>
+
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-20 px-6 bg-[#0d0d0d] text-center">
+  <p>studio@studioxv.com</p>
+  <p>+44 1234 567890</p>
+  <p>London England</p>
+</section>
+
+<footer class="py-12 text-center opacity-70">
+  © 2024 Studio XV. All rights reserved.
+</footer>
 </div>
 
 <script>
@@ -92,6 +546,10 @@
     menu.classList.toggle('hidden');
   });
 </script>
+
+</div>
+
+
 
 </body>
 </html>
