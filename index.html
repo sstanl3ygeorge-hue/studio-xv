@@ -12,19 +12,40 @@
 <div id="app" class="w-full">
 
 <!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur">
+<nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <div class="flex items-center gap-4">
-      <a href="#home" class="text-xl font-bold tracking-tight" style="text-decoration: none;">Studio XV</a>
-      <button class="menu-toggle" aria-label="Open menu">☰</button>
-    </div>
-    <nav class="nav-links hidden md:flex space-x-8">
+
+    <!-- Logo -->
+    <span class="text-xl font-bold">Studio XV</span>
+
+    <!-- Desktop Links -->
+    <div class="hidden md:flex space-x-8 nav-links">
       <a href="#home" class="nav-link">Home</a>
       <a href="#services" class="nav-link">Services</a>
       <a href="#portfolio" class="nav-link">Portfolio</a>
       <a href="#booking" class="nav-link">Booking</a>
-      <a href="#about" class="nav-link hidden">About</a>
-    </nav>
+      <a href="#about" class="nav-link">About</a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="menu-toggle"
+      class="md:hidden text-2xl focus:outline-none"
+      aria-label="Toggle menu">
+      ☰
+    </button>
+
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="hidden flex-col bg-black text-center md:hidden">
+    <a href="#home" class="py-4 border-b border-white/10">Home</a>
+    <a href="#services" class="py-4 border-b border-white/10">Services</a>
+    <a href="#portfolio" class="py-4 border-b border-white/10">Portfolio</a>
+    <a href="#booking" class="py-4 border-b border-white/10">Booking</a>
+    <a href="#about" class="py-4">About</a>
   </div>
 </nav>
 
@@ -392,6 +413,16 @@
 <footer class="py-12 text-center opacity-70">
   © 2024 Studio XV. All rights reserved.
 </footer>
+</div>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  toggle.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+  });
+</script>
 
 </div>
 
