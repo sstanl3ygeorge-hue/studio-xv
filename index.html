@@ -33,6 +33,13 @@
 
     html {
       scroll-behavior: smooth;
+      background-color: #000;
+    }
+
+    @media (prefers-color-scheme: light) {
+      html {
+        background-color: #fff;
+      }
     }
 
     /* Apply */
@@ -64,17 +71,19 @@
 <body>
 
 <!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
+<nav class="fixed top-0 left-0 right-0 z-50
+            bg-black/90 dark:bg-black/90
+            text-white">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
     <span class="text-xl font-bold">Studio XV</span>
 
     <!-- Desktop -->
     <div class="hidden md:flex space-x-8">
-      <a href="#home">Home</a>
-      <a href="#services">Services</a>
-      <a href="#portfolio">Portfolio</a>
-      <a href="#booking">Booking</a>
-      <a href="#about">About</a>
+      <a href="#home" class="text-white hover:text-pink-500">Home</a>
+      <a href="#services" class="text-white hover:text-pink-500">Services</a>
+      <a href="#portfolio" class="text-white hover:text-pink-500">Portfolio</a>
+      <a href="#booking" class="text-white hover:text-pink-500">Booking</a>
+      <a href="#about" class="text-white hover:text-pink-500">About</a>
     </div>
 
     <!-- Mobile toggle -->
@@ -92,16 +101,16 @@
   </div>
 
   <nav class="flex flex-col gap-8 text-center mt-10 text-xl">
-    <a href="#home" class="mobile-link">Home</a>
-    <a href="#services" class="mobile-link">Services</a>
-    <a href="#portfolio" class="mobile-link">Portfolio</a>
-    <a href="#booking" class="mobile-link">Booking</a>
-    <a href="#about" class="mobile-link">About</a>
+    <a href="#home" class="mobile-link text-white">Home</a>
+    <a href="#services" class="mobile-link text-white">Services</a>
+    <a href="#portfolio" class="mobile-link text-white">Portfolio</a>
+    <a href="#booking" class="mobile-link text-white">Booking</a>
+    <a href="#about" class="mobile-link text-white">About</a>
   </nav>
 </div>
 
 <!-- HERO -->
-<section id="home" class="min-h-screen pt-24 flex items-center justify-center px-6">
+<section id="home" class="min-h-screen pt-24 flex items-center justify-center px-6 bg-[var(--bg)]">
   <div class="text-center space-y-10">
     <div class="leading-none">
       <div class="tracking-[0.3em] opacity-80">STUDIO</div>
@@ -115,7 +124,7 @@
   </div>
 </section>
 
-<section id="services" class="py-24 px-6">
+<section id="services" class="py-24 px-6 bg-[var(--bg)]">
   <div class="max-w-6xl mx-auto">
     <h2 class="text-4xl font-bold text-center mb-16">Services</h2>
     
@@ -233,28 +242,52 @@
   </div>
 </section>
 
-<section id="booking" class="py-28 px-6 bg-black">
+<section id="booking" class="py-28 px-6 bg-[var(--bg)]">
   <div class="max-w-3xl mx-auto">
     <h2 class="text-4xl md:text-5xl font-bold text-center mb-20">
       Book Your Session
     </h2>
 
-    <div class="rounded-2xl bg-gradient-to-b from-[#1c1c1c] to-[#121212] p-10 shadow-xl">
+    <div class="rounded-2xl
+            bg-[#1c1c1c] text-white
+            dark:bg-[#1c1c1c]
+            light:bg-white light:text-black
+            shadow-xl p-10">
 
       <form name="booking" method="POST" data-netlify="true" class="space-y-6">
         <input type="hidden" name="form-name" value="booking">
 
         <input type="text" name="name" placeholder="Full Name"
-          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+          class="w-full px-4 py-3 rounded-lg
+                 bg-black/60 text-white
+                 dark:bg-black/60 dark:text-white
+                 light:bg-gray-100 light:text-black
+                 border border-gray-300 dark:border-white/20
+                 focus:border-pink-600 outline-none">
 
         <input type="email" name="email" placeholder="Email"
-          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+          class="w-full px-4 py-3 rounded-lg
+                 bg-black/60 text-white
+                 dark:bg-black/60 dark:text-white
+                 light:bg-gray-100 light:text-black
+                 border border-gray-300 dark:border-white/20
+                 focus:border-pink-600 outline-none">
 
         <input type="tel" name="phone" placeholder="Phone"
-          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+          class="w-full px-4 py-3 rounded-lg
+                 bg-black/60 text-white
+                 dark:bg-black/60 dark:text-white
+                 light:bg-gray-100 light:text-black
+                 border border-gray-300 dark:border-white/20
+                 focus:border-pink-600 outline-none">
 
         <select name="service"
-          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+          class="w-full px-4 py-3 rounded-lg
+                 bg-black/60 text-white
+                 dark:bg-black/60 dark:text-white
+                 light:bg-gray-100 light:text-black
+                 border border-gray-300 dark:border-white/20
+                 focus:border-pink-600 outline-none">
           <option>Select a service</option>
           <option>Recording</option>
           <option>Mixing</option>
@@ -264,7 +297,12 @@
         </select>
 
         <textarea name="details" rows="4" placeholder="Tell us about your project..."
-          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none"></textarea>
+          class="w-full px-4 py-3 rounded-lg
+                 bg-black/60 text-white
+                 dark:bg-black/60 dark:text-white
+                 light:bg-gray-100 light:text-black
+                 border border-gray-300 dark:border-white/20
+                 focus:border-pink-600 outline-none"></textarea>
 
         <button type="submit"
           class="w-full py-4 rounded-lg bg-[var(--accent)] font-bold text-lg hover:bg-pink-500 transition">
