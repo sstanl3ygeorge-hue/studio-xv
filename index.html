@@ -353,9 +353,9 @@ const SERVICES_DISPLAY = {
   recording: {
     label: "Recording",
     items: [
-      { label: "Hourly Session", price: "£30/hr" },
-      { label: "Half-Day (4hrs)", price: "£110" },
-      { label: "Full-Day (8hrs)", price: "£200" }
+      { label: "Hourly Session", price: "£40/hr" },
+      { label: "Half-Day (4hrs)", price: "£140" },
+      { label: "Full-Day (8hrs)", price: "£260" }
     ]
   },
   mixing: {
@@ -374,17 +374,20 @@ const SERVICES_DISPLAY = {
       { label: "Album (10+ tracks)", price: "£250" }
     ]
   },
-  lessons: {
-    label: "Lessons",
-    items: [
-      { label: "Hourly Rate", price: "£40/hr" }
-    ]
-  },
   production: {
     label: "Production",
     items: [
       { label: "Beat Lease", price: "£30" },
-      { label: "Exclusive Beat", price: "£150" }
+      { label: "Exclusive Beat", price: "£150" },
+      { label: "Custom Production", price: "£300+" }
+    ]
+  },
+  lessons: {
+    label: "Lessons",
+    items: [
+      { label: "DAW Training", price: "£40/hr" },
+      { label: "Mixing Lessons", price: "£45/hr" },
+      { label: "Beat-Making", price: "£40/hr" }
     ]
   },
   addons: {
@@ -396,42 +399,43 @@ const SERVICES_DISPLAY = {
     ]
   }
 };
+</script>
 
-// Render service cards
+<script>
 function renderServiceCards() {
   const container = document.getElementById("services-grid");
   if (!container) return;
-  
+
+  container.innerHTML = "";
+
   Object.entries(SERVICES_DISPLAY).forEach(([key, service]) => {
     const card = document.createElement("div");
-    const isAddons = key === 'addons';
-    
+    const isAddons = key === "addons";
+
     card.className = `
-      ${isAddons ? 'lg:col-span-3' : ''}
-      group rounded-2xl p-8 bg-[#111]
+      ${isAddons ? "lg:col-span-3" : ""}
+      rounded-2xl p-8 bg-[#111]
       border border-white/10
       transition-all duration-300
       hover:-translate-y-2
       hover:border-pink-500
       hover:shadow-xl
     `;
-    
-    const itemsHTML = service.items.map(item => 
-      `<li class="flex justify-between">
-        <span>${item.label}</span>
-        <span>${item.price}</span>
-      </li>`
-    ).join('');
-    
+
     card.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+      <h3 class="text-2xl font-bold mb-6">
         ${service.label}
       </h3>
       <ul class="space-y-4 text-sm">
-        ${itemsHTML}
+        ${service.items.map(item => `
+          <li class="flex justify-between">
+            <span>${item.label}</span>
+            <span>${item.price}</span>
+          </li>
+        `).join("")}
       </ul>
     `;
-    
+
     container.appendChild(card);
   });
 }
