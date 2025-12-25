@@ -218,29 +218,25 @@
   </div>
 </section>
 
-<section id="booking" class="py-28 px-6"
-         style="background: var(--bg-section);">
+<section id="booking" class="py-28 px-6" style="background: var(--bg-section);">
   <div class="max-w-3xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold text-center mb-20">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
       Book Your Session
     </h2>
 
-    <div class="rounded-2xl p-10 shadow-xl"
-         style="background: var(--bg-soft);">
+    <div class="rounded-2xl p-10 shadow-xl" style="background: var(--bg-soft);">
 
       <form
         name="booking"
         method="POST"
-        action="/deposit.html"
         data-netlify="true"
         netlify-honeypot="bot-field"
-        data-netlify-recaptcha="true"
-        class="space-y-10"
+        enctype="multipart/form-data"
+        class="space-y-8"
       >
-        <!-- Netlify form name -->
         <input type="hidden" name="form-name" value="booking" />
 
-        <!-- Honeypot (invisible) -->
+        <!-- Honeypot -->
         <p class="hidden">
           <label>
             Don't fill this out:
@@ -248,58 +244,108 @@
           </label>
         </p>
 
-        <!-- Select Service -->
-        <section>
-          <h3 class="text-xl font-semibold mb-4">Select Your Session</h3>
+        <!-- Service -->
+        <div>
+          <label class="block mb-2 font-semibold">Service</label>
           <select
-            id="service-select"
             name="service"
+            id="service-select"
             required
             class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
           >
-            <option value="">Choose a service…</option>
-            <option value="recording">Recording</option>
-            <option value="mixing">Mixing</option>
-            <option value="mastering">Mastering</option>
-            <option value="lessons">Lessons</option>
+            <option value="">Select a service…</option>
+            <option>Recording</option>
+            <option>Mixing</option>
+            <option>Mastering</option>
+            <option>Production</option>
+            <option>Lessons</option>
           </select>
-        </section>
+        </div>
 
-        <!-- Hours -->
-        <section id="hours-section" class="hidden">
-          <label class="text-sm opacity-70 block mb-2">Number of hours</label>
+        <!-- Hours (used for Recording / Lessons) -->
+        <div id="hours-wrapper" class="hidden">
+          <label class="block mb-2 font-semibold">Number of Hours</label>
           <input
-            id="hours-input"
             type="number"
+            name="hours"
             min="1"
             placeholder="e.g. 2"
             class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
           />
-        </section>
+          <p class="text-sm opacity-70 mt-1">
+            Most artists book 3–4 hours.
+          </p>
+        </div>
 
-        <!-- Summary -->
-        <section class="p-6 rounded-xl bg-black/40 border border-white/10">
-          <p>Total: £<strong id="total-display">0</strong></p>
-          <p class="text-pink-500">Deposit due today: £<strong id="deposit-display">0</strong></p>
-        </section>
+        <!-- Your details -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
+            class="px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            class="px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+          />
+        </div>
 
-        <!-- reCAPTCHA -->
-        <div data-netlify-recaptcha="true"></div>
+        <input
+          type="tel"
+          name="phone"
+          placeholder="Phone number"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+        />
+
+        <input
+          type="date"
+          name="preferred-date"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+        />
+
+        <!-- File upload -->
+        <div>
+          <label class="block mb-2 font-semibold">
+            Upload audio / stems (optional)
+          </label>
+          <input
+            type="file"
+            name="audio"
+            accept=".mp3,.wav,.zip"
+            class="w-full text-sm
+              file:bg-pink-600 file:text-white
+              file:border-none file:px-4 file:py-2
+              file:rounded-lg file:cursor-pointer
+              hover:file:bg-pink-500"
+          />
+        </div>
+
+        <!-- Notes -->
+        <textarea
+          name="details"
+          rows="4"
+          placeholder="Tell us about your project…"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+        ></textarea>
 
         <!-- Submit -->
         <button
           type="submit"
-          id="booking-submit"
-          class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled
+          class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition"
         >
-          Secure Your Session
+          Submit Booking Request
         </button>
 
         <p class="text-center text-sm opacity-60">
-          Secure payment powered by Stripe.<br>
-          No additional charges are applied without confirmation.
+          You'll receive a confirmation email once your request is reviewed.
         </p>
+
+        <div data-netlify-recaptcha="true"></div>
       </form>
 
     </div>
@@ -444,56 +490,19 @@ renderServiceCards();
 </script>
 
 <script>
-const SERVICES = {
-  recording: { label: "Recording", hourly: 30 },
-  mixing: { label: "Mixing", flat: 50 },
-  mastering: { label: "Mastering", flat: 35 },
-  lessons: { label: "Lessons", hourly: 40 }
-};
+  const serviceSelect = document.getElementById("service-select");
+  const hoursWrapper = document.getElementById("hours-wrapper");
 
-const serviceSelect = document.getElementById("service-select");
-const hoursSection = document.getElementById("hours-section");
-const hoursInput = document.getElementById("hours-input");
-const totalDisplay = document.getElementById("total-display");
-const depositDisplay = document.getElementById("deposit-display");
-const submitButton = document.getElementById("booking-submit");
-
-function updatePrice() {
-  const service = SERVICES[serviceSelect.value];
-  if (!service) {
-    reset();
-    return;
+  if (serviceSelect) {
+    serviceSelect.addEventListener("change", () => {
+      const value = serviceSelect.value.toLowerCase();
+      if (value === "recording" || value === "lessons") {
+        hoursWrapper.classList.remove("hidden");
+      } else {
+        hoursWrapper.classList.add("hidden");
+      }
+    });
   }
-
-  let total = 0;
-
-  if (service.hourly) {
-    hoursSection.classList.remove("hidden");
-    const hours = Number(hoursInput.value);
-    if (!hours || hours < 1) {
-      reset();
-      return;
-    }
-    total = hours * service.hourly;
-  } else {
-    hoursSection.classList.add("hidden");
-    total = service.flat;
-  }
-
-  const deposit = Math.round(total * 0.5);
-  totalDisplay.textContent = total.toFixed(2);
-  depositDisplay.textContent = deposit.toFixed(2);
-  submitButton.disabled = false;
-}
-
-function reset() {
-  totalDisplay.textContent = "0";
-  depositDisplay.textContent = "0";
-  submitButton.disabled = true;
-}
-
-serviceSelect.addEventListener("change", updatePrice);
-hoursInput.addEventListener("input", updatePrice);
 </script>
 
 </body>
