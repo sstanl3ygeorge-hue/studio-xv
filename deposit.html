@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Deposit – Studio XV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+      animation: fadeUp 0.6s ease-out both;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center">
+  <div class="animate-fade-up text-center space-y-6 max-w-md px-6">
+    <h1 class="text-3xl font-bold">Secure Your Session</h1>
+
+    <p class="opacity-80">
+      A 50% deposit is required to confirm your booking.
+      Once payment is complete, your session is locked in.
+    </p>
+
+    <a
+      href="https://book.stripe.com/28E14neDteada9MaY48g001"
+      class="inline-block px-10 py-4 rounded-lg bg-pink-600 font-semibold text-lg hover:bg-pink-500 transition"
+    >
+      Pay Deposit
+    </a>
+
+    <p class="text-sm opacity-60">
+      Secure payment powered by Stripe
+    </p>
+  </div>
+</body>
+</html>

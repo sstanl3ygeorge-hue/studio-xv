@@ -255,7 +255,7 @@
       <form
         name="booking"
         method="POST"
-        action="/success.html"
+        action="/deposit.html"
         data-netlify="true"
         netlify-honeypot="bot-field"
         data-netlify-recaptcha="true"
@@ -344,6 +344,23 @@
             placeholder="Tell us about your project…"
             class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
           ></textarea>
+        </div>
+
+        <!-- File Upload -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">
+            Upload Reference / Demo (optional)
+          </label>
+          <input
+            type="file"
+            name="reference-file"
+            accept=".mp3,.wav,.zip"
+            class="w-full text-sm text-white
+                   file:bg-pink-600 file:text-white
+                   file:border-none file:px-4 file:py-2
+                   file:rounded-lg file:cursor-pointer
+                   hover:file:bg-pink-500"
+          />
         </div>
 
         <!-- reCAPTCHA -->
