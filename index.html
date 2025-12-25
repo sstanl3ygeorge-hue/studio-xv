@@ -333,6 +333,23 @@
           class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
         ></textarea>
 
+        <!-- Price Summary -->
+        <div class="rounded-xl p-5 bg-black/40 border border-white/10 space-y-2">
+          <div class="flex justify-between">
+            <span>Total session price</span>
+            <span class="font-semibold">£<span id="total-price">0</span></span>
+          </div>
+
+          <div class="flex justify-between text-pink-500 font-semibold">
+            <span>Deposit due today (50%)</span>
+            <span>£<span id="deposit-price">0</span></span>
+          </div>
+
+          <p class="text-xs opacity-60 mt-2">
+            The remaining balance is payable on the session day.
+          </p>
+        </div>
+
         <!-- Submit -->
         <button
           type="submit"
@@ -503,6 +520,59 @@ renderServiceCards();
       }
     });
   }
+</script>
+
+<script>
+const PRICING = {
+  recording: { hourly: 40 },
+  lessons: { hourly: 40 },
+  mixing: { flat: 50 },
+  mastering: { flat: 35 },
+  production: { flat: 300 }
+};
+
+const serviceSelect = document.getElementById("service-select");
+const hoursInput = document.querySelector("input[name='hours']");
+const totalEl = document.getElementById("total-price");
+const depositEl = document.getElementById("deposit-price");
+
+function calculatePricing() {
+  const service = serviceSelect.value.toLowerCase();
+  const config = PRICING[service];
+
+  if (!config) {
+    totalEl.textContent = "0";
+    depositEl.textContent = "0";
+    return;
+  }
+
+  let total = 0;
+
+  if (config.hourly) {
+    const hours = Number(hoursInput?.value || 0);
+    if (hours < 1) return;
+    total = hours * config.hourly;
+  }
+
+  if (config.flat) {
+    total = config.flat;
+  }
+
+  const deposit = Math.round(total * 0.5);
+
+  totalEl.textContent = total.toFixed(2);
+  depositEl.textContent = deposit.toFixed(2);
+
+  // store safely for Stripe later
+  localStorage.setItem("bookingPricing", JSON.stringify({
+    service,
+    total,
+    deposit
+  }));
+}
+
+serviceSelect.addEventListener("change", calculatePricing);
+document.addEventListener("input", calculatePricing);
 </script>
 
 </body>
