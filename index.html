@@ -575,534 +575,94 @@
 </script>
 
 <script>
-const SERVICES = {
-  recording: {
-    label: "Recording",
-    bookable: true,
-    type: "hours",
-    minHours: 2,
-    packages: {
-      hourly: { label: "Hourly Session", price: 30 },
-      halfDay: { label: "Half-Day (4hrs)", price: 110, hours: 4 },
-      fullDay: { label: "Full-Day (8hrs)", price: 200, hours: 8 }
-    }
-  },
 
-  mixing: {
-    label: "Mixing",
-    bookable: true,
-    type: "fixed",
-    packages: {
-      single: { label: "Per Track", price: 50 },
-      mixMaster: { label: "Mix + Master", price: 75 },
-      ep: { label: "EP (4–6 tracks)", price: 280 }
-    }
-  },
 
-  mastering: {
-    label: "Mastering",
-    bookable: true,
-    type: "fixed",
-    packages: {
-      single: { label: "Single", price: 35 },
-      ep: { label: "EP (4–6 tracks)", price: 120 },
-      album: { label: "Album (10+ tracks)", price: 250 }
-    }
-  },
 
-  lessons: {
-    label: "Lessons",
-    bookable: true,
-    type: "hours",
-    minHours: 1,
-    maxHours: 4,
-    hourlyRate: 40,
-    copy: "Guided, hands-on sessions tailored to your workflow."
-  },
-
-  production: {
-    label: "Production",
-    bookable: true,
-    type: "fixed",
-    packages: {
-      lease: { label: "Beat Lease", price: 30 },
-      exclusive: { label: "Exclusive Beat", price: 150 }
-    }
-  },
-
-  engineering: {
-    label: "Engineering & Support",
-    bookable: false,
-    items: [
-      { label: "Session Engineer (per hour)", price: "£40/hr" },
-      { label: "Assisted Recording Sessions", price: "Included / POA" },
-      { label: "Vocal Coaching (in-session)", price: "£40/hr" }
-    ]
-  },
-
-  addons: {
-    label: "Add-Ons",
-    bookable: false,
-    items: {
-      vocalTuning: { label: "Vocal Tuning", price: 25 },
-      stems: { label: "Stems Export", price: 20 },
-      rush: { label: "Rush Delivery", multiplier: 1.5 }
-    }
-  }
-};
-
-// Helper to render service cards
-function renderServiceCards() {
-  const container = document.getElementById("services-grid");
-  
-  Object.entries(SERVICES).forEach(([key, service]) => {
-    const card = document.createElement("div");
-    const isAddons = key === 'addons';
-    
-    card.className = `
-      ${isAddons ? 'lg:col-span-3' : ''}
-      group rounded-2xl p-8 bg-[#111]
-      border border-white/10
-      transition-all duration-300
-      hover:-translate-y-2
-      hover:border-pink-500
-      hover:shadow-xl
-    `;
-    
-    // Build items list
-    let itemsHTML = '';
-    if (service.packages) {
-      itemsHTML = Object.values(service.packages).map(pkg => 
-        `<li class="flex justify-between">
-          <span>${pkg.label}</span>
-          <span>£${pkg.price}</span>
-        </li>`
-      ).join('');
-    } else if (service.hourlyRate) {
-      itemsHTML = `<li class="flex justify-between">
-        <span>Hourly Rate</span>
-        <span>£${service.hourlyRate}/hr</span>
-      </li>`;
-    } else if (service.items) {
-      if (Array.isArray(service.items)) {
-        itemsHTML = service.items.map(item => 
-          `<li class="flex justify-between">
-            <span>${item.label}</span>
-            <span>${item.price}</span>
-          </li>`
-        ).join('');
-      } else {
-        itemsHTML = Object.values(service.items).map(item => 
-          `<li class="flex justify-between">
-            <span>${item.label}</span>
-            <span>${item.multiplier ? `+${(item.multiplier - 1) * 100}%` : `£${item.price}`}</span>
-          </li>`
-        ).join('');
-      }
-    }
-    
-    card.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
-        ${service.label}
-      </h3>
-      <ul class="space-y-4 text-sm">
-        ${itemsHTML}
-      </ul>
-    `;
-    
-    container.appendChild(card);
-  });
-}
-    
-    // Build items list
-    let itemsHTML = '';
-    if (service.packages) {
-      itemsHTML = Object.values(service.packages).map(pkg => 
-        `<li class="flex justify-between">
-          <span>${pkg.label}</span>
-          <span>£${pkg.price}${pkg.unit ? '/' + pkg.unit : ''}</span>
-        </li>`
-      ).join('');
-    } else if (service.hourlyRate) {
-      itemsHTML = `<li class="flex justify-between">
-        <span>Hourly Rate</span>
-        <span>£${service.hourlyRate}/hr</span>
-      </li>`;
-    } else if (service.items) {
-      itemsHTML = service.items.map(item => 
-        `<li class="flex justify-between">
-          <span>${item.label}</span>
-          <span>${item.price}</span>
-        </li>`
-      ).join('');
-    }
-    
-    card.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
-        ${service.title}
-      </h3>
-      <ul class="space-y-4 text-sm">
-        ${itemsHTML}
-      </ul>
-    `;
-    
-    container.appendChild(card);
-  });
-}
-
-// Render cards on load
-if (document.getElementById("services-grid")) {
-  renderServiceCards();
-}
-
-const ADDONS = {
-  vocalTuning: 25,
-  stems: 20,
-  engineering: 40, // base rate per hour
-  rushMultiplier: 1.5
-};
-
-function calculateEngineeringCost(hours) {
-  if (hours >= 8) return 200;
-  if (hours >= 4) return 120;
-  return hours * 40;
-}
-
-function calculateHourlyTotal(serviceKey) {
-  const service = SERVICES[serviceKey];
-  const hours = Number(durationSlider.value || 0);
-  
-  if (!hours || hours < (service.minHours || 1)) {
-    totalDisplay.textContent = "0";
-    depositDisplay.textContent = "0";
-    submitButton.disabled = true;
-    return;
-  }
-  
-  let total = service.hourlyRate * hours;
-  
-  // Add-ons
-  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
-    if (box.value === "rush") {
-      total *= ADDONS.rushMultiplier;
-    } else if (box.value === "engineering") {
-      total += calculateEngineeringCost(hours);
-    } else {
-      total += ADDONS[box.value];
-    }
-  });
-  
-  const deposit = Math.round(total * 0.5);
-  
-  totalDisplay.textContent = total.toFixed(2);
-  depositDisplay.textContent = deposit.toFixed(2);
-  submitButton.disabled = false;
-  
-  // Populate summary
-  populateSummary(serviceKey, hours, total, deposit);
-  
-  // Build breakdown for Stripe
-  const breakdown = [
-    { name: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`, amount: service.hourlyRate * hours }
-  ];
-  
-  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
-    if (box.value === "rush") {
-      breakdown.push({ name: "Rush Delivery (+50%)", amount: total * 0.5 });
-    } else if (box.value === "engineering") {
-      breakdown.push({ name: "Engineering Support", amount: calculateEngineeringCost(hours) });
-    } else {
-      breakdown.push({
-        name: box.value === "vocalTuning" ? "Vocal Tuning" : "Stems Export",
-        amount: ADDONS[box.value]
-      });
-    }
-  });
-  
-  // Store booking data
-  window.bookingData = {
-    service: serviceKey,
-    package: "hourly",
-    total: total,
-    deposit: deposit,
-    serviceName: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`,
-    breakdown: breakdown
-  };
-  
-  localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
-}
-
-function parsePrice(price) {
-  if (price === "POA" || price.includes("%")) return null;
-  return Number(price.replace(/[£/hr]/g, ""));
-}
-
-function activateStep(id) {
-  document.getElementById(id)?.classList.add("active");
-}
-
-function populateSummary(serviceKey, hours, total, deposit) {
-  const service = SERVICES[serviceKey];
-  
-  document.getElementById("summary-service").textContent = service.label;
-  document.getElementById("summary-duration").textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
-  document.getElementById("summary-total").textContent = total.toFixed(2);
-  document.getElementById("summary-deposit").textContent = deposit.toFixed(2);
-  
-  // Add-ons list
-  const addonsContainer = document.getElementById("summary-addons");
-  addonsContainer.innerHTML = "";
-  
-  document.querySelectorAll(".addon-checkbox:checked").forEach(box => {
-    const label = box.value === "rush"
-      ? "Rush Delivery (+50%)"
-      : box.value === "vocalTuning"
-      ? "Vocal Tuning"
-      : box.value === "engineering"
-      ? "Engineering Support"
-      : "Stems Export";
-    
-    const price = box.value === "rush"
-      ? "—"
-      : box.value === "engineering"
-      ? `£${calculateEngineeringCost(hours)}`
-      : `£${ADDONS[box.value]}`;
-    
-    const row = document.createElement("div");
-    row.className = "flex justify-between text-sm opacity-80";
-    row.innerHTML = `<span>${label}</span><span>${price}</span>`;
-    addonsContainer.appendChild(row);
-  });
-  
-  activateStep("step-summary");
-}
 </script>
 
 <script>
-// Populate booking form
+const SERVICES_SIMPLE = {
+  recording: { label: "Recording", rate: 30, minHours: 2 },
+  lessons: { label: "Lessons", rate: 40, minHours: 1 },
+  mixing: { label: "Mixing", flat: 50 },
+  mastering: { label: "Mastering", flat: 35 }
+};
+
 const serviceSelect = document.getElementById("service-select");
-const packageSelect = document.getElementById("package-select");
-const packageSection = document.getElementById("package-section");
-const durationSection = document.getElementById("duration-section");
-const durationSlider = document.getElementById("duration-slider");
-const durationValue = document.getElementById("duration-value");
-const durationHint = document.getElementById("duration-hint");
-const addonsSection = document.getElementById("addons-section");
 const totalDisplay = document.getElementById("total-display");
 const depositDisplay = document.getElementById("deposit-display");
 const submitButton = document.getElementById("booking-submit");
 
-// Populate services
-if (serviceSelect) {
-  Object.entries(SERVICES).forEach(([key, service]) => {
-    if (!service.bookable) return;
-    
-    const opt = document.createElement("option");
-    opt.value = key;
-    opt.textContent = service.label;
-    serviceSelect.appendChild(opt);
-  });
+const hoursWrapper = document.createElement("div");
+hoursWrapper.className = "space-y-2";
+hoursWrapper.innerHTML = `
+  <label class="text-sm opacity-70">Number of hours</label>
+  <input
+    id="hours-input"
+    type="number"
+    min="1"
+    class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+    placeholder="e.g. 2"
+  />
+`;
+serviceSelect.parentElement.appendChild(hoursWrapper);
+hoursWrapper.style.display = "none";
 
-  // When service changes, populate packages
-  serviceSelect.addEventListener("change", () => {
-    packageSelect.innerHTML = '<option value="">Select package…</option>';
-    const serviceKey = serviceSelect.value;
-    const service = SERVICES[serviceKey];
+Object.entries(SERVICES_SIMPLE).forEach(([key, service]) => {
+  const opt = document.createElement("option");
+  opt.value = key;
+  opt.textContent = service.label;
+  serviceSelect.appendChild(opt);
+});
 
-    // Hide all sections initially
-    packageSection.classList.add("hidden");
-    durationSection.classList.add("hidden");
-    addonsSection.classList.add("hidden");
+serviceSelect.addEventListener("change", updatePrice);
+document.addEventListener("input", updatePrice);
 
-    if (!service) return;
+function updatePrice() {
+  const serviceKey = serviceSelect.value;
+  const service = SERVICES_SIMPLE[serviceKey];
 
-    // Activate next step
-    activateStep("step-package");
-    activateStep("step-duration");
+  if (!service) {
+    resetTotals();
+    return;
+  }
 
-    // Hours-based services (Recording, Lessons)
-    if (service.type === "hours") {
-      durationSection.classList.remove("hidden");
-      addonsSection.classList.remove("hidden");
-      
-      durationSlider.min = service.minHours || 1;
-      durationSlider.max = service.maxHours || 8;
-      durationSlider.value = service.minHours || 1;
-      durationValue.textContent = durationSlider.value;
-      
-      durationHint.textContent = service.label === "Lessons"
-        ? "Most lessons run 1–2 hours for best retention."
-        : "Most artists book 3–4 hours for a focused session.";
-      
-      // For lessons or services with hourlyRate only
-      if (service.hourlyRate) {
-        packageSection.classList.add("hidden");
-        calculateHourlyTotal(serviceKey);
-      } else if (service.packages) {
-        // Recording: show both packages and hours
-        packageSection.classList.remove("hidden");
-        Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
-          const opt = document.createElement("option");
-          opt.value = pkgKey;
-          opt.textContent = `${pkg.label} — £${pkg.price}`;
-          packageSelect.appendChild(opt);
-        });
-      }
+  if (service.rate) {
+    hoursWrapper.style.display = "block";
+    const hours = Number(document.getElementById("hours-input").value);
+
+    if (!hours || hours < service.minHours) {
+      resetTotals();
       return;
     }
 
-    // Fixed package services (Mixing, Mastering, Production)
-    if (service.type === "fixed" && service.packages) {
-      packageSection.classList.remove("hidden");
-      addonsSection.classList.remove("hidden");
-      
-      Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
-        const opt = document.createElement("option");
-        opt.value = pkgKey;
-        opt.textContent = `${pkg.label} — £${pkg.price}`;
-        packageSelect.appendChild(opt);
-      });
-      return;
-    }
-  });
+    const total = hours * service.rate;
+    setTotals(total, service.label, `${hours} hour(s)`);
 
-  // When package changes, recalculate
-  packageSelect.addEventListener("change", calculateTotal);
-
-  // When duration slider changes, recalculate
-  durationSlider.addEventListener("input", () => {
-    const hours = Number(durationSlider.value);
-    durationValue.textContent = hours;
-    
-    const serviceKey = serviceSelect.value;
-    const service = SERVICES[serviceKey];
-    
-    // Activate addons step
-    activateStep("step-addons");
-    
-    // Auto-suggest Half-Day for Recording at 4 hours
-    if (service?.label === "Recording" && hours === 4) {
-      durationHint.textContent = "At 4 hours, most artists choose a Half-Day session for better value.";
-    } else if (service?.label === "Lessons") {
-      durationHint.textContent = "Most lessons run 1–2 hours for best retention.";
-    } else {
-      durationHint.textContent = "Most artists book 3–4 hours for a focused session.";
-    }
-    
-    if (service && service.bookableType === "hourly") {
-      calculateHourlyTotal(serviceKey);
-    } else {
-      calculateTotal();
-    }
-  });
-
-  // When addons change, recalculate
-  document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
-    checkbox.addEventListener("change", () => {
-      activateStep("step-details");
-      
-      const serviceKey = serviceSelect.value;
-      if (serviceKey && SERVICES[serviceKey] && SERVICES[serviceKey].hourlyRate) {
-        calculateHourlyTotal(serviceKey);
-      } else {
-        calculateTotal();
-      }
-    });
-  });
+  } else if (service.flat) {
+    hoursWrapper.style.display = "none";
+    setTotals(service.flat, service.label, "Flat rate");
+  }
 }
 
-function calculateTotal() {
-  const serviceKey = serviceSelect.value;
-  const packageKey = packageSelect.value;
-
-  if (!serviceKey || packageKey === "") {
-    totalDisplay.textContent = "0";
-    depositDisplay.textContent = "0";
-    submitButton.disabled = true;
-    return;
-  }
-
-  const service = SERVICES[serviceKey];
-  const pkg = service.packages?.[packageKey];
-  
-  if (!pkg || !pkg.price) {
-    totalDisplay.textContent = "TBD";
-    depositDisplay.textContent = "TBD";
-    submitButton.disabled = true;
-    return;
-  }
-
-  let total = pkg.price;
-
-  // Add-ons
-  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
-    if (box.value === "rush") {
-      total *= ADDONS.rushMultiplier;
-    } else if (box.value === "engineering") {
-      // Calculate engineering cost based on session length
-      let hours = 1;
-      if (packageKey === "half") hours = 4;
-      else if (packageKey === "full") hours = 8;
-      else if (packageKey === "hourly") hours = 1;
-      total += calculateEngineeringCost(hours);
-    } else {
-      total += ADDONS[box.value];
-    }
-  });
-
+function setTotals(total, serviceName, detail) {
   const deposit = Math.round(total * 0.5);
-
   totalDisplay.textContent = total.toFixed(2);
   depositDisplay.textContent = deposit.toFixed(2);
   submitButton.disabled = false;
 
-  // Calculate hours for summary
-  let hours = 1;
-  if (packageKey === "half") hours = 4;
-  else if (packageKey === "full") hours = 8;
-  else if (packageKey === "hourly") hours = Number(durationSlider.value || 1);
-
-  // Populate summary
-  populateSummary(serviceKey, hours, total, deposit);
-
-  // Build breakdown for Stripe
-  const breakdown = [
-    { name: `${service.label} - ${pkg.label}`, amount: pkg.price }
-  ];
-  
-  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
-    if (box.value === "rush") {
-      breakdown.push({ name: "Rush Delivery (+50%)", amount: total * 0.5 });
-    } else if (box.value === "engineering") {
-      breakdown.push({ name: "Engineering Support", amount: calculateEngineeringCost(hours) });
-    } else {
-      breakdown.push({
-        name: box.value === "vocalTuning" ? "Vocal Tuning" : "Stems Export",
-        amount: ADDONS[box.value]
-      });
-    }
-  });
-
-  // Store booking data
-  window.bookingData = {
-    service: serviceKey,
-    package: packageKey,
-    total: total,
-    deposit: deposit,
-    serviceName: `${service.label} - ${pkg.label}`,
-    breakdown: breakdown
-  };
-
-  localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
+  localStorage.setItem("bookingData", JSON.stringify({
+    service: serviceName,
+    detail,
+    total,
+    deposit
+  }));
 }
 
-// Handle form submission
-const bookingForm = document.querySelector('form[name="booking"]');
-if (bookingForm) {
-  bookingForm.addEventListener('submit', (e) => {
-    // Form will submit to Netlify, which redirects to /deposit.html
-    // The booking data is already stored in localStorage
-  });
+function resetTotals() {
+  totalDisplay.textContent = "0";
+  depositDisplay.textContent = "0";
+  submitButton.disabled = true;
 }
 </script>
 
