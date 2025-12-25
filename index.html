@@ -268,23 +268,49 @@
           />
         </div>
 
-        <!-- Service -->
+        <!-- Service Category -->
         <div>
           <label class="block mb-2 text-sm font-semibold">Service Type</label>
           <select
+            id="service-select"
             name="service"
             required
             class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
           >
             <option value="">Select a service…</option>
-            <option>Recording – Hourly</option>
-            <option>Recording – Half Day</option>
-            <option>Recording – Full Day</option>
-            <option>Mixing</option>
-            <option>Mastering</option>
-            <option>Production</option>
-            <option>Lessons</option>
           </select>
+        </div>
+
+        <!-- Service Option -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold">Option</label>
+          <select
+            id="option-select"
+            name="option"
+            required
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          >
+            <option value="">Choose service first…</option>
+          </select>
+        </div>
+
+        <!-- Quantity (for hourly services) -->
+        <div id="quantity-wrapper" class="hidden">
+          <label class="block mb-2 text-sm font-semibold">Hours / Quantity</label>
+          <input
+            id="quantity-input"
+            name="quantity"
+            type="number"
+            min="1"
+            value="1"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+          />
+        </div>
+
+        <!-- Price Display -->
+        <div class="p-4 rounded-lg bg-pink-600/10 border border-pink-600/30">
+          <p id="price-output" class="text-lg font-semibold">Select a service to see pricing</p>
+          <p id="deposit-output" class="text-sm opacity-80 mt-1"></p>
         </div>
 
         <!-- Preferred Date -->
@@ -389,74 +415,145 @@ const SERVICES = [
   {
     id: "recording",
     title: "Recording",
+    type: "hourly-or-package",
     items: [
-      { name: "Hourly Session", price: 30, unit: "hr", depositPercent: 50 },
-      { name: "Half-Day (4hrs)", price: 110, depositPercent: 50 },
-      { name: "Full-Day (8hrs)", price: 200, depositPercent: 50 }
+      { name: "Hourly Session", pricePerHour: 30 },
+      { name: "Half-Day (4hrs)", fixedPrice: 110, hours: 4 },
+      { name: "Full-Day (8hrs)", fixedPrice: 200, hours: 8 }
     ]
   },
   {
     id: "mixing",
     title: "Mixing",
+    type: "fixed",
     items: [
-      { name: "Per Track", price: 50, depositPercent: 50 },
-      { name: "Mix + Master", price: 75, depositPercent: 50 },
-      { name: "EP (4–6 tracks)", price: 280, depositPercent: 50 }
+      { name: "Per Track", fixedPrice: 50 },
+      { name: "Mix + Master", fixedPrice: 75 },
+      { name: "EP (4–6 tracks)", fixedPrice: 280 }
     ]
   },
   {
     id: "mastering",
     title: "Mastering",
+    type: "fixed",
     items: [
-      { name: "Single", price: 35, depositPercent: 50 },
-      { name: "EP (4–6 tracks)", price: 120, depositPercent: 50 },
-      { name: "Album (10+ tracks)", price: 250, depositPercent: 50 }
-    ]
-  },
-  {
-    id: "production",
-    title: "Production",
-    items: [
-      { name: "Beat Lease", price: 30, depositPercent: 50 },
-      { name: "Exclusive Beat", price: 150, depositPercent: 50 },
-      { name: "Custom Production", price: null }
+      { name: "Single", fixedPrice: 35 },
+      { name: "EP (4–6 tracks)", fixedPrice: 120 },
+      { name: "Album (10+ tracks)", fixedPrice: 250 }
     ]
   },
   {
     id: "lessons",
     title: "Lessons",
+    type: "hourly",
     items: [
-      { name: "DAW Training", price: 40, unit: "hr", depositPercent: 50 },
-      { name: "Mixing Lessons", price: 45, unit: "hr", depositPercent: 50 },
-      { name: "Beat-Making", price: 40, unit: "hr", depositPercent: 50 }
+      { name: "DAW Training", pricePerHour: 40 },
+      { name: "Mixing Lessons", pricePerHour: 45 },
+      { name: "Beat-Making", pricePerHour: 40 }
+    ]
+  },
+  {
+    id: "production",
+    title: "Production",
+    type: "fixed-or-poa",
+    items: [
+      { name: "Beat Lease", fixedPrice: 30 },
+      { name: "Exclusive Beat", fixedPrice: 150 },
+      { name: "Custom Production", poa: true }
     ]
   },
   {
     id: "addons",
     title: "Add-Ons",
+    type: "addon",
     items: [
-      { name: "Vocal Tuning", price: 25 },
-      { name: "Stems Export", price: 20 },
-      { name: "Rush Delivery", price: null, priceText: "+50%" }
+      { name: "Vocal Tuning", fixedPrice: 25 },
+      { name: "Stems Export", fixedPrice: 20 },
+      { name: "Rush Delivery", multiplier: 1.5 }
     ]
   }
 ];
 
-function calculateDeposit(serviceItem) {
-  if (!serviceItem.price || !serviceItem.depositPercent) {
-    return null;
-  }
+function calculatePrice(service, item, quantity = 1) {
+  if (item.poa) return null;
+  if (item.fixedPrice) return item.fixedPrice;
+  if (item.pricePerHour) return item.pricePerHour * quantity;
+  return null;
+}
 
-  return Math.round(
-    (serviceItem.price * serviceItem.depositPercent) / 100
-  );
+function calculateDeposit(total) {
+  return total ? Math.round(total * 0.5) : null;
 }
 
 function formatPrice(item) {
-  if (item.priceText) return item.priceText;
-  if (!item.price) return "POA";
-  const amount = `£${item.price}`;
-  return item.unit ? `${amount}/${item.unit}` : amount;
+  if (item.poa) return "POA";
+  if (item.fixedPrice) return `£${item.fixedPrice}`;
+  if (item.pricePerHour) return `£${item.pricePerHour}/hr`;
+  if (item.multiplier) return "+50%";
+  return "POA";
+}
+</script>
+
+<script>
+// Populate booking form
+const serviceSelect = document.getElementById("service-select");
+const optionSelect = document.getElementById("option-select");
+const quantityWrapper = document.getElementById("quantity-wrapper");
+const quantityInput = document.getElementById("quantity-input");
+const priceOutput = document.getElementById("price-output");
+const depositOutput = document.getElementById("deposit-output");
+
+if (serviceSelect) {
+  SERVICES.forEach(service => {
+    const opt = document.createElement("option");
+    opt.value = service.id;
+    opt.textContent = service.title;
+    serviceSelect.appendChild(opt);
+  });
+
+  serviceSelect.addEventListener("change", () => {
+    optionSelect.innerHTML = "";
+    const service = SERVICES.find(s => s.id === serviceSelect.value);
+
+    if (service) {
+      service.items.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.name;
+        opt.textContent = item.name;
+        optionSelect.appendChild(opt);
+      });
+    }
+
+    updatePricing();
+  });
+
+  optionSelect.addEventListener("change", updatePricing);
+  quantityInput.addEventListener("input", updatePricing);
+}
+
+function updatePricing() {
+  const service = SERVICES.find(s => s.id === serviceSelect.value);
+  if (!service) return;
+
+  const item = service.items.find(i => i.name === optionSelect.value);
+  if (!item) return;
+
+  const quantity = Number(quantityInput.value);
+  const needsQuantity = !!item.pricePerHour;
+
+  quantityWrapper.classList.toggle("hidden", !needsQuantity);
+
+  const total = calculatePrice(service, item, quantity);
+  const deposit = calculateDeposit(total);
+
+  if (!total) {
+    priceOutput.textContent = "Price to be confirmed";
+    depositOutput.textContent = "";
+    return;
+  }
+
+  priceOutput.textContent = `Total: £${total}`;
+  depositOutput.textContent = `Deposit required: £${deposit}`;
 }
 </script>
 
