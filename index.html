@@ -964,20 +964,6 @@ if (serviceSelect) {
       });
       return;
     }
-
-      Object.keys(BOOKING_SERVICES[serviceKey].packages).forEach(pkgKey => {
-        const pkg = BOOKING_SERVICES[serviceKey].packages[pkgKey];
-        const opt = document.createElement("option");
-        opt.value = pkgKey;
-        opt.textContent = `${pkg.label} - £${pkg.price}`;
-        packageSelect.appendChild(opt);
-      });
-    } else {
-      packageSection.classList.add("hidden");
-      addonsSection.classList.add("hidden");
-    }
-
-    calculateTotal();
   });
 
   // When package changes, recalculate
