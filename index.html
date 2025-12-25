@@ -60,6 +60,19 @@
     section {
       scroll-margin-top: 96px;
     }
+
+    .step {
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .step.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
   </style>
 </head>
 
@@ -236,7 +249,7 @@
         </p>
 
         <!-- STEP 1: Select Your Session -->
-        <section>
+        <section id="step-service" class="step active">
           <h3 class="text-xl font-semibold mb-4">Select Your Session</h3>
           <select
             id="service-select"
@@ -249,7 +262,7 @@
         </section>
 
         <!-- STEP 2: Session Details -->
-        <section id="package-section" class="hidden">
+        <section id="step-package" class="step package-section hidden">
           <h3 class="text-xl font-semibold mb-4">Session Details</h3>
           <select
             id="package-select"
@@ -261,7 +274,7 @@
         </section>
 
         <!-- STEP: Duration (Hourly services only) -->
-        <section id="duration-section" class="hidden">
+        <section id="step-duration" class="step duration-section hidden">
           <h3 class="text-xl font-semibold mb-2">Session Length</h3>
 
           <p id="duration-hint" class="text-sm opacity-70 mb-4">
@@ -290,7 +303,7 @@
         </section>
 
         <!-- STEP 3: Enhance Your Session (optional) -->
-        <section id="addons-section" class="hidden">
+        <section id="step-addons" class="step addons-section hidden">
           <h3 class="text-xl font-semibold mb-2">Engineering Enhancements</h3>
           <p class="text-sm opacity-70 mb-4">Optional additions applied during supported sessions.</p>
           
@@ -322,7 +335,7 @@
         </section>
 
         <!-- Contact Details -->
-        <section>
+        <section id="step-details" class="step">
           <h3 class="text-xl font-semibold mb-4">Your Details</h3>
           
           <div class="space-y-4">
@@ -377,18 +390,121 @@
           </div>
         </section>
 
-        <!-- Summary -->
-        <section class="p-6 rounded-xl bg-pink-600/10 border border-pink-600/30">
-          <div class="space-y-2">
-            <p class="text-lg">
-              Session total: <strong class="text-2xl">£<span id="total-display">0</span></strong>
+        <!-- Session Summary -->
+        <section id="step-summary" class="step mt-10">
+          <h3 class="text-xl font-semibold mb-2">Session Summary</h3>
+          <p class="text-sm opacity-70 mb-4">
+            Review your session details before securing your booking.<br>
+            Once confirmed, your time is reserved exclusively for you.
+          </p>
+
+          <div class="rounded-xl p-6 bg-black/40 border border-white/10 space-y-3">
+            <div class="flex justify-between">
+              <span>Service</span>
+              <span id="summary-service" class="font-semibold"></span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Duration</span>
+              <span id="summary-duration" class="font-semibold"></span>
+            </div>
+
+            <div id="summary-addons" class="space-y-1"></div>
+
+            <hr class="border-white/10 my-3">
+
+            <div class="flex justify-between text-lg font-semibold">
+              <span>Total</span>
+              <span>£<span id="summary-total">0</span></span>
+            </div>
+
+            <div class="flex justify-between text-pink-500 font-semibold">
+              <span>Deposit due today</span>
+              <span>£<span id="summary-deposit">0</span></span>
+            </div>
+
+            <p class="text-xs opacity-60 mt-4">
+              The remaining balance is payable on the session day.<br>
+              No additional charges without confirmation.
             </p>
-            <p class="text-pink-500 font-semibold">
-              Deposit due today: £<span id="deposit-display">0</span>
+          </div>
+        </section>
+        <!-- Session Summary -->
+        <section id="step-summary" class="step mt-10">
+          <h3 class="text-xl font-semibold mb-2">Session Summary</h3>
+          <p class="text-sm opacity-70 mb-4">
+            Review your session details before securing your booking.<br>
+            Once confirmed, your time is reserved exclusively for you.
+          </p>
+
+          <div class="rounded-xl p-6 bg-black/40 border border-white/10 space-y-3">
+            <div class="flex justify-between">
+              <span>Service</span>
+              <span id="summary-service" class="font-semibold"></span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Duration</span>
+              <span id="summary-duration" class="font-semibold"></span>
+            </div>
+
+            <div id="summary-addons" class="space-y-1"></div>
+
+            <hr class="border-white/10 my-3">
+
+            <div class="flex justify-between text-lg font-semibold">
+              <span>Total</span>
+              <span>£<span id="summary-total">0</span></span>
+            </div>
+
+            <div class="flex justify-between text-pink-500 font-semibold">
+              <span>Deposit due today</span>
+              <span>£<span id="summary-deposit">0</span></span>
+            </div>
+
+            <p class="text-xs opacity-60 mt-4">
+              The remaining balance is payable on the session day.<br>
+              No additional charges without confirmation.
             </p>
-            <p class="text-sm opacity-70 mt-3">
-              This secures your time in the studio.<br>
-              The remaining balance is payable on the session day.
+          </div>
+        </section>
+
+        <!-- Session Summary -->
+        <section id="step-summary" class="step mt-10">
+          <h3 class="text-xl font-semibold mb-2">Session Summary</h3>
+          <p class="text-sm opacity-70 mb-4">
+            Review your session details before securing your booking.<br>
+            Once confirmed, your time is reserved exclusively for you.
+          </p>
+
+          <div class="rounded-xl p-6 bg-black/40 border border-white/10 space-y-3">
+            <div class="flex justify-between">
+              <span>Service</span>
+              <span id="summary-service" class="font-semibold"></span>
+            </div>
+
+            <div class="flex justify-between">
+              <span>Duration</span>
+              <span id="summary-duration" class="font-semibold"></span>
+            </div>
+
+            <div id="summary-addons" class="space-y-1"></div>
+
+            <hr class="border-white/10 my-3">
+
+            <div class="flex justify-between text-lg font-semibold">
+              <span>Total</span>
+              <span>£<span id="summary-total">0</span></span>
+            </div>
+
+            <div class="flex justify-between text-pink-500 font-semibold">
+              <span>Deposit due today</span>
+              <span>£<span id="summary-deposit">0</span></span>
+            </div>
+
+            <p class="text-xs opacity-60 mt-4">
+              The remaining balance is payable on the session day.<br>
+              No additional charges without confirmation.
             </p>
           </div>
         </section>
@@ -607,13 +723,35 @@ function calculateHourlyTotal(serviceKey) {
   depositDisplay.textContent = deposit.toFixed(2);
   submitButton.disabled = false;
   
+  // Populate summary
+  populateSummary(serviceKey, hours, total, deposit);
+  
+  // Build breakdown for Stripe
+  const breakdown = [
+    { name: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`, amount: service.hourlyRate * hours }
+  ];
+  
+  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
+    if (box.value === "rush") {
+      breakdown.push({ name: "Rush Delivery (+50%)", amount: total * 0.5 });
+    } else if (box.value === "engineering") {
+      breakdown.push({ name: "Engineering Support", amount: calculateEngineeringCost(hours) });
+    } else {
+      breakdown.push({
+        name: box.value === "vocalTuning" ? "Vocal Tuning" : "Stems Export",
+        amount: ADDONS[box.value]
+      });
+    }
+  });
+  
   // Store booking data
   window.bookingData = {
     service: serviceKey,
     package: "hourly",
     total: total,
     deposit: deposit,
-    serviceName: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`
+    serviceName: `${service.label} (${hours}hr${hours > 1 ? 's' : ''})`,
+    breakdown: breakdown
   };
   
   localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
@@ -622,6 +760,46 @@ function calculateHourlyTotal(serviceKey) {
 function parsePrice(price) {
   if (price === "POA" || price.includes("%")) return null;
   return Number(price.replace(/[£/hr]/g, ""));
+}
+
+function activateStep(id) {
+  document.getElementById(id)?.classList.add("active");
+}
+
+function populateSummary(serviceKey, hours, total, deposit) {
+  const service = BOOKING_SERVICES[serviceKey];
+  
+  document.getElementById("summary-service").textContent = service.label;
+  document.getElementById("summary-duration").textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+  document.getElementById("summary-total").textContent = total.toFixed(2);
+  document.getElementById("summary-deposit").textContent = deposit.toFixed(2);
+  
+  // Add-ons list
+  const addonsContainer = document.getElementById("summary-addons");
+  addonsContainer.innerHTML = "";
+  
+  document.querySelectorAll(".addon-checkbox:checked").forEach(box => {
+    const label = box.value === "rush"
+      ? "Rush Delivery (+50%)"
+      : box.value === "vocalTuning"
+      ? "Vocal Tuning"
+      : box.value === "engineering"
+      ? "Engineering Support"
+      : "Stems Export";
+    
+    const price = box.value === "rush"
+      ? "—"
+      : box.value === "engineering"
+      ? `£${calculateEngineeringCost(hours)}`
+      : `£${ADDONS[box.value]}`;
+    
+    const row = document.createElement("div");
+    row.className = "flex justify-between text-sm opacity-80";
+    row.innerHTML = `<span>${label}</span><span>${price}</span>`;
+    addonsContainer.appendChild(row);
+  });
+  
+  activateStep("step-summary");
 }
 </script>
 
@@ -663,6 +841,9 @@ if (serviceSelect) {
       calculateTotal();
       return;
     }
+
+    // Activate next step
+    activateStep("step-duration");
 
     // Handle hourly services (like Lessons)
     if (service.bookableType === "hourly") {
@@ -721,6 +902,9 @@ if (serviceSelect) {
     const serviceKey = serviceSelect.value;
     const service = BOOKING_SERVICES[serviceKey];
     
+    // Activate addons step
+    activateStep("step-addons");
+    
     // Auto-suggest Half-Day for Recording at 4 hours
     if (service?.label === "Recording" && service.suggestHalfDayAt === hours) {
       durationHint.textContent = "At 4 hours, most artists choose a Half-Day session for better value.";
@@ -740,6 +924,8 @@ if (serviceSelect) {
   // When addons change, recalculate
   document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
     checkbox.addEventListener("change", () => {
+      activateStep("step-details");
+      
       const serviceKey = serviceSelect.value;
       if (serviceKey && BOOKING_SERVICES[serviceKey] && BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
         calculateHourlyTotal(serviceKey);
@@ -793,13 +979,41 @@ function calculateTotal() {
   depositDisplay.textContent = deposit.toFixed(2);
   submitButton.disabled = false;
 
+  // Calculate hours for summary
+  let hours = 1;
+  if (packageKey === "half") hours = 4;
+  else if (packageKey === "full") hours = 8;
+  else if (packageKey === "hourly") hours = Number(durationSlider.value || 1);
+
+  // Populate summary
+  populateSummary(serviceKey, hours, total, deposit);
+
+  // Build breakdown for Stripe
+  const breakdown = [
+    { name: `${BOOKING_SERVICES[serviceKey].label} - ${pkg.label}`, amount: pkg.price }
+  ];
+  
+  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
+    if (box.value === "rush") {
+      breakdown.push({ name: "Rush Delivery (+50%)", amount: total * 0.5 });
+    } else if (box.value === "engineering") {
+      breakdown.push({ name: "Engineering Support", amount: calculateEngineeringCost(hours) });
+    } else {
+      breakdown.push({
+        name: box.value === "vocalTuning" ? "Vocal Tuning" : "Stems Export",
+        amount: ADDONS[box.value]
+      });
+    }
+  });
+
   // Store booking data
   window.bookingData = {
     service: serviceKey,
     package: packageKey,
     total: total,
     deposit: deposit,
-    serviceName: `${BOOKING_SERVICES[serviceKey].label} - ${BOOKING_SERVICES[serviceKey].packages[packageKey].label}`
+    serviceName: `${BOOKING_SERVICES[serviceKey].label} - ${BOOKING_SERVICES[serviceKey].packages[packageKey].label}`,
+    breakdown: breakdown
   };
 
   localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
