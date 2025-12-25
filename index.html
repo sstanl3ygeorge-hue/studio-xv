@@ -1055,61 +1055,73 @@ bookingForm.addEventListener('submit', async (e) => {
 <script src="https://unpkg.com/wavesurfer.js@7"></script>
 
 <script>
-  const players = [];
+  // Initialize waveforms after DOM elements are created
+  function initWaveforms() {
+    const players = [];
 
-  document.querySelectorAll(".waveform-player").forEach(player => {
-    const waveformEl = player.querySelector(".waveform");
-    const playBtn = player.querySelector(".play-btn");
-    const toggleBtn = player.querySelector(".toggle-btn");
+    document.querySelectorAll(".waveform-player").forEach(player => {
+      const waveformEl = player.querySelector(".waveform");
+      const playBtn = player.querySelector(".play-btn");
+      const toggleBtn = player.querySelector(".toggle-btn");
 
-    const wavesurfer = WaveSurfer.create({
-      container: waveformEl,
-      waveColor: "#666",
-      progressColor: "#ec4899",
-      cursorColor: "#ec4899",
-      height: 80,
-      barWidth: 2,
-      barGap: 2,
-      responsive: true,
-    });
-
-    // Load initial track (after version)
-    wavesurfer.load(player.dataset.after);
-
-    playBtn.addEventListener("click", () => {
-      // Stop all other waveforms
-      players.forEach(p => {
-        if (p !== wavesurfer) p.pause();
+      const wavesurfer = WaveSurfer.create({
+        container: waveformEl,
+        waveColor: "#666",
+        progressColor: "#ec4899",
+        cursorColor: "#ec4899",
+        height: 80,
+        barWidth: 2,
+        barGap: 2,
+        responsive: true,
       });
 
-      wavesurfer.playPause();
-    });
+      // Load initial track (after version)
+      wavesurfer.load(player.dataset.after);
 
-    // Before/After toggle with seamless playback
-    if (toggleBtn) {
-      toggleBtn.addEventListener("click", () => {
-        const isPlaying = wavesurfer.isPlaying();
-        const time = wavesurfer.getCurrentTime();
-
-        const next =
-          player.dataset.current === "after"
-            ? player.dataset.before
-            : player.dataset.after;
-
-        player.dataset.current =
-          player.dataset.current === "after" ? "before" : "after";
-
-        wavesurfer.load(next);
-
-        wavesurfer.once("ready", () => {
-          wavesurfer.setTime(time);
-          if (isPlaying) wavesurfer.play();
+      playBtn.addEventListener("click", () => {
+        // Stop all other waveforms
+        players.forEach(p => {
+          if (p !== wavesurfer) p.pause();
         });
-      });
-    }
 
-    players.push(wavesurfer);
-  });
+        wavesurfer.playPause();
+      });
+
+      // Before/After toggle with seamless playback
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+          const isPlaying = wavesurfer.isPlaying();
+          const time = wavesurfer.getCurrentTime();
+
+          const next =
+            player.dataset.current === "after"
+              ? player.dataset.before
+              : player.dataset.after;
+
+          player.dataset.current =
+            player.dataset.current === "after" ? "before" : "after";
+
+          wavesurfer.load(next);
+
+          wavesurfer.once("ready", () => {
+            wavesurfer.setTime(time);
+            if (isPlaying) wavesurfer.play();
+          });
+        });
+      }
+
+      players.push(wavesurfer);
+    });
+  }
+
+  // Wait for WaveSurfer library and DOM elements to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(initWaveforms, 100);
+    });
+  } else {
+    setTimeout(initWaveforms, 100);
+  }
 </script>
 
 </body>
