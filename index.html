@@ -711,6 +711,18 @@ document.addEventListener("click", e => {
     btn.classList.toggle("opacity-50", btn !== e.target);
   });
 });
+
+// Enforce single audio playback across the entire page
+document.addEventListener("play", function(e) {
+  if (e.target.tagName === "AUDIO") {
+    const allAudio = document.querySelectorAll("audio");
+    allAudio.forEach(audio => {
+      if (audio !== e.target) {
+        audio.pause();
+      }
+    });
+  }
+}, true);
 </script>
 
 <script>
