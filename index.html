@@ -575,17 +575,114 @@
 </script>
 
 <script>
+const SERVICES_DISPLAY = {
+  recording: {
+    label: "Recording",
+    items: [
+      { label: "Hourly Session", price: "£30/hr" },
+      { label: "Half-Day (4hrs)", price: "£110" },
+      { label: "Full-Day (8hrs)", price: "£200" }
+    ]
+  },
+  mixing: {
+    label: "Mixing",
+    items: [
+      { label: "Per Track", price: "£50" },
+      { label: "Mix + Master", price: "£75" },
+      { label: "EP (4–6 tracks)", price: "£280" }
+    ]
+  },
+  mastering: {
+    label: "Mastering",
+    items: [
+      { label: "Single", price: "£35" },
+      { label: "EP (4–6 tracks)", price: "£120" },
+      { label: "Album (10+ tracks)", price: "£250" }
+    ]
+  },
+  lessons: {
+    label: "Lessons",
+    items: [
+      { label: "Hourly Rate", price: "£40/hr" }
+    ]
+  },
+  production: {
+    label: "Production",
+    items: [
+      { label: "Beat Lease", price: "£30" },
+      { label: "Exclusive Beat", price: "£150" }
+    ]
+  },
+  addons: {
+    label: "Add-Ons",
+    items: [
+      { label: "Vocal Tuning", price: "£25" },
+      { label: "Stems Export", price: "£20" },
+      { label: "Rush Delivery", price: "+50%" }
+    ]
+  }
+};
 
+// Render service cards
+function renderServiceCards() {
+  const container = document.getElementById("services-grid");
+  if (!container) return;
+  
+  Object.entries(SERVICES_DISPLAY).forEach(([key, service]) => {
+    const card = document.createElement("div");
+    const isAddons = key === 'addons';
+    
+    card.className = `
+      ${isAddons ? 'lg:col-span-3' : ''}
+      group rounded-2xl p-8 bg-[#111]
+      border border-white/10
+      transition-all duration-300
+      hover:-translate-y-2
+      hover:border-pink-500
+      hover:shadow-xl
+    `;
+    
+    const itemsHTML = service.items.map(item => 
+      `<li class="flex justify-between">
+        <span>${item.label}</span>
+        <span>${item.price}</span>
+      </li>`
+    ).join('');
+    
+    card.innerHTML = `
+      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+        ${service.label}
+      </h3>
+      <ul class="space-y-4 text-sm">
+        ${itemsHTML}
+      </ul>
+    `;
+    
+    container.appendChild(card);
+  });
+}
 
-
+renderServiceCards();
 </script>
 
 <script>
-const SERVICES_SIMPLE = {
-  recording: { label: "Recording", rate: 30, minHours: 2 },
-  lessons: { label: "Lessons", rate: 40, minHours: 1 },
-  mixing: { label: "Mixing", flat: 50 },
-  mastering: { label: "Mastering", flat: 35 }
+const SERVICES_BOOKING = {
+  recording: {
+    label: "Recording",
+    hourly: 30
+  },
+  mixing: {
+    label: "Mixing",
+    perTrack: 50
+  },
+  mastering: {
+    label: "Mastering",
+    single: 35
+  },
+  lessons: {
+    label: "Lessons",
+    hourly: 40
+  }
 };
 
 const serviceSelect = document.getElementById("service-select");
@@ -608,7 +705,7 @@ hoursWrapper.innerHTML = `
 serviceSelect.parentElement.appendChild(hoursWrapper);
 hoursWrapper.style.display = "none";
 
-Object.entries(SERVICES_SIMPLE).forEach(([key, service]) => {
+Object.entries(SERVICES_BOOKING).forEach(([key, service]) => {
   const opt = document.createElement("option");
   opt.value = key;
   opt.textContent = service.label;
@@ -620,28 +717,31 @@ document.addEventListener("input", updatePrice);
 
 function updatePrice() {
   const serviceKey = serviceSelect.value;
-  const service = SERVICES_SIMPLE[serviceKey];
+  const service = SERVICES_BOOKING[serviceKey];
 
   if (!service) {
     resetTotals();
     return;
   }
 
-  if (service.rate) {
+  if (service.hourly) {
     hoursWrapper.style.display = "block";
     const hours = Number(document.getElementById("hours-input").value);
 
-    if (!hours || hours < service.minHours) {
+    if (!hours || hours < 1) {
       resetTotals();
       return;
     }
 
-    const total = hours * service.rate;
+    const total = hours * service.hourly;
     setTotals(total, service.label, `${hours} hour(s)`);
 
-  } else if (service.flat) {
+  } else if (service.perTrack) {
     hoursWrapper.style.display = "none";
-    setTotals(service.flat, service.label, "Flat rate");
+    setTotals(service.perTrack, service.label, "Per track");
+  } else if (service.single) {
+    hoursWrapper.style.display = "none";
+    setTotals(service.single, service.label, "Single track");
   }
 }
 
