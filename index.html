@@ -757,6 +757,49 @@ function resetTotals() {
   depositDisplay.textContent = "0";
   submitButton.disabled = true;
 }
+
+// Handle form submission and Stripe checkout
+const bookingForm = document.querySelector('form[name="booking"]');
+bookingForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  // Check if we have booking data
+  if (!window.bookingData || window.bookingData.total === 0) {
+    alert('Please select a service and configure your booking.');
+    return;
+  }
+
+  // Disable submit button and show loading state
+  submitButton.disabled = true;
+  const originalText = submitButton.textContent;
+  submitButton.textContent = 'Processing...';
+
+  try {
+    // Call Netlify function to create Stripe checkout session
+    const response = await fetch('/.netlify/functions/create-checkout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(window.bookingData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to create checkout session');
+    }
+
+    // Redirect to Stripe Checkout
+    window.location.href = data.url;
+
+  } catch (error) {
+    console.error('Checkout error:', error);
+    alert('Something went wrong. Please try again or contact us directly.');
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
 </script>
 
 </body>
