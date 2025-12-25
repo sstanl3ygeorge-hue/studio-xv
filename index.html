@@ -248,265 +248,39 @@
           </label>
         </p>
 
-        <!-- STEP 1: Select Your Session -->
-        <section id="step-service" class="step active">
+        <!-- Select Service -->
+        <section>
           <h3 class="text-xl font-semibold mb-4">Select Your Session</h3>
           <select
             id="service-select"
             name="service"
             required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none text-lg"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
           >
             <option value="">Choose a service…</option>
+            <option value="recording">Recording</option>
+            <option value="mixing">Mixing</option>
+            <option value="mastering">Mastering</option>
+            <option value="lessons">Lessons</option>
           </select>
         </section>
 
-        <!-- STEP 2: Session Details -->
-        <section id="step-package" class="step package-section hidden">
-          <h3 class="text-xl font-semibold mb-4">Session Details</h3>
-          <select
-            id="package-select"
-            name="package"
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none text-lg"
-          >
-            <option value="">Select package…</option>
-          </select>
-        </section>
-
-        <!-- STEP: Duration (Hourly services only) -->
-        <section id="step-duration" class="step duration-section hidden">
-          <h3 class="text-xl font-semibold mb-2">Session Length</h3>
-
-          <p id="duration-hint" class="text-sm opacity-70 mb-4">
-            Most artists book 3–4 hours for a focused session.
-          </p>
-
+        <!-- Hours -->
+        <section id="hours-section" class="hidden">
+          <label class="text-sm opacity-70 block mb-2">Number of hours</label>
           <input
-            type="range"
-            id="duration-slider"
-            name="duration"
+            id="hours-input"
+            type="number"
             min="1"
-            max="8"
-            step="1"
-            value="2"
-            class="w-full accent-pink-500"
+            placeholder="e.g. 2"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
           />
-
-          <div class="flex justify-between text-sm opacity-70 mt-2">
-            <span>1 hr</span>
-            <span>8 hrs</span>
-          </div>
-
-          <p class="mt-3 text-lg">
-            Selected: <strong><span id="duration-value">2</span> hours</strong>
-          </p>
         </section>
 
-        <!-- STEP 3: Enhance Your Session (optional) -->
-        <section id="step-addons" class="step addons-section hidden">
-          <h3 class="text-xl font-semibold mb-2">Engineering Enhancements</h3>
-          <p class="text-sm opacity-70 mb-4">Optional additions applied during supported sessions.</p>
-          
-          <div class="space-y-3">
-            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
-              <input type="checkbox" name="addon" value="engineering" class="addon-checkbox w-5 h-5" />
-              <span class="flex-1">Engineering Support</span>
-              <span class="text-pink-500 font-semibold">+£40–£200</span>
-            </label>
-            
-            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
-              <input type="checkbox" name="addon" value="vocalTuning" class="addon-checkbox w-5 h-5" />
-              <span class="flex-1">Vocal Tuning</span>
-              <span class="text-pink-500 font-semibold">+£25</span>
-            </label>
-            
-            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
-              <input type="checkbox" name="addon" value="stems" class="addon-checkbox w-5 h-5" />
-              <span class="flex-1">Stems Export</span>
-              <span class="text-pink-500 font-semibold">+£20</span>
-            </label>
-            
-            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
-              <input type="checkbox" name="addon" value="rush" class="addon-checkbox w-5 h-5" />
-              <span class="flex-1">Rush Delivery</span>
-              <span class="text-pink-500 font-semibold">+50%</span>
-            </label>
-          </div>
-        </section>
-
-        <!-- Contact Details -->
-        <section id="step-details" class="step">
-          <h3 class="text-xl font-semibold mb-4">Your Details</h3>
-          
-          <div class="space-y-4">
-            <input
-              type="text"
-              name="full-name"
-              placeholder="Full Name"
-              required
-              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              required
-              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-            />
-
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone"
-              required
-              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-            />
-
-            <input
-              type="date"
-              name="preferred-date"
-              required
-              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-            />
-
-            <textarea
-              name="details"
-              rows="3"
-              placeholder="Tell us about your project…"
-              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-            ></textarea>
-
-            <input
-              type="file"
-              name="reference-file"
-              accept=".mp3,.wav,.zip"
-              class="w-full text-sm text-white
-                     file:bg-pink-600 file:text-white
-                     file:border-none file:px-4 file:py-2
-                     file:rounded-lg file:cursor-pointer
-                     hover:file:bg-pink-500"
-            />
-          </div>
-        </section>
-
-        <!-- Session Summary -->
-        <section id="step-summary" class="step mt-10">
-          <h3 class="text-xl font-semibold mb-2">Session Summary</h3>
-          <p class="text-sm opacity-70 mb-4">
-            Review your session details before securing your booking.<br>
-            Once confirmed, your time is reserved exclusively for you.
-          </p>
-
-          <div class="rounded-xl p-6 bg-black/40 border border-white/10 space-y-3">
-            <div class="flex justify-between">
-              <span>Service</span>
-              <span id="summary-service" class="font-semibold"></span>
-            </div>
-
-            <div class="flex justify-between">
-              <span>Duration</span>
-              <span id="summary-duration" class="font-semibold"></span>
-            </div>
-
-            <div id="summary-addons" class="space-y-1"></div>
-
-            <hr class="border-white/10 my-3">
-
-            <div class="flex justify-between text-lg font-semibold">
-              <span>Total</span>
-              <span>£<span id="summary-total">0</span></span>
-            </div>
-
-            <div class="flex justify-between text-pink-500 font-semibold">
-              <span>Deposit due today</span>
-              <span>£<span id="summary-deposit">0</span></span>
-            </div>
-
-            <p class="text-xs opacity-60 mt-4">
-              The remaining balance is payable on the session day.<br>
-              No additional charges without confirmation.
-            </p>
-          </div>
-        </section>
-        <!-- Session Summary -->
-        <section id="step-summary" class="step mt-10">
-          <h3 class="text-xl font-semibold mb-2">Session Summary</h3>
-          <p class="text-sm opacity-70 mb-4">
-            Review your session details before securing your booking.<br>
-            Once confirmed, your time is reserved exclusively for you.
-          </p>
-
-          <div class="rounded-xl p-6 bg-black/40 border border-white/10 space-y-3">
-            <div class="flex justify-between">
-              <span>Service</span>
-              <span id="summary-service" class="font-semibold"></span>
-            </div>
-
-            <div class="flex justify-between">
-              <span>Duration</span>
-              <span id="summary-duration" class="font-semibold"></span>
-            </div>
-
-            <div id="summary-addons" class="space-y-1"></div>
-
-            <hr class="border-white/10 my-3">
-
-            <div class="flex justify-between text-lg font-semibold">
-              <span>Total</span>
-              <span>£<span id="summary-total">0</span></span>
-            </div>
-
-            <div class="flex justify-between text-pink-500 font-semibold">
-              <span>Deposit due today</span>
-              <span>£<span id="summary-deposit">0</span></span>
-            </div>
-
-            <p class="text-xs opacity-60 mt-4">
-              The remaining balance is payable on the session day.<br>
-              No additional charges without confirmation.
-            </p>
-          </div>
-        </section>
-
-        <!-- Session Summary -->
-        <section id="step-summary" class="step mt-10">
-          <h3 class="text-xl font-semibold mb-2">Session Summary</h3>
-          <p class="text-sm opacity-70 mb-4">
-            Review your session details before securing your booking.<br>
-            Once confirmed, your time is reserved exclusively for you.
-          </p>
-
-          <div class="rounded-xl p-6 bg-black/40 border border-white/10 space-y-3">
-            <div class="flex justify-between">
-              <span>Service</span>
-              <span id="summary-service" class="font-semibold"></span>
-            </div>
-
-            <div class="flex justify-between">
-              <span>Duration</span>
-              <span id="summary-duration" class="font-semibold"></span>
-            </div>
-
-            <div id="summary-addons" class="space-y-1"></div>
-
-            <hr class="border-white/10 my-3">
-
-            <div class="flex justify-between text-lg font-semibold">
-              <span>Total</span>
-              <span>£<span id="summary-total">0</span></span>
-            </div>
-
-            <div class="flex justify-between text-pink-500 font-semibold">
-              <span>Deposit due today</span>
-              <span>£<span id="summary-deposit">0</span></span>
-            </div>
-
-            <p class="text-xs opacity-60 mt-4">
-              The remaining balance is payable on the session day.<br>
-              No additional charges without confirmation.
-            </p>
-          </div>
+        <!-- Summary -->
+        <section class="p-6 rounded-xl bg-black/40 border border-white/10">
+          <p>Total: £<strong id="total-display">0</strong></p>
+          <p class="text-pink-500">Deposit due today: £<strong id="deposit-display">0</strong></p>
         </section>
 
         <!-- reCAPTCHA -->
@@ -666,104 +440,56 @@ renderServiceCards();
 </script>
 
 <script>
-const SERVICES_BOOKING = {
-  recording: {
-    label: "Recording",
-    hourly: 30
-  },
-  mixing: {
-    label: "Mixing",
-    perTrack: 50
-  },
-  mastering: {
-    label: "Mastering",
-    single: 35
-  },
-  lessons: {
-    label: "Lessons",
-    hourly: 40
-  }
+const SERVICES = {
+  recording: { label: "Recording", hourly: 30 },
+  mixing: { label: "Mixing", flat: 50 },
+  mastering: { label: "Mastering", flat: 35 },
+  lessons: { label: "Lessons", hourly: 40 }
 };
 
 const serviceSelect = document.getElementById("service-select");
+const hoursSection = document.getElementById("hours-section");
+const hoursInput = document.getElementById("hours-input");
 const totalDisplay = document.getElementById("total-display");
 const depositDisplay = document.getElementById("deposit-display");
 const submitButton = document.getElementById("booking-submit");
 
-const hoursWrapper = document.createElement("div");
-hoursWrapper.className = "space-y-2";
-hoursWrapper.innerHTML = `
-  <label class="text-sm opacity-70">Number of hours</label>
-  <input
-    id="hours-input"
-    type="number"
-    min="1"
-    class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
-    placeholder="e.g. 2"
-  />
-`;
-serviceSelect.parentElement.appendChild(hoursWrapper);
-hoursWrapper.style.display = "none";
-
-Object.entries(SERVICES_BOOKING).forEach(([key, service]) => {
-  const opt = document.createElement("option");
-  opt.value = key;
-  opt.textContent = service.label;
-  serviceSelect.appendChild(opt);
-});
-
-serviceSelect.addEventListener("change", updatePrice);
-document.addEventListener("input", updatePrice);
-
 function updatePrice() {
-  const serviceKey = serviceSelect.value;
-  const service = SERVICES_BOOKING[serviceKey];
-
+  const service = SERVICES[serviceSelect.value];
   if (!service) {
-    resetTotals();
+    reset();
     return;
   }
 
-  if (service.hourly) {
-    hoursWrapper.style.display = "block";
-    const hours = Number(document.getElementById("hours-input").value);
+  let total = 0;
 
+  if (service.hourly) {
+    hoursSection.classList.remove("hidden");
+    const hours = Number(hoursInput.value);
     if (!hours || hours < 1) {
-      resetTotals();
+      reset();
       return;
     }
-
-    const total = hours * service.hourly;
-    setTotals(total, service.label, `${hours} hour(s)`);
-
-  } else if (service.perTrack) {
-    hoursWrapper.style.display = "none";
-    setTotals(service.perTrack, service.label, "Per track");
-  } else if (service.single) {
-    hoursWrapper.style.display = "none";
-    setTotals(service.single, service.label, "Single track");
+    total = hours * service.hourly;
+  } else {
+    hoursSection.classList.add("hidden");
+    total = service.flat;
   }
-}
 
-function setTotals(total, serviceName, detail) {
   const deposit = Math.round(total * 0.5);
   totalDisplay.textContent = total.toFixed(2);
   depositDisplay.textContent = deposit.toFixed(2);
   submitButton.disabled = false;
-
-  localStorage.setItem("bookingData", JSON.stringify({
-    service: serviceName,
-    detail,
-    total,
-    deposit
-  }));
 }
 
-function resetTotals() {
+function reset() {
   totalDisplay.textContent = "0";
   depositDisplay.textContent = "0";
   submitButton.disabled = true;
 }
+
+serviceSelect.addEventListener("change", updatePrice);
+hoursInput.addEventListener("input", updatePrice);
 </script>
 
 </body>
