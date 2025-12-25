@@ -457,6 +457,8 @@ const SERVICES = {
   },
   lessons: {
     title: "Lessons",
+    bookableType: "hourly",
+    rate: 40,
     items: [
       { label: "DAW Training (1hr)", price: "£40" },
       { label: "Mixing Lesson (1hr)", price: "£45" },
@@ -513,6 +515,11 @@ const BOOKING_SERVICES = {
       ep: { label: "EP (4–6 tracks)", price: 120 },
       album: { label: "Album (10+ tracks)", price: 250 }
     }
+  },
+  lessons: {
+    label: "Lessons",
+    bookableType: "hourly",
+    rate: 40
   }
 };
 
@@ -526,6 +533,39 @@ function calculateEngineeringCost(hours) {
   if (hours >= 8) return 200;
   if (hours >= 4) return 120;
   return hours * 40;
+}
+
+function calculateHourlyLessonTotal(serviceKey) {
+  const rate = BOOKING_SERVICES[serviceKey].rate;
+  let total = rate; // Default to 1 hour
+  
+  // Add-ons
+  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
+    if (box.value === "rush") {
+      total *= ADDONS.rushMultiplier;
+    } else if (box.value === "engineering") {
+      total += calculateEngineeringCost(1); // 1 hour for lessons
+    } else {
+      total += ADDONS[box.value];
+    }
+  });
+  
+  const deposit = Math.round(total * 0.5);
+  
+  totalDisplay.textContent = total.toFixed(2);
+  depositDisplay.textContent = deposit.toFixed(2);
+  submitButton.disabled = false;
+  
+  // Store booking data
+  window.bookingData = {
+    service: serviceKey,
+    package: "hourly",
+    total: total,
+    deposit: deposit,
+    serviceName: `${BOOKING_SERVICES[serviceKey].label} (1hr)`
+  };
+  
+  localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
 }
 
 function parsePrice(price) {
@@ -559,6 +599,14 @@ if (serviceSelect) {
     const serviceKey = serviceSelect.value;
 
     if (serviceKey && BOOKING_SERVICES[serviceKey]) {
+      // Handle hourly services (like Lessons)
+      if (BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
+        packageSection.classList.add("hidden");
+        addonsSection.classList.remove("hidden");
+        calculateHourlyLessonTotal(serviceKey);
+        return;
+      }
+      
       packageSection.classList.remove("hidden");
       addonsSection.classList.remove("hidden");
 
@@ -582,7 +630,14 @@ if (serviceSelect) {
 
   // When addons change, recalculate
   document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
-    checkbox.addEventListener("change", calculateTotal);
+    checkbox.addEventListener("change", () => {
+      const serviceKey = serviceSelect.value;
+      if (serviceKey && BOOKING_SERVICES[serviceKey] && BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
+        calculateHourlyLessonTotal(serviceKey);
+      } else {
+        calculateTotal();
+      }
+    });
   });
 }
 
