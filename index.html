@@ -262,19 +262,17 @@
           </select>
         </div>
 
-        <!-- Hours (used for Recording / Lessons) -->
-        <div id="hours-wrapper" class="hidden">
-          <label class="block mb-2 font-semibold">Number of Hours</label>
+        <!-- Hours (shown for hourly services only) -->
+        <div id="hours-wrapper" class="hidden space-y-2">
+          <label class="text-sm opacity-70">Number of hours</label>
           <input
             type="number"
-            name="hours"
+            id="hours-input"
             min="1"
-            placeholder="e.g. 2"
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+            value="2"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:outline-none"
           />
-          <p class="text-sm opacity-70 mt-1">
-            Most artists book 3–4 hours.
-          </p>
+          <p class="text-xs opacity-60">Most artists book 2–4 hours.</p>
         </div>
 
         <!-- Your details -->
@@ -507,55 +505,47 @@ renderServiceCards();
 </script>
 
 <script>
-  const serviceSelect = document.getElementById("service-select");
-  const hoursWrapper = document.getElementById("hours-wrapper");
-
-  if (serviceSelect) {
-    serviceSelect.addEventListener("change", () => {
-      const value = serviceSelect.value.toLowerCase();
-      if (value === "recording" || value === "lessons") {
-        hoursWrapper.classList.remove("hidden");
-      } else {
-        hoursWrapper.classList.add("hidden");
-      }
-    });
-  }
-</script>
-
-<script>
 const PRICING = {
   recording: { hourly: 40 },
   lessons: { hourly: 40 },
   mixing: { flat: 50 },
-  mastering: { flat: 35 },
-  production: { flat: 300 }
+  mastering: { flat: 35 }
 };
 
 const serviceSelect = document.getElementById("service-select");
-const hoursInput = document.querySelector("input[name='hours']");
+const hoursWrapper = document.getElementById("hours-wrapper");
+const hoursInput = document.getElementById("hours-input");
+
 const totalEl = document.getElementById("total-price");
 const depositEl = document.getElementById("deposit-price");
 
 function calculatePricing() {
-  const service = serviceSelect.value.toLowerCase();
-  const config = PRICING[service];
+  const serviceKey = serviceSelect.value;
+  const pricing = PRICING[serviceKey];
 
-  if (!config) {
-    totalEl.textContent = "0";
-    depositEl.textContent = "0";
+  // Reset
+  totalEl.textContent = "0";
+  depositEl.textContent = "0";
+
+  if (!pricing) {
+    hoursWrapper.classList.add("hidden");
     return;
   }
 
   let total = 0;
 
-  if (config.hourly) {
-    const hours = Number(hoursInput?.value || 0);
-    if (hours < 1) return;
-    total = hours * config.hourly;
+  if (pricing.hourly) {
+    hoursWrapper.classList.remove("hidden");
+    const hours = Number(hoursInput.value);
+
+    if (!hours || hours < 1) return;
+
+    total = hours * pricing.hourly;
   }
 
-  if (config.flat) {
-    total = config.flat;
+  if (pricing.flat) {
+    hoursWrapper.classList.add("hidden");
+    total = pricing.flat;
   }
 
   const deposit = Math.round(total * 0.5);
@@ -563,16 +553,16 @@ function calculatePricing() {
   totalEl.textContent = total.toFixed(2);
   depositEl.textContent = deposit.toFixed(2);
 
-  // store safely for Stripe later
   localStorage.setItem("bookingPricing", JSON.stringify({
-    service,
+    service: serviceKey,
+    hours: pricing.hourly ? hoursInput.value : null,
     total,
     deposit
   }));
 }
 
 serviceSelect.addEventListener("change", calculatePricing);
-document.addEventListener("input", calculatePricing);
+hoursInput.addEventListener("input", calculatePricing);
 </script>
 
 </body>
