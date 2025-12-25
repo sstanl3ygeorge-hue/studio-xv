@@ -3,22 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Booking Received – Studio XV</title>
+  <title>Booking Confirmed – Studio XV</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      --bg-main: #000000;
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+      --accent: #ec4899;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+      }
+    }
+
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-out;
+    }
+  </style>
 </head>
 
-<body class="min-h-screen bg-black text-white flex items-center justify-center">
-  <div class="text-center space-y-6 max-w-md px-6">
-    <h1 class="text-3xl font-bold">Booking Request Sent</h1>
-    <p class="opacity-80">
-      Thanks for reaching out. We'll review your request and get back to you shortly.
+<body class="min-h-screen flex items-center justify-center px-6">
+  
+  <div class="max-w-2xl w-full text-center fade-in">
+    
+    <div class="mb-8">
+      <svg class="w-20 h-20 mx-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+
+    <h1 class="text-4xl md:text-5xl font-bold mb-6">
+      Booking Confirmed
+    </h1>
+
+    <p class="text-lg mb-12" style="color: var(--text-muted);">
+      Your session has been secured. We'll be in touch shortly.
     </p>
-    <a
-      href="/"
-      class="inline-block px-8 py-3 rounded-lg bg-pink-600 font-semibold hover:bg-pink-500 transition"
-    >
+
+    <a href="/"
+       class="inline-block px-8 py-3 rounded-lg font-semibold transition hover:opacity-90"
+       style="background: var(--accent); color: white;">
       Back to Home
     </a>
+
   </div>
+
 </body>
 </html>

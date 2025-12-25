@@ -769,6 +769,12 @@ bookingForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  // Safety check: prevent £0 deposits from being processed
+  if (!window.bookingData.deposit || window.bookingData.deposit <= 0) {
+    alert('Unable to process payment. Please try again.');
+    return;
+  }
+
   // Disable submit button and show loading state
   submitButton.disabled = true;
   const originalText = submitButton.textContent;
