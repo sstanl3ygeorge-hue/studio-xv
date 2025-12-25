@@ -26,21 +26,74 @@
     <h1 class="text-3xl font-bold">Secure Your Session</h1>
 
     <p id="deposit-text" class="opacity-80">
-      A booking deposit is required to secure your session.
-      Deposit amounts vary by service and are deducted from your final balance.
+      Loading booking details...
     </p>
 
-    <a
+    <button
       id="deposit-button"
-      href="https://book.stripe.com/28E14neDteada9MaY48g001"
-      class="inline-block px-10 py-4 rounded-lg bg-pink-600 font-semibold text-lg hover:bg-pink-500 transition"
+      class="inline-block px-10 py-4 rounded-lg bg-pink-600 font-semibold text-lg hover:bg-pink-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      disabled
     >
       Pay Deposit
-    </a>
+    </button>
 
     <p class="text-sm opacity-60">
       Secure payment powered by Stripe
     </p>
   </div>
+
+  <script>
+    // Get booking details from localStorage
+    const bookingData = JSON.parse(localStorage.getItem('bookingData') || '{}');
+    
+    const depositText = document.getElementById('deposit-text');
+    const depositButton = document.getElementById('deposit-button');
+
+    if (bookingData.deposit && bookingData.total && bookingData.serviceName) {
+      depositText.innerHTML = `
+        <strong class="text-xl">£${bookingData.deposit}</strong> deposit required<br>
+        <span class="text-sm opacity-70">for ${bookingData.serviceName} (Total: £${bookingData.total})</span>
+      `;
+      depositButton.textContent = `Pay £${bookingData.deposit} Deposit`;
+      depositButton.disabled = false;
+
+      depositButton.addEventListener('click', async () => {
+        depositButton.disabled = true;
+        depositButton.textContent = 'Processing...';
+
+        try {
+          const response = await fetch('/.netlify/functions/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              depositAmount: bookingData.deposit,
+              serviceName: bookingData.serviceName
+            })
+          });
+
+          const data = await response.json();
+          
+          if (data.url) {
+            window.location.href = data.url;
+          } else {
+            throw new Error('No checkout URL returned');
+          }
+        } catch (error) {
+          console.error('Payment error:', error);
+          depositButton.textContent = 'Payment Error - Try Again';
+          depositButton.disabled = false;
+          depositText.innerHTML = `
+            <span class="text-red-400">Unable to process payment. Please try again or contact us directly.</span>
+          `;
+        }
+      });
+    } else {
+      depositText.innerHTML = `
+        <span class="text-yellow-400">No booking details found.</span><br>
+        <span class="text-sm">Please complete the booking form first.</span>
+      `;
+      depositButton.style.display = 'none';
+    }
+  </script>
 </body>
 </html>

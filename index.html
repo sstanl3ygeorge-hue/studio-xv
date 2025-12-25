@@ -358,6 +358,7 @@
         <!-- Submit -->
         <button
           type="submit"
+          id="booking-submit"
           class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition"
         >
           Submit Booking Request
@@ -554,6 +555,25 @@ function updatePricing() {
 
   priceOutput.textContent = `Total: £${total}`;
   depositOutput.textContent = `Deposit required: £${deposit}`;
+  
+  // Store booking data for deposit page
+  localStorage.setItem('bookingData', JSON.stringify({
+    service: serviceSelect.value,
+    option: optionSelect.value,
+    quantity: quantity,
+    total: total,
+    deposit: deposit,
+    serviceName: `${service.title} - ${item.name}${needsQuantity ? ` (${quantity}hrs)` : ''}`
+  }));
+}
+
+// Handle form submission
+const bookingForm = document.querySelector('form[name="booking"]');
+if (bookingForm) {
+  bookingForm.addEventListener('submit', (e) => {
+    // Form will submit to Netlify, which redirects to /deposit.html
+    // The booking data is already stored in localStorage
+  });
 }
 </script>
 
