@@ -414,16 +414,27 @@ const PRICING = {
     label: "Recording",
     type: "hourly",
     rate: 40,
-    options: [
+    minHours: 1,
+    items: [
       { label: "Hourly Session", price: "£40/hr" },
       { label: "Half-Day (4hrs)", price: "£140" },
       { label: "Full-Day (8hrs)", price: "£260" }
+    ],
+    packages: [
+      { label: "Per Track", price: 50 },
+      { label: "Mix + Master", price: 75 },
+      { label: "EP (4–6 tracks)", price: 280 }
     ]
   },
 
   mixing: {
     label: "Mixing",
     type: "packages",
+    items: [
+      { label: "Per Track", price: "£50" },
+      { label: "Mix + Master", price: "£75" },
+      { label: "EP (4–6 tracks)", price: "£280" }
+    ],
     packages: [
       { label: "Per Track", price: 50 },
       { label: "Mix + Master", price: 75 },
@@ -434,6 +445,11 @@ const PRICING = {
   mastering: {
     label: "Mastering",
     type: "packages",
+    items: [
+      { label: "Single", price: "£35" },
+      { label: "EP (4–6 tracks)", price: "£120" },
+      { label: "Album (10+ tracks)", price: "£250" }
+    ],
     packages: [
       { label: "Single", price: 35 },
       { label: "EP (4–6 tracks)", price: 120 },
@@ -444,6 +460,11 @@ const PRICING = {
   production: {
     label: "Production",
     type: "packages",
+    items: [
+      { label: "Beat Lease", price: "£30" },
+      { label: "Exclusive Beat", price: "£150" },
+      { label: "Custom Production", price: "POA" }
+    ],
     packages: [
       { label: "Beat Lease", price: 30 },
       { label: "Exclusive Beat", price: 150 },
@@ -457,16 +478,26 @@ const PRICING = {
     rate: 40,
     minHours: 1,
     maxHours: 4,
-    coachingCopy: "Guided sessions focused on skill-building and workflow."
+    coachingCopy: "Guided sessions focused on skill-building and workflow.",
+    items: [
+      { label: "Hourly Session", price: "£40/hr" },
+      { label: "2-Hour Session", price: "£80" },
+      { label: "4-Hour Session", price: "£160" }
+    ],
+    packages: [
+      { label: "Per Track", price: 50 },
+      { label: "Mix + Master", price: 75 },
+      { label: "EP (4–6 tracks)", price: 280 }
+    ]
   },
 
   addons: {
     label: "Add-Ons",
     type: "addons",
     items: [
-      { label: "Vocal Tuning", price: 25 },
-      { label: "Stems Export", price: 20 },
-      { label: "Rush Delivery", multiplier: 1.5 }
+      { label: "Vocal Tuning", price: "£25" },
+      { label: "Stems Export", price: "£20" },
+      { label: "Rush Delivery", price: "+50%" }
     ]
   }
 };
@@ -626,53 +657,45 @@ renderPortfolio();
 </script>
 
 <script>
-const servicesGrid = document.getElementById("services-grid");
+function renderServices() {
+  const container = document.getElementById("services-grid");
+  if (!container) return;
 
-Object.values(PRICING).forEach(service => {
-  if (service.type === "addons") return;
+  container.innerHTML = "";
 
-  const card = document.createElement("div");
+  Object.entries(PRICING).forEach(([key, service]) => {
+    const card = document.createElement("div");
+    const isAddons = key === "addons";
 
-  card.className = `
-    group rounded-2xl p-8 bg-[#111]
-    border border-white/10
-    transition-all duration-300
-    hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl
-  `;
+    card.className = `
+      ${isAddons ? "lg:col-span-3" : ""}
+      group rounded-2xl p-8 bg-[#111]
+      border border-white/10
+      transition-all duration-300
+      hover:-translate-y-2
+      hover:border-pink-500
+      hover:shadow-xl
+    `;
 
-  let itemsHTML = "";
+    card.innerHTML = `
+      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+        ${service.label}
+      </h3>
+      <ul class="space-y-4 text-sm">
+        ${service.items.map(item => `
+          <li class="flex justify-between">
+            <span>${item.label}</span>
+            <span>${item.price}</span>
+          </li>
+        `).join("")}
+      </ul>
+    `;
 
-  if (service.type === "hourly") {
-    service.options.forEach(opt => {
-      itemsHTML += `
-        <li class="flex justify-between">
-          <span>${opt.label}</span>
-          <span>${opt.price}</span>
-        </li>
-      `;
-    });
-  }
+    container.appendChild(card);
+  });
+}
 
-  if (service.type === "packages") {
-    service.packages.forEach(pkg => {
-      itemsHTML += `
-        <li class="flex justify-between">
-          <span>${pkg.label}</span>
-          <span>${pkg.poa ? "POA" : "£" + pkg.price}</span>
-        </li>
-      `;
-    });
-  }
-
-  card.innerHTML = `
-    <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
-      ${service.label}
-    </h3>
-    <ul class="space-y-4 text-sm">${itemsHTML}</ul>
-  `;
-
-  servicesGrid.appendChild(card);
-});
+document.addEventListener("DOMContentLoaded", renderServices);
 </script>
 
 <script>
