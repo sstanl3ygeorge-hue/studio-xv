@@ -426,23 +426,11 @@
 </div>
 
 <script>
-  const openBtn = document.getElementById('menu-toggle');
-  const closeBtn = document.getElementById('menu-close');
+  const toggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('mobile-menu');
-  const links = document.querySelectorAll('.mobile-link');
 
-  openBtn.addEventListener('click', () => {
-    menu.classList.remove('hidden');
-  });
-
-  closeBtn.addEventListener('click', () => {
-    menu.classList.add('hidden');
-  });
-
-  links.forEach(link => {
-    link.addEventListener('click', () => {
-      menu.classList.add('hidden');
-    });
+  toggle.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
   });
 </script>
 
