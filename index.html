@@ -154,67 +154,7 @@
   <div class="max-w-6xl mx-auto">
     <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Portfolio</h2>
 
-    <div class="grid md:grid-cols-2 gap-8">
-
-      <!-- Recent Mixes -->
-      <div class="rounded-2xl p-8"
-           style="background: var(--bg-card); border: 1px solid var(--border-soft);">
-        <h3 class="text-2xl font-bold mb-6">Recent Mixes</h3>
-
-        <div class="space-y-4">
-          <div class="p-4 rounded-xl bg-black/60">
-            <p class="mb-2">🎵 City Lights – Hip Hop</p>
-            <audio controls class="w-full">
-              <source src="audio/city-lights.mp3" type="audio/mpeg">
-            </audio>
-          </div>
-
-          <div class="p-4 rounded-xl bg-black/60">
-            <p class="mb-2">🎵 Midnight Drive – R&B</p>
-            <audio controls class="w-full">
-              <source src="audio/midnight-drive.mp3" type="audio/mpeg">
-            </audio>
-          </div>
-
-          <div class="p-4 rounded-xl bg-black/60">
-            <p class="mb-2">🎵 Elevation – Trap</p>
-            <audio controls class="w-full">
-              <source src="audio/elevation.mp3" type="audio/mpeg">
-            </audio>
-          </div>
-        </div>
-      </div>
-
-      <!-- Beat Catalogue -->
-      <div class="rounded-2xl p-8"
-           style="background: var(--bg-card); border: 1px solid var(--border-soft);">
-        <h3 class="text-2xl font-bold mb-6">Beat Catalogue</h3>
-
-        <div class="space-y-4">
-          <div class="p-4 rounded-xl bg-black/60">
-            <p class="mb-2">🎹 Neon Dreams – 140 BPM</p>
-            <audio controls class="w-full">
-              <source src="audio/neon-dreams.mp3" type="audio/mpeg">
-            </audio>
-          </div>
-
-          <div class="p-4 rounded-xl bg-black/60">
-            <p class="mb-2">🎹 Street Gospel – 85 BPM</p>
-            <audio controls class="w-full">
-              <source src="audio/street-gospel.mp3" type="audio/mpeg">
-            </audio>
-          </div>
-
-          <div class="p-4 rounded-xl bg-black/60">
-            <p class="mb-2">🎹 Summer Breeze – 128 BPM</p>
-            <audio controls class="w-full">
-              <source src="audio/summer-breeze.mp3" type="audio/mpeg">
-            </audio>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <div class="grid md:grid-cols-2 gap-8" id="portfolio-grid"></div>
   </div>
 </section>
 
@@ -256,11 +196,6 @@
             class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
           >
             <option value="">Select a service…</option>
-            <option>Recording</option>
-            <option>Mixing</option>
-            <option>Mastering</option>
-            <option>Production</option>
-            <option>Lessons</option>
           </select>
         </div>
 
@@ -461,101 +396,6 @@
 </script>
 
 <script>
-const SERVICES_DISPLAY = {
-  recording: {
-    label: "Recording",
-    items: [
-      { label: "Hourly Session", price: "£30/hr" },
-      { label: "Half-Day (4hrs)", price: "£140" },
-      { label: "Full-Day (8hrs)", price: "£260" }
-    ]
-  },
-  mixing: {
-    label: "Mixing",
-    items: [
-      { label: "Per Track", price: "£50" },
-      { label: "Mix + Master", price: "£75" },
-      { label: "EP (4–6 tracks)", price: "£280" }
-    ]
-  },
-  mastering: {
-    label: "Mastering",
-    items: [
-      { label: "Single", price: "£35" },
-      { label: "EP (4–6 tracks)", price: "£120" },
-      { label: "Album (10+ tracks)", price: "£250" }
-    ]
-  },
-  production: {
-    label: "Production",
-    items: [
-      { label: "Beat Lease", price: "£30" },
-      { label: "Exclusive Beat", price: "£150" },
-      { label: "Custom Production", price: "£300+" }
-    ]
-  },
-  lessons: {
-    label: "Lessons",
-    items: [
-      { label: "DAW Training", price: "£40/hr" },
-      { label: "Mixing Lessons", price: "£45/hr" },
-      { label: "Beat-Making", price: "£40/hr" }
-    ]
-  },
-  addons: {
-    label: "Add-Ons",
-    items: [
-      { label: "Vocal Tuning", price: "£25" },
-      { label: "Stems Export", price: "£20" },
-      { label: "Rush Delivery", price: "+50%" }
-    ]
-  }
-};
-</script>
-
-<script>
-function renderServiceCards() {
-  const container = document.getElementById("services-grid");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  Object.entries(SERVICES_DISPLAY).forEach(([key, service]) => {
-    const card = document.createElement("div");
-    const isAddons = key === "addons";
-
-    card.className = `
-      ${isAddons ? "lg:col-span-3" : ""}
-      rounded-2xl p-8 bg-[#111]
-      border border-white/10
-      transition-all duration-300
-      hover:-translate-y-2
-      hover:border-pink-500
-      hover:shadow-xl
-    `;
-
-    card.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6">
-        ${service.label}
-      </h3>
-      <ul class="space-y-4 text-sm">
-        ${service.items.map(item => `
-          <li class="flex justify-between">
-            <span>${item.label}</span>
-            <span>${item.price}</span>
-          </li>
-        `).join("")}
-      </ul>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-renderServiceCards();
-</script>
-
-<script>
 const PRICING = {
   recording: {
     label: "Recording",
@@ -623,7 +463,204 @@ const ADDONS = {
   stems: { label: "Stems Export", price: 20 },
   rush: { label: "Rush Delivery", multiplier: 1.5 }
 };
+</script>
 
+<script>
+const PORTFOLIO = {
+  mixes: {
+    title: "Recent Mixes",
+    description: "Selected projects mixed and mastered at Studio XV.",
+    items: [
+      {
+        title: "City Lights",
+        genre: "Hip Hop",
+        role: "Mix + Master | Studio XV",
+        features: null,
+        audio: {
+          after: "audio/city-lights-final.mp3",
+          before: "audio/city-lights-raw.mp3"
+        }
+      },
+      {
+        title: "Midnight Drive",
+        genre: "R&B",
+        role: "Mix",
+        features: "Vocal Balance + Depth",
+        audio: {
+          after: "audio/midnight-drive-final.mp3"
+        }
+      },
+      {
+        title: "Elevation",
+        genre: "Trap",
+        role: "Mix",
+        features: null,
+        audio: {
+          after: "audio/elevation-final.mp3"
+        }
+      }
+    ]
+  },
+
+  beats: {
+    title: "Beat Catalogue",
+    description: "Original production available for lease or exclusive purchase.",
+    items: [
+      {
+        title: "Neon Dreams",
+        style: "Trap / Melodic",
+        meta: "140 BPM · Available for lease or exclusive",
+        audio: "audio/neon-dreams.mp3"
+      },
+      {
+        title: "Street Gospel",
+        style: "Hip Hop",
+        meta: "85 BPM · Available for lease or exclusive",
+        audio: "audio/street-gospel.mp3"
+      },
+      {
+        title: "Summer Breeze",
+        style: "Electronic",
+        meta: "128 BPM · Available for lease or exclusive",
+        audio: "audio/summer-breeze.mp3"
+      }
+    ]
+  }
+};
+</script>
+
+<script>
+function renderPortfolio() {
+  const grid = document.getElementById("portfolio-grid");
+  if (!grid) return;
+
+  // MIXES
+  const mixes = PORTFOLIO.mixes;
+  const mixesCard = document.createElement("div");
+  mixesCard.className =
+    "rounded-2xl p-8 bg-[var(--bg-card)] border border-white/10";
+
+  mixesCard.innerHTML = `
+    <h3 class="text-2xl font-bold mb-2">${mixes.title}</h3>
+    <p class="text-sm opacity-70 mb-6">${mixes.description}</p>
+    <div class="space-y-6">
+      ${mixes.items.map(track => `
+        <div class="p-4 rounded-xl bg-black/60 space-y-2">
+          <p class="font-semibold">
+            🎵 ${track.title} — ${track.genre}
+          </p>
+          <p class="text-sm opacity-70">
+            ${track.role}${track.features ? " · " + track.features : ""}
+          </p>
+
+          ${
+            track.audio.before
+              ? `
+              <div class="space-y-2">
+                <label class="text-xs opacity-60">Before</label>
+                <audio controls class="w-full">
+                  <source src="${track.audio.before}" type="audio/mpeg">
+                </audio>
+
+                <label class="text-xs opacity-60">After</label>
+                <audio controls class="w-full">
+                  <source src="${track.audio.after}" type="audio/mpeg">
+                </audio>
+              </div>
+              `
+              : `
+              <audio controls class="w-full">
+                <source src="${track.audio.after}" type="audio/mpeg">
+              </audio>
+              `
+          }
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  // BEATS
+  const beats = PORTFOLIO.beats;
+  const beatsCard = document.createElement("div");
+  beatsCard.className =
+    "rounded-2xl p-8 bg-[var(--bg-card)] border border-white/10";
+
+  beatsCard.innerHTML = `
+    <h3 class="text-2xl font-bold mb-2">${beats.title}</h3>
+    <p class="text-sm opacity-70 mb-6">${beats.description}</p>
+    <div class="space-y-6">
+      ${beats.items.map(beat => `
+        <div class="p-4 rounded-xl bg-black/60 space-y-2">
+          <p class="font-semibold">
+            🎹 ${beat.title} — ${beat.style}
+          </p>
+          <p class="text-sm opacity-70">${beat.meta}</p>
+          <audio controls class="w-full">
+            <source src="${beat.audio}" type="audio/mpeg">
+          </audio>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  grid.appendChild(mixesCard);
+  grid.appendChild(beatsCard);
+}
+
+renderPortfolio();
+</script>
+
+<script>
+const servicesGrid = document.getElementById("services-grid");
+
+Object.values(PRICING).forEach(service => {
+  if (service.type === "addons") return;
+
+  const card = document.createElement("div");
+
+  card.className = `
+    group rounded-2xl p-8 bg-[#111]
+    border border-white/10
+    transition-all duration-300
+    hover:-translate-y-2 hover:border-pink-500 hover:shadow-xl
+  `;
+
+  let itemsHTML = "";
+
+  if (service.type === "hourly") {
+    service.options.forEach(opt => {
+      itemsHTML += `
+        <li class="flex justify-between">
+          <span>${opt.label}</span>
+          <span>${opt.price}</span>
+        </li>
+      `;
+    });
+  }
+
+  if (service.type === "packages") {
+    service.packages.forEach(pkg => {
+      itemsHTML += `
+        <li class="flex justify-between">
+          <span>${pkg.label}</span>
+          <span>${pkg.poa ? "POA" : "£" + pkg.price}</span>
+        </li>
+      `;
+    });
+  }
+
+  card.innerHTML = `
+    <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+      ${service.label}
+    </h3>
+    <ul class="space-y-4 text-sm">${itemsHTML}</ul>
+  `;
+
+  servicesGrid.appendChild(card);
+});
+</script>
+
+<script>
 const serviceSelect = document.getElementById("service-select");
 const packageSelect = document.getElementById("package-select");
 const packageWrapper = document.getElementById("package-wrapper");
@@ -632,6 +669,16 @@ const hoursInput = document.getElementById("hours-input");
 const totalDisplay = document.getElementById("total-display");
 const depositDisplay = document.getElementById("deposit-display");
 const submitButton = document.getElementById("booking-submit");
+
+// Populate service dropdown from PRICING
+Object.entries(PRICING).forEach(([key, service]) => {
+  if (service.type === "addons") return;
+
+  const option = document.createElement("option");
+  option.value = key;
+  option.textContent = service.label;
+  serviceSelect.appendChild(option);
+});
 
 serviceSelect.addEventListener("change", handleServiceChange);
 packageSelect.addEventListener("change", calculateTotal);
@@ -685,9 +732,9 @@ function handleServiceChange() {
 
   if (service.type === "packages") {
     packageWrapper.classList.remove("hidden");
-    Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
+    service.packages.forEach((pkg, index) => {
       const opt = document.createElement("option");
-      opt.value = pkgKey;
+      opt.value = index;
 
       opt.textContent = pkg.poa
         ? `${pkg.label} – POA`
@@ -715,8 +762,9 @@ function calculateTotal() {
   }
 
   if (service.type === "packages") {
-    const pkg = service.packages[packageSelect.value];
-    if (!pkg) return resetTotals();
+    const pkgIndex = Number(packageSelect.value);
+    const pkg = service.packages[pkgIndex];
+    if (pkg === undefined) return resetTotals();
     
     packageName = pkg.label;
 
