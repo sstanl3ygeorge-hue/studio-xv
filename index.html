@@ -9,6 +9,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -142,22 +146,123 @@
 
 <section id="portfolio" class="py-24 px-6 bg-[#0d0d0d]">
   <div class="max-w-6xl mx-auto">
-    <h2 class="text-4xl font-bold text-center mb-16">Portfolio</h2>
-    <p class="text-center opacity-70">Coming soon...</p>
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Portfolio</h2>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <!-- Recent Mixes -->
+      <div class="rounded-2xl p-8 bg-[#111] border border-white/10">
+        <h3 class="text-2xl font-bold mb-6">Recent Mixes</h3>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="mb-2">🎵 City Lights – Hip Hop</p>
+            <audio controls class="w-full">
+              <source src="audio/city-lights.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="mb-2">🎵 Midnight Drive – R&B</p>
+            <audio controls class="w-full">
+              <source src="audio/midnight-drive.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="mb-2">🎵 Elevation – Trap</p>
+            <audio controls class="w-full">
+              <source src="audio/elevation.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+        </div>
+      </div>
+
+      <!-- Beat Catalogue -->
+      <div class="rounded-2xl p-8 bg-[#111] border border-white/10">
+        <h3 class="text-2xl font-bold mb-6">Beat Catalogue</h3>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="mb-2">🎹 Neon Dreams – 140 BPM</p>
+            <audio controls class="w-full">
+              <source src="audio/neon-dreams.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="mb-2">🎹 Street Gospel – 85 BPM</p>
+            <audio controls class="w-full">
+              <source src="audio/street-gospel.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div class="p-4 rounded-xl bg-black/60">
+            <p class="mb-2">🎹 Summer Breeze – 128 BPM</p>
+            <audio controls class="w-full">
+              <source src="audio/summer-breeze.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 
-<section id="booking" class="py-24 px-6">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-4xl font-bold text-center mb-16">Book Your Session</h2>
-    <p class="text-center opacity-70">Coming soon...</p>
+<section id="booking" class="py-28 px-6 bg-black">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-20">
+      Book Your Session
+    </h2>
+
+    <div class="rounded-2xl bg-gradient-to-b from-[#1c1c1c] to-[#121212] p-10 shadow-xl">
+
+      <form name="booking" method="POST" data-netlify="true" class="space-y-6">
+        <input type="hidden" name="form-name" value="booking">
+
+        <input type="text" name="name" placeholder="Full Name"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+
+        <input type="email" name="email" placeholder="Email"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+
+        <input type="tel" name="phone" placeholder="Phone"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+
+        <select name="service"
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none">
+          <option>Select a service</option>
+          <option>Recording</option>
+          <option>Mixing</option>
+          <option>Mastering</option>
+          <option>Production</option>
+          <option>Lessons</option>
+        </select>
+
+        <textarea name="details" rows="4" placeholder="Tell us about your project..."
+          class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 outline-none"></textarea>
+
+        <button type="submit"
+          class="w-full py-4 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition">
+          Submit Booking Request
+        </button>
+      </form>
+
+    </div>
   </div>
 </section>
 
 <section id="about" class="py-24 px-6 bg-[#0d0d0d]">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-4xl font-bold text-center mb-16">About</h2>
-    <p class="text-center opacity-70">Coming soon...</p>
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-4xl md:text-5xl font-bold mb-10">About Studio XV</h2>
+
+    <p class="text-lg opacity-80 leading-relaxed">
+      Studio XV is a professional recording and production space built for
+      artists who value sound quality, creative freedom, and a stress-free
+      environment. With over 15 years of experience, we specialise in recording,
+      mixing, mastering, and production across multiple genres.
+    </p>
   </div>
 </section>
 
