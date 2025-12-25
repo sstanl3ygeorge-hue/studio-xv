@@ -262,10 +262,16 @@
 
         <!-- STEP 3: Enhance Your Session (optional) -->
         <section id="addons-section" class="hidden">
-          <h3 class="text-xl font-semibold mb-4">Enhance Your Session <span class="text-sm opacity-60">(optional)</span></h3>
-          <p class="text-sm opacity-70 mb-4">Optional enhancements chosen by many artists to streamline delivery.</p>
+          <h3 class="text-xl font-semibold mb-2">Engineering Enhancements</h3>
+          <p class="text-sm opacity-70 mb-4">Optional additions applied during supported sessions.</p>
           
           <div class="space-y-3">
+            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
+              <input type="checkbox" name="addon" value="engineering" class="addon-checkbox w-5 h-5" />
+              <span class="flex-1">Engineering Support</span>
+              <span class="text-pink-500 font-semibold">+£40–£200</span>
+            </label>
+            
             <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
               <input type="checkbox" name="addon" value="vocalTuning" class="addon-checkbox w-5 h-5" />
               <span class="flex-1">Vocal Tuning</span>
@@ -465,6 +471,14 @@ const SERVICES = {
       { label: "Custom Production", price: "POA" }
     ]
   },
+  engineering: {
+    title: "Engineering & Support",
+    items: [
+      { label: "Session Engineer (per hour)", price: "£40/hr" },
+      { label: "Assisted Recording Sessions", price: "Included / POA" },
+      { label: "Vocal Coaching (in-session)", price: "£40/hr" }
+    ]
+  },
   addons: {
     title: "Add-Ons",
     items: [
@@ -507,6 +521,12 @@ const ADDONS = {
   stems: 20,
   rushMultiplier: 1.5
 };
+
+function calculateEngineeringCost(hours) {
+  if (hours >= 8) return 200;
+  if (hours >= 4) return 120;
+  return hours * 40;
+}
 
 function parsePrice(price) {
   if (price === "POA" || price.includes("%")) return null;
@@ -591,6 +611,13 @@ function calculateTotal() {
   document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
     if (box.value === "rush") {
       total *= ADDONS.rushMultiplier;
+    } else if (box.value === "engineering") {
+      // Calculate engineering cost based on session length
+      let hours = 1;
+      if (packageKey === "half") hours = 4;
+      else if (packageKey === "full") hours = 8;
+      else if (packageKey === "hourly") hours = 1;
+      total += calculateEngineeringCost(hours);
     } else {
       total += ADDONS[box.value];
     }
