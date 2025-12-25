@@ -73,6 +73,16 @@
       transform: translateY(0);
       pointer-events: auto;
     }
+
+    audio {
+      opacity: 0.85;
+      transition: opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    audio:hover {
+      opacity: 1;
+      box-shadow: 0 0 0 1px rgba(236,72,153,0.4);
+    }
   </style>
 </head>
 
@@ -511,67 +521,48 @@ const ADDONS = {
 
 <script>
 const PORTFOLIO = {
-  mixes: {
-    title: "Recent Mixes",
-    description: "Selected projects mixed and mastered at Studio XV.",
-    items: [
-      {
-        title: "City Lights",
-        genre: "Hip Hop",
-        role: "Mix + Master | Studio XV",
-        features: null,
-        audio: {
-          after: "audio/city-lights-final.mp3",
-          before: "audio/city-lights-raw.mp3"
-        }
-      },
-      {
-        title: "Midnight Drive",
-        genre: "R&B",
-        role: "Mix",
-        features: "Vocal Balance + Depth",
-        audio: {
-          after: "audio/midnight-drive-final.mp3",
-          before: "audio/midnight-drive-raw.mp3"
-        }
-      },
-      {
-        title: "Elevation",
-        genre: "Trap",
-        role: "Mix",
-        features: null,
-        audio: {
-          after: "audio/elevation-final.mp3",
-          before: "audio/elevation-raw.mp3"
-        }
-      }
-    ]
-  },
+  mixes: [
+    {
+      title: "City Lights",
+      genre: "Hip Hop",
+      credit: "Mix + Master | Studio XV",
+      beforeSrc: "audio/city-lights-before.mp3",
+      afterSrc: "audio/city-lights-after.mp3"
+    },
+    {
+      title: "Midnight Drive",
+      genre: "R&B",
+      credit: "Mix | Vocal Balance + Depth",
+      afterSrc: "audio/midnight-drive.mp3"
+    },
+    {
+      title: "Elevation",
+      genre: "Trap",
+      credit: "Mix | Punch + Low-End Control",
+      afterSrc: "audio/elevation.mp3"
+    }
+  ],
 
-  beats: {
-    title: "Beat Catalogue",
-    description: "Original production available for lease or exclusive purchase.",
-    items: [
-      {
-        title: "Neon Dreams",
-        style: "Trap / Melodic",
-        meta: "140 BPM · Available for lease or exclusive",
-        audio: "audio/neon-dreams.mp3"
-      },
-      {
-        title: "Street Gospel",
-        style: "Hip Hop",
-        meta: "85 BPM · Available for lease or exclusive",
-        audio: "audio/street-gospel.mp3"
-      },
-      {
-        title: "Summer Breeze",
-        style: "Electronic",
-        meta: "128 BPM · Available for lease or exclusive",
-        audio: "audio/summer-breeze.mp3"
-      }
-    ]
-  }
+  beats: [
+    {
+      title: "Neon Dreams",
+      style: "Trap / Melodic",
+      bpm: 140,
+      src: "audio/neon-dreams.mp3"
+    },
+    {
+      title: "Street Gospel",
+      style: "Hip Hop",
+      bpm: 85,
+      src: "audio/street-gospel.mp3"
+    },
+    {
+      title: "Summer Breeze",
+      style: "Electronic",
+      bpm: 128,
+      src: "audio/summer-breeze.mp3"
+    }
+  ]
 };
 </script>
 
@@ -580,73 +571,34 @@ function renderPortfolio() {
   const grid = document.getElementById("portfolio-grid");
   if (!grid) return;
 
-  // MIXES
-  const mixes = PORTFOLIO.mixes;
+  // MIXES CARD
   const mixesCard = document.createElement("div");
   mixesCard.className =
     "rounded-2xl p-8 bg-[var(--bg-card)] border border-white/10";
 
   mixesCard.innerHTML = `
-    <h3 class="text-2xl font-bold mb-2">${mixes.title}</h3>
-    <p class="text-sm opacity-70 mb-6">${mixes.description}</p>
-    <div class="space-y-6">
-      ${mixes.items.map(track => `
-        <div class="p-4 rounded-xl bg-black/60 space-y-2">
-          <p class="font-semibold">
-            🎵 ${track.title} — ${track.genre}
-          </p>
-          <p class="text-sm opacity-70">
-            ${track.role}${track.features ? " · " + track.features : ""}
-          </p>
-
-          ${
-            track.audio.before
-              ? `
-              <div class="space-y-2">
-                <label class="text-xs opacity-60">Before</label>
-                <audio controls class="w-full">
-                  <source src="${track.audio.before}" type="audio/mpeg">
-                </audio>
-
-                <label class="text-xs opacity-60">After</label>
-                <audio controls class="w-full">
-                  <source src="${track.audio.after}" type="audio/mpeg">
-                </audio>
-              </div>
-              `
-              : `
-              <audio controls class="w-full">
-                <source src="${track.audio.after}" type="audio/mpeg">
-              </audio>
-              `
-          }
-        </div>
-      `).join("")}
-    </div>
+    <h3 class="text-2xl font-bold mb-2">Recent Mixes</h3>
+    <p class="text-sm opacity-70 mb-6">Selected projects mixed and mastered at Studio XV.</p>
+    <div id="recent-mixes" class="space-y-6"></div>
+    <p class="text-sm opacity-70 mt-6">
+      Like this sound?
+      <a href="#booking" class="text-pink-500 font-semibold">Book a mixing session →</a>
+    </p>
   `;
 
-  // BEATS
-  const beats = PORTFOLIO.beats;
+  // BEATS CARD
   const beatsCard = document.createElement("div");
   beatsCard.className =
     "rounded-2xl p-8 bg-[var(--bg-card)] border border-white/10";
 
   beatsCard.innerHTML = `
-    <h3 class="text-2xl font-bold mb-2">${beats.title}</h3>
-    <p class="text-sm opacity-70 mb-6">${beats.description}</p>
-    <div class="space-y-6">
-      ${beats.items.map(beat => `
-        <div class="p-4 rounded-xl bg-black/60 space-y-2">
-          <p class="font-semibold">
-            🎹 ${beat.title} — ${beat.style}
-          </p>
-          <p class="text-sm opacity-70">${beat.meta}</p>
-          <audio controls class="w-full">
-            <source src="${beat.audio}" type="audio/mpeg">
-          </audio>
-        </div>
-      `).join("")}
-    </div>
+    <h3 class="text-2xl font-bold mb-2">Beat Catalogue</h3>
+    <p class="text-sm opacity-70 mb-6">Original production available for lease or exclusive purchase.</p>
+    <div id="beat-catalogue" class="space-y-6"></div>
+    <p class="text-sm opacity-70 mt-6">
+      Want to build on this?
+      <a href="#booking" class="text-pink-500 font-semibold">Start a session →</a>
+    </p>
   `;
 
   grid.appendChild(mixesCard);
@@ -654,6 +606,88 @@ function renderPortfolio() {
 }
 
 document.addEventListener("DOMContentLoaded", renderPortfolio);
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const mixesContainer = document.getElementById("recent-mixes");
+  if (!mixesContainer) return;
+
+  PORTFOLIO.mixes.forEach(mix => {
+    const card = document.createElement("div");
+    card.className = "p-5 rounded-xl bg-black/60";
+
+    card.innerHTML = `
+      <p class="font-semibold">🎵 ${mix.title} — ${mix.genre}</p>
+      <p class="text-sm opacity-70 mb-3">${mix.credit}</p>
+
+      ${mix.beforeSrc ? `
+        <div class="flex gap-3 mb-3 text-sm">
+          <button class="toggle-btn text-pink-500 font-semibold" data-mode="after">After</button>
+          <button class="toggle-btn opacity-50" data-mode="before">Before</button>
+        </div>
+      ` : ""}
+
+      <audio controls class="w-full" data-after>
+        <source src="${mix.afterSrc}" type="audio/mpeg">
+      </audio>
+
+      ${mix.beforeSrc ? `
+      <audio controls class="w-full hidden mt-2" data-before>
+        <source src="${mix.beforeSrc}" type="audio/mpeg">
+      </audio>
+      ` : ""}
+    `;
+
+    mixesContainer.appendChild(card);
+  });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const beatContainer = document.getElementById("beat-catalogue");
+  if (!beatContainer) return;
+
+  PORTFOLIO.beats.forEach(beat => {
+    const card = document.createElement("div");
+    card.className = "p-5 rounded-xl bg-black/60";
+
+    card.innerHTML = `
+      <p class="font-semibold">🎹 ${beat.title} — ${beat.style}</p>
+      <p class="text-sm opacity-70 mb-3">
+        ${beat.bpm} BPM · Available for lease or exclusive
+      </p>
+
+      <audio controls class="w-full">
+        <source src="${beat.src}" type="audio/mpeg">
+      </audio>
+    `;
+
+    beatContainer.appendChild(card);
+  });
+});
+</script>
+
+<script>
+document.addEventListener("click", e => {
+  if (!e.target.classList.contains("toggle-btn")) return;
+
+  const wrapper = e.target.closest(".p-5");
+  const mode = e.target.dataset.mode;
+
+  wrapper.querySelectorAll("[data-before], [data-after]").forEach(el => {
+    el.classList.add("hidden");
+    el.pause();
+  });
+
+  wrapper.querySelector(`[data-${mode}]`).classList.remove("hidden");
+
+  wrapper.querySelectorAll(".toggle-btn").forEach(btn => {
+    btn.classList.toggle("opacity-50", btn !== e.target);
+    btn.classList.toggle("text-pink-500", btn === e.target);
+  });
+});
 </script>
 
 <script>
