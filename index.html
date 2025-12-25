@@ -520,7 +520,7 @@ const totalEl = document.getElementById("total-price");
 const depositEl = document.getElementById("deposit-price");
 
 function calculatePricing() {
-  const serviceKey = serviceSelect.value;
+  const serviceKey = serviceSelect.value.toLowerCase();
   const pricing = PRICING[serviceKey];
 
   // Reset
