@@ -390,57 +390,74 @@ const SERVICES = [
     id: "recording",
     title: "Recording",
     items: [
-      { name: "Hourly Session", price: "£30/hr", deposit: 30 },
-      { name: "Half-Day (4hrs)", price: "£110", deposit: 30 },
-      { name: "Full-Day (8hrs)", price: "£200", deposit: 30 }
+      { name: "Hourly Session", price: 30, unit: "hr", depositPercent: 50 },
+      { name: "Half-Day (4hrs)", price: 110, depositPercent: 50 },
+      { name: "Full-Day (8hrs)", price: 200, depositPercent: 50 }
     ]
   },
   {
     id: "mixing",
     title: "Mixing",
     items: [
-      { name: "Per Track", price: "£50", deposit: 30 },
-      { name: "Mix + Master", price: "£75", deposit: 30 },
-      { name: "EP (4–6 tracks)", price: "£280", deposit: 30 }
+      { name: "Per Track", price: 50, depositPercent: 50 },
+      { name: "Mix + Master", price: 75, depositPercent: 50 },
+      { name: "EP (4–6 tracks)", price: 280, depositPercent: 50 }
     ]
   },
   {
     id: "mastering",
     title: "Mastering",
     items: [
-      { name: "Single", price: "£35", deposit: 30 },
-      { name: "EP (4–6 tracks)", price: "£120", deposit: 30 },
-      { name: "Album (10+ tracks)", price: "£250", deposit: 30 }
+      { name: "Single", price: 35, depositPercent: 50 },
+      { name: "EP (4–6 tracks)", price: 120, depositPercent: 50 },
+      { name: "Album (10+ tracks)", price: 250, depositPercent: 50 }
     ]
   },
   {
     id: "production",
     title: "Production",
     items: [
-      { name: "Beat Lease", price: "£30", deposit: 30 },
-      { name: "Exclusive Beat", price: "£150", deposit: 30 },
-      { name: "Custom Production", price: "£300+", deposit: 30 }
+      { name: "Beat Lease", price: 30, depositPercent: 50 },
+      { name: "Exclusive Beat", price: 150, depositPercent: 50 },
+      { name: "Custom Production", price: null }
     ]
   },
   {
     id: "lessons",
     title: "Lessons",
     items: [
-      { name: "DAW Training", price: "£40/hr", deposit: 30 },
-      { name: "Mixing Lessons", price: "£45/hr", deposit: 30 },
-      { name: "Beat-Making", price: "£40/hr", deposit: 30 }
+      { name: "DAW Training", price: 40, unit: "hr", depositPercent: 50 },
+      { name: "Mixing Lessons", price: 45, unit: "hr", depositPercent: 50 },
+      { name: "Beat-Making", price: 40, unit: "hr", depositPercent: 50 }
     ]
   },
   {
     id: "addons",
     title: "Add-Ons",
     items: [
-      { name: "Vocal Tuning", price: "£25" },
-      { name: "Stems Export", price: "£20" },
-      { name: "Rush Delivery", price: "+50%" }
+      { name: "Vocal Tuning", price: 25 },
+      { name: "Stems Export", price: 20 },
+      { name: "Rush Delivery", price: null, priceText: "+50%" }
     ]
   }
 ];
+
+function calculateDeposit(serviceItem) {
+  if (!serviceItem.price || !serviceItem.depositPercent) {
+    return null;
+  }
+
+  return Math.round(
+    (serviceItem.price * serviceItem.depositPercent) / 100
+  );
+}
+
+function formatPrice(item) {
+  if (item.priceText) return item.priceText;
+  if (!item.price) return "POA";
+  const amount = `£${item.price}`;
+  return item.unit ? `${amount}/${item.unit}` : amount;
+}
 </script>
 
 <script>
@@ -462,7 +479,7 @@ SERVICES.forEach(service => {
       ${service.items.map(item => `
         <li class="flex justify-between">
           <span>${item.name}</span>
-          <span>${item.price}</span>
+          <span>${formatPrice(item)}</span>
         </li>
       `).join("")}
     </ul>
