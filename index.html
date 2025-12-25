@@ -1,4 +1,87 @@
   <!doctype html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Studio XV</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        color: #fff;
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <span class="text-xl font-bold">Studio XV</span>
+
+      <!-- Desktop -->
+      <div class="hidden md:flex space-x-8">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#booking">Booking</a>
+        <a href="#about">About</a>
+      </div>
+
+      <!-- Mobile -->
+      <button id="menu-toggle" class="md:hidden text-3xl">☰</button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div id="mobile-menu"
+    class="hidden fixed top-[72px] left-0 right-0 bg-black z-50 border-t border-white/10">
+
+    <a href="#home" class="block py-4 text-center border-b border-white/10">Home</a>
+    <a href="#services" class="block py-4 text-center border-b border-white/10">Services</a>
+    <a href="#portfolio" class="block py-4 text-center border-b border-white/10">Portfolio</a>
+    <a href="#booking" class="block py-4 text-center border-b border-white/10">Booking</a>
+    <a href="#about" class="block py-4 text-center">About</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="home" class="min-h-screen flex items-center justify-center px-6">
+    <div class="text-center space-y-10">
+      <div class="leading-none">
+        <div class="tracking-[0.3em] opacity-80">STUDIO</div>
+        <div class="text-7xl font-extrabold">XV</div>
+      </div>
+
+      <a href="#booking"
+        class="inline-block px-10 py-4 rounded-lg text-lg font-semibold bg-pink-600">
+        Book Your Session
+      </a>
+    </div>
+  </section>
+
+  <footer class="py-12 text-center opacity-70">
+    © 2024 Studio XV. All rights reserved.
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  </script>
+
+  </body>
+  </html>
+  <!doctype html>
   <html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
