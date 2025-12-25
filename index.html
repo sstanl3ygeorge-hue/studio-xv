@@ -556,19 +556,13 @@ renderServiceCards();
 </script>
 
 <script>
-const SERVICES_BOOKING = {
+const PRICING = {
   recording: {
     label: "Recording",
     type: "hourly",
-    rate: 30,
-    minHours: 2
-  },
-
-  lessons: {
-    label: "Lessons",
-    type: "hourly",
+    minHours: 2,
     rate: 40,
-    minHours: 1
+    suggestions: "Most artists book 3–4 hours"
   },
 
   mixing: {
@@ -591,13 +585,22 @@ const SERVICES_BOOKING = {
     }
   },
 
+  lessons: {
+    label: "Lessons",
+    type: "hourly",
+    minHours: 1,
+    maxHours: 4,
+    rate: 40,
+    coachingCopy: "Structured, guided sessions focused on your goals"
+  },
+
   production: {
     label: "Production",
     type: "packages",
     packages: {
       beatLease: { label: "Beat Lease", price: 30 },
       exclusiveBeat: { label: "Exclusive Beat", price: 150 },
-      custom: { label: "Custom Production", price: null, poa: true }
+      custom: { label: "Custom Production", poa: true }
     }
   }
 };
@@ -628,7 +631,7 @@ document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
 
 function handleServiceChange() {
   const key = serviceSelect.value.toLowerCase();
-  const service = SERVICES_BOOKING[key];
+  const service = PRICING[key];
 
   resetTotals();
   packageSelect.innerHTML = `<option value="">Choose a package…</option>`;
@@ -649,7 +652,7 @@ function handleServiceChange() {
       const opt = document.createElement("option");
       opt.value = pkgKey;
 
-      opt.textContent = pkg.price === null
+      opt.textContent = pkg.poa
         ? `${pkg.label} – POA`
         : `${pkg.label} – £${pkg.price}`;
 
@@ -660,7 +663,7 @@ function handleServiceChange() {
 
 function calculateTotal() {
   const key = serviceSelect.value.toLowerCase();
-  const service = SERVICES_BOOKING[key];
+  const service = PRICING[key];
   if (!service) return;
 
   let total = 0;
