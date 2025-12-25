@@ -524,43 +524,33 @@ const PORTFOLIO = {
   mixes: [
     {
       title: "City Lights",
-      genre: "Hip Hop",
-      credit: "Mix + Master | Studio XV",
-      beforeSrc: "audio/city-lights-before.mp3",
-      afterSrc: "audio/city-lights-after.mp3"
+      genre: "Afro House",
+      subtitle: "Produced, Mixed & Mastered | Studio XV",
+      beforeSrc: "/audio/mixes/city-lights-before.mp3",
+      afterSrc: "/audio/mixes/city-lights-after.mp3"
     },
     {
       title: "Midnight Drive",
-      genre: "R&B",
-      credit: "Mix | Vocal Balance + Depth",
-      afterSrc: "audio/midnight-drive.mp3"
+      genre: "Trap",
+      subtitle: "Mastered | Studio XV",
+      beforeSrc: "/audio/mixes/midnight-drive-before.mp3",
+      afterSrc: "/audio/mixes/midnight-drive-after.mp3"
     },
     {
       title: "Elevation",
-      genre: "Trap",
-      credit: "Mix | Punch + Low-End Control",
-      afterSrc: "audio/elevation.mp3"
+      genre: "Afrobeats",
+      subtitle: "Mixed & Mastered | Studio XV",
+      beforeSrc: "/audio/mixes/elevation-before.mp3",
+      afterSrc: "/audio/mixes/elevation-after.mp3"
     }
   ],
 
   beats: [
     {
       title: "Neon Dreams",
-      style: "Trap / Melodic",
-      bpm: 140,
-      src: "audio/neon-dreams.mp3"
-    },
-    {
-      title: "Street Gospel",
-      style: "Hip Hop",
-      bpm: 85,
-      src: "audio/street-gospel.mp3"
-    },
-    {
-      title: "Summer Breeze",
-      style: "Electronic",
-      bpm: 128,
-      src: "audio/summer-breeze.mp3"
+      genre: "Trap / Melodic",
+      subtitle: "140 BPM · Available for lease or exclusive",
+      src: "/audio/beats/neon-dreams.mp3"
     }
   ]
 };
@@ -613,30 +603,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const mixesContainer = document.getElementById("recent-mixes");
   if (!mixesContainer) return;
 
-  PORTFOLIO.mixes.forEach(mix => {
+  PORTFOLIO.mixes.forEach((mix, index) => {
     const card = document.createElement("div");
     card.className = "p-5 rounded-xl bg-black/60";
 
     card.innerHTML = `
       <p class="font-semibold">🎵 ${mix.title} — ${mix.genre}</p>
-      <p class="text-sm opacity-70 mb-3">${mix.credit}</p>
+      <p class="text-sm opacity-70 mb-3">${mix.subtitle}</p>
 
       ${mix.beforeSrc ? `
         <div class="flex gap-3 mb-3 text-sm">
-          <button class="toggle-btn text-pink-500 font-semibold" data-mode="after">After</button>
-          <button class="toggle-btn opacity-50" data-mode="before">Before</button>
+          <button class="mix-toggle text-pink-500 font-semibold" data-index="${index}" data-mode="after">After</button>
+          <button class="mix-toggle opacity-50" data-index="${index}" data-mode="before">Before</button>
         </div>
+        <p class="text-xs opacity-50 mb-3">
+          Seamless A/B comparison — playback continues uninterrupted
+        </p>
       ` : ""}
 
-      <audio controls class="w-full" data-after>
+      <audio controls class="w-full" data-mix-player="${index}">
         <source src="${mix.afterSrc}" type="audio/mpeg">
       </audio>
-
-      ${mix.beforeSrc ? `
-      <audio controls class="w-full hidden mt-2" data-before>
-        <source src="${mix.beforeSrc}" type="audio/mpeg">
-      </audio>
-      ` : ""}
     `;
 
     mixesContainer.appendChild(card);
@@ -654,9 +641,9 @@ document.addEventListener("DOMContentLoaded", () => {
     card.className = "p-5 rounded-xl bg-black/60";
 
     card.innerHTML = `
-      <p class="font-semibold">🎹 ${beat.title} — ${beat.style}</p>
+      <p class="font-semibold">🎹 ${beat.title} — ${beat.genre}</p>
       <p class="text-sm opacity-70 mb-3">
-        ${beat.bpm} BPM · Available for lease or exclusive
+        ${beat.subtitle}
       </p>
 
       <audio controls class="w-full">
@@ -671,21 +658,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 document.addEventListener("click", e => {
-  if (!e.target.classList.contains("toggle-btn")) return;
+  if (!e.target.classList.contains("mix-toggle")) return;
 
-  const wrapper = e.target.closest(".p-5");
+  const index = e.target.dataset.index;
   const mode = e.target.dataset.mode;
+  const mix = PORTFOLIO.mixes[index];
 
-  wrapper.querySelectorAll("[data-before], [data-after]").forEach(el => {
-    el.classList.add("hidden");
-    el.pause();
+  const player = document.querySelector(`[data-mix-player="${index}"]`);
+  const source = player.querySelector("source");
+
+  // 1. Capture state
+  const currentTime = player.currentTime;
+  const wasPlaying = !player.paused && !player.ended;
+
+  // 2. Swap source
+  source.src = mode === "before"
+    ? mix.beforeSrc
+    : mix.afterSrc;
+
+  // 3. Reload
+  player.load();
+
+  // 4. Restore timestamp + playback state
+  player.addEventListener("loadedmetadata", function restore() {
+    player.currentTime = Math.min(currentTime, player.duration || currentTime);
+
+    if (wasPlaying) {
+      player.play().catch(() => {
+        /* autoplay restrictions safety */
+      });
+    }
+
+    player.removeEventListener("loadedmetadata", restore);
   });
 
-  wrapper.querySelector(`[data-${mode}]`).classList.remove("hidden");
-
-  wrapper.querySelectorAll(".toggle-btn").forEach(btn => {
-    btn.classList.toggle("opacity-50", btn !== e.target);
+  // 5. Visual state
+  const buttons = e.target.parentElement.querySelectorAll(".mix-toggle");
+  buttons.forEach(btn => {
     btn.classList.toggle("text-pink-500", btn === e.target);
+    btn.classList.toggle("opacity-50", btn !== e.target);
   });
 });
 </script>
