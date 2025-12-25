@@ -275,6 +275,17 @@
           <p class="text-xs opacity-60">Most artists book 2–4 hours.</p>
         </div>
 
+        <!-- Package selector -->
+        <section id="package-wrapper" class="hidden">
+          <label class="text-sm opacity-70 mb-2 block">Package</label>
+          <select
+            id="package-select"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20"
+          >
+            <option value="">Choose a package…</option>
+          </select>
+        </section>
+
         <!-- Your details -->
         <div class="grid md:grid-cols-2 gap-6">
           <input
@@ -335,12 +346,12 @@
         <div class="rounded-xl p-5 bg-black/40 border border-white/10 space-y-2">
           <div class="flex justify-between">
             <span>Total session price</span>
-            <span class="font-semibold">£<span id="total-price">0</span></span>
+            <span class="font-semibold">£<span id="total-display">0</span></span>
           </div>
 
           <div class="flex justify-between text-pink-500 font-semibold">
             <span>Deposit due today (50%)</span>
-            <span>£<span id="deposit-price">0</span></span>
+            <span>£<span id="deposit-display">0</span></span>
           </div>
 
           <p class="text-xs opacity-60 mt-2">
@@ -351,6 +362,7 @@
         <!-- Submit -->
         <button
           type="submit"
+          id="booking-submit"
           class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition"
         >
           Submit Booking Request
@@ -505,64 +517,131 @@ renderServiceCards();
 </script>
 
 <script>
-const PRICING = {
-  recording: { hourly: 40 },
-  lessons: { hourly: 40 },
-  mixing: { flat: 50 },
-  mastering: { flat: 35 }
+const SERVICES_BOOKING = {
+  recording: {
+    label: "Recording",
+    type: "hourly",
+    rate: 40,
+    minHours: 2
+  },
+
+  lessons: {
+    label: "Lessons",
+    type: "hourly",
+    rate: 40,
+    minHours: 1
+  },
+
+  mixing: {
+    label: "Mixing",
+    type: "packages",
+    packages: {
+      perTrack: { label: "Per Track", price: 50 },
+      mixMaster: { label: "Mix + Master", price: 75 },
+      ep: { label: "EP (4–6 tracks)", price: 280 }
+    }
+  },
+
+  mastering: {
+    label: "Mastering",
+    type: "packages",
+    packages: {
+      single: { label: "Single", price: 35 },
+      ep: { label: "EP (4–6 tracks)", price: 120 },
+      album: { label: "Album (10+ tracks)", price: 250 }
+    }
+  },
+
+  production: {
+    label: "Production",
+    type: "packages",
+    packages: {
+      beatLease: { label: "Beat Lease", price: 30 },
+      exclusiveBeat: { label: "Exclusive Beat", price: 150 },
+      custom: { label: "Custom Production", price: null } // POA
+    }
+  }
 };
 
 const serviceSelect = document.getElementById("service-select");
+const packageSelect = document.getElementById("package-select");
+const packageWrapper = document.getElementById("package-wrapper");
 const hoursWrapper = document.getElementById("hours-wrapper");
 const hoursInput = document.getElementById("hours-input");
+const totalDisplay = document.getElementById("total-display");
+const depositDisplay = document.getElementById("deposit-display");
+const submitButton = document.getElementById("booking-submit");
 
-const totalEl = document.getElementById("total-price");
-const depositEl = document.getElementById("deposit-price");
+serviceSelect.addEventListener("change", handleServiceChange);
+packageSelect.addEventListener("change", calculateTotal);
+document.addEventListener("input", calculateTotal);
 
-function calculatePricing() {
-  const serviceKey = serviceSelect.value.toLowerCase();
-  const pricing = PRICING[serviceKey];
+function handleServiceChange() {
+  const key = serviceSelect.value.toLowerCase();
+  const service = SERVICES_BOOKING[key];
 
-  // Reset
-  totalEl.textContent = "0";
-  depositEl.textContent = "0";
+  resetTotals();
+  packageSelect.innerHTML = `<option value="">Choose a package…</option>`;
+  packageWrapper.classList.add("hidden");
+  hoursWrapper.classList.add("hidden");
 
-  if (!pricing) {
-    hoursWrapper.classList.add("hidden");
-    return;
+  if (!service) return;
+
+  if (service.type === "hourly") {
+    hoursWrapper.classList.remove("hidden");
+    hoursInput.min = service.minHours;
+    hoursInput.value = service.minHours;
   }
+
+  if (service.type === "packages") {
+    packageWrapper.classList.remove("hidden");
+    Object.entries(service.packages).forEach(([pkgKey, pkg]) => {
+      if (pkg.price === null) return; // POA hidden from pricing
+      const opt = document.createElement("option");
+      opt.value = pkgKey;
+      opt.textContent = `${pkg.label} – £${pkg.price}`;
+      packageSelect.appendChild(opt);
+    });
+  }
+}
+
+function calculateTotal() {
+  const key = serviceSelect.value.toLowerCase();
+  const service = SERVICES_BOOKING[key];
+  if (!service) return;
 
   let total = 0;
 
-  if (pricing.hourly) {
-    hoursWrapper.classList.remove("hidden");
+  if (service.type === "hourly") {
     const hours = Number(hoursInput.value);
-
-    if (!hours || hours < 1) return;
-
-    total = hours * pricing.hourly;
+    if (!hours || hours < service.minHours) return resetTotals();
+    total = hours * service.rate;
   }
 
-  if (pricing.flat) {
-    hoursWrapper.classList.add("hidden");
-    total = pricing.flat;
+  if (service.type === "packages") {
+    const pkg = service.packages[packageSelect.value];
+    if (!pkg || pkg.price === null) return resetTotals();
+    total = pkg.price;
   }
 
   const deposit = Math.round(total * 0.5);
 
-  totalEl.textContent = total.toFixed(2);
-  depositEl.textContent = deposit.toFixed(2);
+  totalDisplay.textContent = total.toFixed(2);
+  depositDisplay.textContent = deposit.toFixed(2);
+  submitButton.disabled = false;
 
-  localStorage.setItem("bookingPricing", JSON.stringify({
-    service: serviceKey,
-    hours: pricing.hourly ? hoursInput.value : null,
+  localStorage.setItem("bookingData", JSON.stringify({
+    service: service.label,
     total,
     deposit
   }));
 }
 
-serviceSelect.addEventListener("change", calculatePricing);
-hoursInput.addEventListener("input", calculatePricing);
+function resetTotals() {
+  totalDisplay.textContent = "0";
+  depositDisplay.textContent = "0";
+  submitButton.disabled = true;
+}
 </script>
 
 </body>
