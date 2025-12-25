@@ -262,22 +262,31 @@
 
         <!-- STEP: Duration (Hourly services only) -->
         <section id="duration-section" class="hidden">
-          <h3 class="text-xl font-semibold mb-4">Session Length</h3>
+          <h3 class="text-xl font-semibold mb-2">Session Length</h3>
 
-          <select
-            id="duration-select"
+          <p id="duration-hint" class="text-sm opacity-70 mb-4">
+            Most artists book 3–4 hours for a focused session.
+          </p>
+
+          <input
+            type="range"
+            id="duration-slider"
             name="duration"
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20
-                   focus:border-pink-600 focus:outline-none text-lg"
-          >
-            <option value="">Select duration…</option>
-            <option value="1">1 hour</option>
-            <option value="2">2 hours</option>
-            <option value="3">3 hours</option>
-            <option value="4">4 hours</option>
-            <option value="6">6 hours</option>
-            <option value="8">8 hours</option>
-          </select>
+            min="1"
+            max="8"
+            step="1"
+            value="2"
+            class="w-full accent-pink-500"
+          />
+
+          <div class="flex justify-between text-sm opacity-70 mt-2">
+            <span>1 hr</span>
+            <span>8 hrs</span>
+          </div>
+
+          <p class="mt-3 text-lg">
+            Selected: <strong><span id="duration-value">2</span> hours</strong>
+          </p>
         </section>
 
         <!-- STEP 3: Enhance Your Session (optional) -->
@@ -455,6 +464,8 @@ const SERVICES = {
     title: "Recording",
     bookableType: "mixed",
     hourlyRate: 30,
+    minHours: 2,
+    suggestHalfDayAt: 4,
     items: [
       { label: "Hourly Session", price: "£30/hr" },
       { label: "Half-Day (4hrs)", price: "£110" },
@@ -481,6 +492,9 @@ const SERVICES = {
     title: "Lessons",
     bookableType: "hourly",
     hourlyRate: 40,
+    minHours: 1,
+    maxHours: 4,
+    coachingCopy: "Sessions are structured, focused, and tailored to your goals.",
     items: [
       { label: "DAW Training (1hr)", price: "£40" },
       { label: "Mixing Lesson (1hr)", price: "£45" },
@@ -518,6 +532,8 @@ const BOOKING_SERVICES = {
     label: "Recording",
     bookableType: "mixed",
     hourlyRate: 30,
+    minHours: 2,
+    suggestHalfDayAt: 4,
     packages: {
       hourly: { label: "Hourly Session", price: 30 },
       half: { label: "Half-Day (4hrs)", price: 110 },
@@ -543,7 +559,9 @@ const BOOKING_SERVICES = {
   lessons: {
     label: "Lessons",
     bookableType: "hourly",
-    hourlyRate: 40
+    hourlyRate: 40,
+    minHours: 1,
+    maxHours: 4
   }
 };
 
@@ -561,9 +579,9 @@ function calculateEngineeringCost(hours) {
 
 function calculateHourlyTotal(serviceKey) {
   const service = BOOKING_SERVICES[serviceKey];
-  const hours = Number(durationSelect.value || 0);
+  const hours = Number(durationSlider.value || 0);
   
-  if (!hours) {
+  if (!hours || hours < (service.minHours || 1)) {
     totalDisplay.textContent = "0";
     depositDisplay.textContent = "0";
     submitButton.disabled = true;
@@ -613,7 +631,9 @@ const serviceSelect = document.getElementById("service-select");
 const packageSelect = document.getElementById("package-select");
 const packageSection = document.getElementById("package-section");
 const durationSection = document.getElementById("duration-section");
-const durationSelect = document.getElementById("duration-select");
+const durationSlider = document.getElementById("duration-slider");
+const durationValue = document.getElementById("duration-value");
+const durationHint = document.getElementById("duration-hint");
 const addonsSection = document.getElementById("addons-section");
 const totalDisplay = document.getElementById("total-display");
 const depositDisplay = document.getElementById("deposit-display");
@@ -631,7 +651,6 @@ if (serviceSelect) {
   // When service changes, populate packages
   serviceSelect.addEventListener("change", () => {
     packageSelect.innerHTML = '<option value="">Select package…</option>';
-    durationSelect.value = "";
     const serviceKey = serviceSelect.value;
     const service = BOOKING_SERVICES[serviceKey];
 
@@ -649,6 +668,17 @@ if (serviceSelect) {
     if (service.bookableType === "hourly") {
       durationSection.classList.remove("hidden");
       addonsSection.classList.remove("hidden");
+      
+      durationSlider.min = service.minHours || 1;
+      durationSlider.max = service.maxHours || 8;
+      durationSlider.value = service.minHours || 1;
+      durationValue.textContent = durationSlider.value;
+      
+      durationHint.textContent = service.label === "Lessons"
+        ? "Most lessons run 1–2 hours for best retention."
+        : "Most artists book 3–4 hours for a focused session.";
+      
+      calculateHourlyTotal(serviceKey);
       return;
     }
 
@@ -657,6 +687,13 @@ if (serviceSelect) {
       packageSection.classList.remove("hidden");
       durationSection.classList.remove("hidden");
       addonsSection.classList.remove("hidden");
+      
+      durationSlider.min = service.minHours || 1;
+      durationSlider.max = 8;
+      durationSlider.value = service.minHours || 2;
+      durationValue.textContent = durationSlider.value;
+      
+      durationHint.textContent = "Most artists book 3–4 hours for a focused session.";
 
       Object.keys(BOOKING_SERVICES[serviceKey].packages).forEach(pkgKey => {
         const pkg = BOOKING_SERVICES[serviceKey].packages[pkgKey];
@@ -676,10 +713,24 @@ if (serviceSelect) {
   // When package changes, recalculate
   packageSelect.addEventListener("change", calculateTotal);
 
-  // When duration changes, recalculate
-  durationSelect.addEventListener("change", () => {
+  // When duration slider changes, recalculate
+  durationSlider.addEventListener("input", () => {
+    const hours = Number(durationSlider.value);
+    durationValue.textContent = hours;
+    
     const serviceKey = serviceSelect.value;
-    if (serviceKey && BOOKING_SERVICES[serviceKey] && BOOKING_SERVICES[serviceKey].bookableType === "hourly") {
+    const service = BOOKING_SERVICES[serviceKey];
+    
+    // Auto-suggest Half-Day for Recording at 4 hours
+    if (service?.label === "Recording" && service.suggestHalfDayAt === hours) {
+      durationHint.textContent = "At 4 hours, most artists choose a Half-Day session for better value.";
+    } else if (service?.label === "Lessons") {
+      durationHint.textContent = "Most lessons run 1–2 hours for best retention.";
+    } else {
+      durationHint.textContent = "Most artists book 3–4 hours for a focused session.";
+    }
+    
+    if (service && service.bookableType === "hourly") {
       calculateHourlyTotal(serviceKey);
     } else {
       calculateTotal();
