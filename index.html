@@ -83,6 +83,22 @@
       opacity: 1;
       box-shadow: 0 0 0 1px rgba(236,72,153,0.4);
     }
+
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border-soft);
+      letter-spacing: 0.04em;
+    }
   </style>
 </head>
 
@@ -526,6 +542,7 @@ const PORTFOLIO = {
       title: "City Lights",
       genre: "Afro House",
       credit: "Produced, Mixed & Mastered",
+      badges: ["Produced", "Mixed", "Mastered"],
       before: "/mixes/city-lights-before.mp3",
       after: "/mixes/city-lights-after.mp3"
     },
@@ -533,6 +550,7 @@ const PORTFOLIO = {
       title: "Midnight Drive",
       genre: "Trap",
       credit: "Mastered",
+      badges: ["Mastered"],
       before: "/mixes/midnight-drive-before.mp3",
       after: "/mixes/midnight-drive-after.mp3"
     },
@@ -540,6 +558,7 @@ const PORTFOLIO = {
       title: "Elevation",
       genre: "Afrobeats",
       credit: "Mixed & Mastered",
+      badges: ["Mixed", "Mastered"],
       before: "/mixes/elevation-before.mp3",
       after: "/mixes/elevation-after.mp3"
     }
@@ -621,6 +640,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.innerHTML = `
       <p class="font-semibold">🎵 ${mix.title} — ${mix.genre}</p>
+      ${mix.badges ? `
+        <div class="badges">
+          ${mix.badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
+        </div>
+      ` : ''}
       <p class="text-sm opacity-70 mb-3">${mix.credit}</p>
 
       ${mix.before ? `
