@@ -222,7 +222,7 @@
         data-netlify="true"
         netlify-honeypot="bot-field"
         data-netlify-recaptcha="true"
-        class="space-y-7"
+        class="space-y-10"
       >
         <!-- Netlify form name -->
         <input type="hidden" name="form-name" value="booking" />
@@ -235,122 +235,128 @@
           </label>
         </p>
 
-        <!-- Full Name -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Full Name</label>
-          <input
-            type="text"
-            name="full-name"
-            required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-          />
-        </div>
-
-        <!-- Email -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Email</label>
-          <input
-            type="email"
-            name="email"
-            required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-          />
-        </div>
-
-        <!-- Phone -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Phone</label>
-          <input
-            type="tel"
-            name="phone"
-            required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-          />
-        </div>
-
-        <!-- Service Category -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Service Type</label>
+        <!-- STEP 1: Select Your Session -->
+        <section>
+          <h3 class="text-xl font-semibold mb-4">Select Your Session</h3>
           <select
             id="service-select"
             name="service"
             required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none text-lg"
           >
-            <option value="">Select a service…</option>
+            <option value="">Choose a service…</option>
           </select>
-        </div>
+        </section>
 
-        <!-- Service Option -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Option</label>
+        <!-- STEP 2: Session Details -->
+        <section id="package-section" class="hidden">
+          <h3 class="text-xl font-semibold mb-4">Session Details</h3>
           <select
-            id="option-select"
-            name="option"
-            required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            id="package-select"
+            name="package"
+            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none text-lg"
           >
-            <option value="">Choose service first…</option>
+            <option value="">Select package…</option>
           </select>
-        </div>
+        </section>
 
-        <!-- Quantity (for hourly services) -->
-        <div id="quantity-wrapper" class="hidden">
-          <label class="block mb-2 text-sm font-semibold">Hours / Quantity</label>
-          <input
-            id="quantity-input"
-            name="quantity"
-            type="number"
-            min="1"
-            value="1"
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-          />
-        </div>
+        <!-- STEP 3: Enhance Your Session (optional) -->
+        <section id="addons-section" class="hidden">
+          <h3 class="text-xl font-semibold mb-4">Enhance Your Session <span class="text-sm opacity-60">(optional)</span></h3>
+          <p class="text-sm opacity-70 mb-4">Optional enhancements chosen by many artists to streamline delivery.</p>
+          
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
+              <input type="checkbox" name="addon" value="vocalTuning" class="addon-checkbox w-5 h-5" />
+              <span class="flex-1">Vocal Tuning</span>
+              <span class="text-pink-500 font-semibold">+£25</span>
+            </label>
+            
+            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
+              <input type="checkbox" name="addon" value="stems" class="addon-checkbox w-5 h-5" />
+              <span class="flex-1">Stems Export</span>
+              <span class="text-pink-500 font-semibold">+£20</span>
+            </label>
+            
+            <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition">
+              <input type="checkbox" name="addon" value="rush" class="addon-checkbox w-5 h-5" />
+              <span class="flex-1">Rush Delivery</span>
+              <span class="text-pink-500 font-semibold">+50%</span>
+            </label>
+          </div>
+        </section>
 
-        <!-- Price Display -->
-        <div class="p-4 rounded-lg bg-pink-600/10 border border-pink-600/30">
-          <p id="price-output" class="text-lg font-semibold">Select a service to see pricing</p>
-          <p id="deposit-output" class="text-sm opacity-80 mt-1"></p>
-        </div>
+        <!-- Contact Details -->
+        <section>
+          <h3 class="text-xl font-semibold mb-4">Your Details</h3>
+          
+          <div class="space-y-4">
+            <input
+              type="text"
+              name="full-name"
+              placeholder="Full Name"
+              required
+              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            />
 
-        <!-- Preferred Date -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Preferred Date</label>
-          <input
-            type="date"
-            name="preferred-date"
-            required
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-          />
-        </div>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            />
 
-        <!-- Details -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">Additional Details</label>
-          <textarea
-            name="details"
-            rows="4"
-            placeholder="Tell us about your project…"
-            class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
-          ></textarea>
-        </div>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone"
+              required
+              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            />
 
-        <!-- File Upload -->
-        <div>
-          <label class="block mb-2 text-sm font-semibold">
-            Upload Reference / Demo (optional)
-          </label>
-          <input
-            type="file"
-            name="reference-file"
-            accept=".mp3,.wav,.zip"
-            class="w-full text-sm text-white
-                   file:bg-pink-600 file:text-white
-                   file:border-none file:px-4 file:py-2
-                   file:rounded-lg file:cursor-pointer
-                   hover:file:bg-pink-500"
-          />
-        </div>
+            <input
+              type="date"
+              name="preferred-date"
+              required
+              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            />
+
+            <textarea
+              name="details"
+              rows="3"
+              placeholder="Tell us about your project…"
+              class="w-full px-4 py-3 rounded-lg bg-black/60 border border-white/20 focus:border-pink-600 focus:outline-none"
+            ></textarea>
+
+            <input
+              type="file"
+              name="reference-file"
+              accept=".mp3,.wav,.zip"
+              class="w-full text-sm text-white
+                     file:bg-pink-600 file:text-white
+                     file:border-none file:px-4 file:py-2
+                     file:rounded-lg file:cursor-pointer
+                     hover:file:bg-pink-500"
+            />
+          </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="p-6 rounded-xl bg-pink-600/10 border border-pink-600/30">
+          <div class="space-y-2">
+            <p class="text-lg">
+              Session total: <strong class="text-2xl">£<span id="total-display">0</span></strong>
+            </p>
+            <p class="text-pink-500 font-semibold">
+              Deposit due today: £<span id="deposit-display">0</span>
+            </p>
+            <p class="text-sm opacity-70 mt-3">
+              This secures your time in the studio.<br>
+              The remaining balance is payable on the session day.
+            </p>
+          </div>
+        </section>
 
         <!-- reCAPTCHA -->
         <div data-netlify-recaptcha="true"></div>
@@ -359,10 +365,16 @@
         <button
           type="submit"
           id="booking-submit"
-          class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition"
+          class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled
         >
-          Submit Booking Request
+          Secure Your Session
         </button>
+
+        <p class="text-center text-sm opacity-60">
+          Secure payment powered by Stripe.<br>
+          No additional charges are applied without confirmation.
+        </p>
       </form>
 
     </div>
@@ -412,159 +424,159 @@
 </script>
 
 <script>
-const SERVICES = [
-  {
-    id: "recording",
-    title: "Recording",
-    type: "hourly-or-package",
-    items: [
-      { name: "Hourly Session", pricePerHour: 30 },
-      { name: "Half-Day (4hrs)", fixedPrice: 110, hours: 4 },
-      { name: "Full-Day (8hrs)", fixedPrice: 200, hours: 8 }
-    ]
+const SERVICES = {
+  recording: {
+    label: "Recording",
+    packages: {
+      hourly: { label: "Hourly Session", price: 30 },
+      half: { label: "Half-Day (4hrs)", price: 110 },
+      full: { label: "Full-Day (8hrs)", price: 200 }
+    }
   },
-  {
-    id: "mixing",
-    title: "Mixing",
-    type: "fixed",
-    items: [
-      { name: "Per Track", fixedPrice: 50 },
-      { name: "Mix + Master", fixedPrice: 75 },
-      { name: "EP (4–6 tracks)", fixedPrice: 280 }
-    ]
+  mixing: {
+    label: "Mixing",
+    packages: {
+      single: { label: "Per Track", price: 50 },
+      mixMaster: { label: "Mix + Master", price: 75 },
+      ep: { label: "EP (4–6 tracks)", price: 280 }
+    }
   },
-  {
-    id: "mastering",
-    title: "Mastering",
-    type: "fixed",
-    items: [
-      { name: "Single", fixedPrice: 35 },
-      { name: "EP (4–6 tracks)", fixedPrice: 120 },
-      { name: "Album (10+ tracks)", fixedPrice: 250 }
-    ]
+  mastering: {
+    label: "Mastering",
+    packages: {
+      single: { label: "Single", price: 35 },
+      ep: { label: "EP (4–6 tracks)", price: 120 },
+      album: { label: "Album (10+ tracks)", price: 250 }
+    }
   },
-  {
-    id: "lessons",
-    title: "Lessons",
-    type: "hourly",
-    items: [
-      { name: "DAW Training", pricePerHour: 40 },
-      { name: "Mixing Lessons", pricePerHour: 45 },
-      { name: "Beat-Making", pricePerHour: 40 }
-    ]
+  lessons: {
+    label: "Lessons",
+    packages: {
+      daw: { label: "DAW Training (1hr)", price: 40 },
+      mixing: { label: "Mixing Lesson (1hr)", price: 45 },
+      beat: { label: "Beat-Making (1hr)", price: 40 }
+    }
   },
-  {
-    id: "production",
-    title: "Production",
-    type: "fixed-or-poa",
-    items: [
-      { name: "Beat Lease", fixedPrice: 30 },
-      { name: "Exclusive Beat", fixedPrice: 150 },
-      { name: "Custom Production", poa: true }
-    ]
-  },
-  {
-    id: "addons",
-    title: "Add-Ons",
-    type: "addon",
-    items: [
-      { name: "Vocal Tuning", fixedPrice: 25 },
-      { name: "Stems Export", fixedPrice: 20 },
-      { name: "Rush Delivery", multiplier: 1.5 }
-    ]
+  production: {
+    label: "Production",
+    packages: {
+      lease: { label: "Beat Lease", price: 30 },
+      exclusive: { label: "Exclusive Beat", price: 150 },
+      custom: { label: "Custom Production", price: null }
+    }
   }
-];
+};
 
-function calculatePrice(service, item, quantity = 1) {
-  if (item.poa) return null;
-  if (item.fixedPrice) return item.fixedPrice;
-  if (item.pricePerHour) return item.pricePerHour * quantity;
-  return null;
-}
-
-function calculateDeposit(total) {
-  return total ? Math.round(total * 0.5) : null;
-}
+const ADDONS = {
+  vocalTuning: 25,
+  stems: 20,
+  rushMultiplier: 1.5
+};
 
 function formatPrice(item) {
-  if (item.poa) return "POA";
-  if (item.fixedPrice) return `£${item.fixedPrice}`;
-  if (item.pricePerHour) return `£${item.pricePerHour}/hr`;
-  if (item.multiplier) return "+50%";
-  return "POA";
+  if (item.price === null) return "POA";
+  return `£${item.price}`;
 }
 </script>
 
 <script>
 // Populate booking form
 const serviceSelect = document.getElementById("service-select");
-const optionSelect = document.getElementById("option-select");
-const quantityWrapper = document.getElementById("quantity-wrapper");
-const quantityInput = document.getElementById("quantity-input");
-const priceOutput = document.getElementById("price-output");
-const depositOutput = document.getElementById("deposit-output");
+const packageSelect = document.getElementById("package-select");
+const packageSection = document.getElementById("package-section");
+const addonsSection = document.getElementById("addons-section");
+const totalDisplay = document.getElementById("total-display");
+const depositDisplay = document.getElementById("deposit-display");
+const submitButton = document.getElementById("booking-submit");
 
+// Populate services
 if (serviceSelect) {
-  SERVICES.forEach(service => {
+  Object.keys(SERVICES).forEach(key => {
     const opt = document.createElement("option");
-    opt.value = service.id;
-    opt.textContent = service.title;
+    opt.value = key;
+    opt.textContent = SERVICES[key].label;
     serviceSelect.appendChild(opt);
   });
 
+  // When service changes, populate packages
   serviceSelect.addEventListener("change", () => {
-    optionSelect.innerHTML = "";
-    const service = SERVICES.find(s => s.id === serviceSelect.value);
+    packageSelect.innerHTML = '<option value="">Select package…</option>';
+    const serviceKey = serviceSelect.value;
 
-    if (service) {
-      service.items.forEach(item => {
+    if (serviceKey && SERVICES[serviceKey]) {
+      packageSection.classList.remove("hidden");
+      addonsSection.classList.remove("hidden");
+
+      Object.keys(SERVICES[serviceKey].packages).forEach(pkgKey => {
+        const pkg = SERVICES[serviceKey].packages[pkgKey];
         const opt = document.createElement("option");
-        opt.value = item.name;
-        opt.textContent = item.name;
-        optionSelect.appendChild(opt);
+        opt.value = pkgKey;
+        opt.textContent = `${pkg.label} - ${formatPrice(pkg)}`;
+        packageSelect.appendChild(opt);
       });
+    } else {
+      packageSection.classList.add("hidden");
+      addonsSection.classList.add("hidden");
     }
 
-    updatePricing();
+    calculateTotal();
   });
 
-  optionSelect.addEventListener("change", updatePricing);
-  quantityInput.addEventListener("input", updatePricing);
+  // When package changes, recalculate
+  packageSelect.addEventListener("change", calculateTotal);
+
+  // When addons change, recalculate
+  document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
+    checkbox.addEventListener("change", calculateTotal);
+  });
 }
 
-function updatePricing() {
-  const service = SERVICES.find(s => s.id === serviceSelect.value);
-  if (!service) return;
+function calculateTotal() {
+  const serviceKey = serviceSelect.value;
+  const packageKey = packageSelect.value;
 
-  const item = service.items.find(i => i.name === optionSelect.value);
-  if (!item) return;
-
-  const quantity = Number(quantityInput.value);
-  const needsQuantity = !!item.pricePerHour;
-
-  quantityWrapper.classList.toggle("hidden", !needsQuantity);
-
-  const total = calculatePrice(service, item, quantity);
-  const deposit = calculateDeposit(total);
-
-  if (!total) {
-    priceOutput.textContent = "Price to be confirmed";
-    depositOutput.textContent = "";
+  if (!serviceKey || !packageKey) {
+    totalDisplay.textContent = "0";
+    depositDisplay.textContent = "0";
+    submitButton.disabled = true;
     return;
   }
 
-  priceOutput.textContent = `Total: £${total}`;
-  depositOutput.textContent = `Deposit required: £${deposit}`;
-  
-  // Store booking data for deposit page
-  localStorage.setItem('bookingData', JSON.stringify({
-    service: serviceSelect.value,
-    option: optionSelect.value,
-    quantity: quantity,
+  const pkg = SERVICES[serviceKey].packages[packageKey];
+  if (!pkg.price) {
+    totalDisplay.textContent = "TBD";
+    depositDisplay.textContent = "TBD";
+    submitButton.disabled = true;
+    return;
+  }
+
+  let total = pkg.price;
+
+  // Add-ons
+  document.querySelectorAll('.addon-checkbox:checked').forEach(box => {
+    if (box.value === "rush") {
+      total *= ADDONS.rushMultiplier;
+    } else {
+      total += ADDONS[box.value];
+    }
+  });
+
+  const deposit = Math.round(total * 0.5);
+
+  totalDisplay.textContent = total.toFixed(2);
+  depositDisplay.textContent = deposit.toFixed(2);
+  submitButton.disabled = false;
+
+  // Store booking data
+  window.bookingData = {
+    service: serviceKey,
+    package: packageKey,
     total: total,
     deposit: deposit,
-    serviceName: `${service.title} - ${item.name}${needsQuantity ? ` (${quantity}hrs)` : ''}`
-  }));
+    serviceName: `${SERVICES[serviceKey].label} - ${SERVICES[serviceKey].packages[packageKey].label}`
+  };
+
+  localStorage.setItem('bookingData', JSON.stringify(window.bookingData));
 }
 
 // Handle form submission
@@ -580,7 +592,17 @@ if (bookingForm) {
 <script>
 const grid = document.getElementById("services-grid");
 
-SERVICES.forEach(service => {
+// Convert new SERVICES object to array format for grid rendering
+const servicesArray = Object.keys(SERVICES).map(key => ({
+  id: key,
+  title: SERVICES[key].label,
+  items: Object.keys(SERVICES[key].packages).map(pkgKey => ({
+    name: SERVICES[key].packages[pkgKey].label,
+    price: formatPrice(SERVICES[key].packages[pkgKey])
+  }))
+}));
+
+servicesArray.forEach(service => {
   const card = document.createElement("div");
   card.className = `
     group rounded-2xl p-8 bg-[#111] border border-white/10
@@ -596,7 +618,7 @@ SERVICES.forEach(service => {
       ${service.items.map(item => `
         <li class="flex justify-between">
           <span>${item.name}</span>
-          <span>${formatPrice(item)}</span>
+          <span>${item.price}</span>
         </li>
       `).join("")}
     </ul>
