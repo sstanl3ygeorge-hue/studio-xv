@@ -124,6 +124,37 @@
       text-decoration: underline;
     }
 
+    .ab-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .ab-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #ec4899;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+      font-size: inherit;
+    }
+
+    .ab-btn:hover {
+      text-decoration: underline;
+    }
+
+    .ab-btn.active {
+      font-weight: 600;
+    }
+
+    .separator {
+      margin: 0 6px;
+      color: #888;
+      pointer-events: none;
+    }
+
     .waveform-player.playing {
       background: rgba(236,72,153,0.08);
       border: 1px solid rgba(236,72,153,0.3);
@@ -687,7 +718,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <div class="controls">
           <button class="play-btn">Play</button>
-          ${mix.before ? `<button class="toggle-btn">Before / After</button>` : ''}
+          ${mix.before ? `
+            <div class="ab-toggle">
+              <button class="ab-btn" data-mode="before">Before</button>
+              <span class="separator">/</span>
+              <button class="ab-btn active" data-mode="after">After</button>
+            </div>
+          ` : ''}
         </div>
       </div>
     `;
@@ -1074,7 +1111,6 @@ bookingForm.addEventListener('submit', async (e) => {
     document.querySelectorAll(".waveform-player").forEach(player => {
       const waveformEl = player.querySelector(".waveform");
       const playBtn = player.querySelector(".play-btn");
-      const toggleBtn = player.querySelector(".toggle-btn");
 
       const wavesurfer = WaveSurfer.create({
         container: waveformEl,
@@ -1118,18 +1154,19 @@ bookingForm.addEventListener('submit', async (e) => {
       });
 
       // Before/After toggle with seamless playback
-      if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
+      const beforeBtn = player.querySelector('.ab-btn[data-mode="before"]');
+      const afterBtn = player.querySelector('.ab-btn[data-mode="after"]');
+
+      if (beforeBtn && afterBtn) {
+        const handleToggle = (targetMode) => {
           const isPlaying = wavesurfer.isPlaying();
           const time = wavesurfer.getCurrentTime();
 
-          const next =
-            player.dataset.current === "after"
-              ? player.dataset.before
-              : player.dataset.after;
+          const next = targetMode === "before" ? player.dataset.before : player.dataset.after;
+          
+          if (player.dataset.current === targetMode) return; // Already on this version
 
-          player.dataset.current =
-            player.dataset.current === "after" ? "before" : "after";
+          player.dataset.current = targetMode;
 
           wavesurfer.load(next);
 
@@ -1137,7 +1174,14 @@ bookingForm.addEventListener('submit', async (e) => {
             wavesurfer.setTime(time);
             if (isPlaying) wavesurfer.play();
           });
-        });
+
+          // Update active state
+          beforeBtn.classList.toggle('active', targetMode === 'before');
+          afterBtn.classList.toggle('active', targetMode === 'after');
+        };
+
+        beforeBtn.addEventListener("click", () => handleToggle("before"));
+        afterBtn.addEventListener("click", () => handleToggle("after"));
       }
 
       players.push(wavesurfer);
