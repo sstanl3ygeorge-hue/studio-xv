@@ -162,6 +162,55 @@
       transition: all 0.3s ease;
     }
 
+    /* Booking form micro-interactions */
+    input:not([type="file"]),
+    select,
+    textarea {
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Checkbox animations */
+    input[type="checkbox"] {
+      transition: transform 0.2s ease;
+    }
+
+    input[type="checkbox"]:checked {
+      transform: scale(1.1);
+    }
+
+    label:has(input[type="checkbox"]:checked) {
+      animation: checkboxPulse 0.3s ease;
+    }
+
+    @keyframes checkboxPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    /* Price summary transitions */
+    #deposit-display,
+    #summary-addons {
+      transition: all 0.3s ease;
+    }
+
+    #deposit-display.updating {
+      animation: priceUpdate 0.4s ease;
+    }
+
+    @keyframes priceUpdate {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     /* Light mode form input styling */
     @media (prefers-color-scheme: light) {
       input:not([type="file"]):not([type="checkbox"]),
