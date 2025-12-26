@@ -1777,13 +1777,30 @@ bookingForm.addEventListener('submit', async (e) => {
   document.getElementById('metadata-has-files').value = (fileInput?.files?.length > 0) ? 'true' : 'false';
   document.getElementById('metadata-has-cloud-link').value = (cloudLinkInput?.value?.trim()) ? 'true' : 'false';
 
-  // Disable submit button and show loading state
+  // Step 1: Submit to Netlify Forms for email notifications
+  try {
+    const formData = new FormData(bookingForm);
+    const netlifyResponse = await fetch('/', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!netlifyResponse.ok) {
+      throw new Error('Form submission failed');
+    }
+  } catch (netlifyError) {
+    console.error('Form submission error:', netlifyError);
+    alert('There was an error submitting your booking. Please try again.');
+    return;
+  }
+
+  // Step 2: Disable submit button and show loading state
   submitButton.disabled = true;
   const originalText = submitButton.textContent;
   submitButton.textContent = 'Processing...';
 
   try {
-    // Call Netlify function to create Stripe checkout session
+    // Step 3: Proceed to Stripe checkout (Netlify submission successful)
     const response = await fetch('/.netlify/functions/create-checkout', {
       method: 'POST',
       headers: {
