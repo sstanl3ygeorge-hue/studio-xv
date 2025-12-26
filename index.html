@@ -696,6 +696,13 @@
         <input type="hidden" name="subject" value="Studio XV — Booking Received" />
         <input type="hidden" name="reply-to" value="email" />
 
+        <!-- Booking Metadata (for backend automation) -->
+        <input type="hidden" id="metadata-service-type" name="metadata-service-type" value="" />
+        <input type="hidden" id="metadata-package-hours" name="metadata-package-hours" value="" />
+        <input type="hidden" id="metadata-deposit-amount" name="metadata-deposit-amount" value="" />
+        <input type="hidden" id="metadata-has-files" name="metadata-has-files" value="false" />
+        <input type="hidden" id="metadata-has-cloud-link" name="metadata-has-cloud-link" value="false" />
+
         <!-- Honeypot -->
         <p class="hidden">
           <label>
@@ -1751,6 +1758,24 @@ bookingForm.addEventListener('submit', async (e) => {
     alert('Unable to process payment. Please try again.');
     return;
   }
+
+  // Populate metadata fields for Netlify Forms
+  const serviceSelect = document.getElementById('service-select');
+  const packageSelect = document.getElementById('package-select');
+  const hoursInput = document.getElementById('hours-input');
+  const fileInput = document.querySelector('input[name="audio"]');
+  const cloudLinkInput = document.querySelector('input[name="cloud-link"]');
+  
+  document.getElementById('metadata-service-type').value = serviceSelect.options[serviceSelect.selectedIndex]?.text || '';
+  
+  const packageHours = packageSelect.value ? 
+    packageSelect.options[packageSelect.selectedIndex]?.text : 
+    (hoursInput.value ? `${hoursInput.value} hour(s)` : '');
+  document.getElementById('metadata-package-hours').value = packageHours;
+  
+  document.getElementById('metadata-deposit-amount').value = window.bookingData.deposit || '0';
+  document.getElementById('metadata-has-files').value = (fileInput?.files?.length > 0) ? 'true' : 'false';
+  document.getElementById('metadata-has-cloud-link').value = (cloudLinkInput?.value?.trim()) ? 'true' : 'false';
 
   // Disable submit button and show loading state
   submitButton.disabled = true;
