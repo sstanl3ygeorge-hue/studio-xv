@@ -450,9 +450,15 @@
 <!-- SERVICES -->
 <section id="services" class="py-24 px-6" style="background: var(--bg-section);">
   <div class="max-w-6xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
+    <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">
       Services
     </h2>
+    <p class="text-center mb-16">
+      <a href="javascript:void(0)" onclick="openHowItWorksModal()" 
+         class="text-sm opacity-70 hover:text-orange-500 hover:opacity-100 transition underline-offset-4 hover:underline cursor-pointer">
+        How sessions work →
+      </a>
+    </p>
 
     <div
       id="services-grid"
@@ -1381,6 +1387,50 @@ function closeServiceModal() {
   const modal = document.getElementById('service-modal');
   modal.classList.remove('active');
   document.body.style.overflow = '';
+}
+
+function openHowItWorksModal() {
+  const modal = document.getElementById('service-modal');
+  const modalBody = document.getElementById('service-modal-body');
+
+  modalBody.innerHTML = `
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">How Sessions Work</h2>
+    <p class="text-lg opacity-80 leading-relaxed mb-8">
+      From booking to delivery, here's what to expect when working with Studio XV.
+    </p>
+
+    <div class="space-y-6 mb-8">
+      <div>
+        <h3 class="text-xl font-bold mb-2">1. Browse Services</h3>
+        <p class="opacity-80">Explore our services and pricing. Each service includes detailed information about what's included and expected turnaround times.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold mb-2">2. Book Your Session</h3>
+        <p class="opacity-80">Select your service, choose any add-ons, and pay a 50% deposit to secure your booking. We'll confirm your session date and time.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold mb-2">3. Session Day</h3>
+        <p class="opacity-80">Arrive on time (or send your files). We'll work together to capture or polish your sound with professional equipment and expertise.</p>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold mb-2">4. Review & Delivery</h3>
+        <p class="opacity-80">Receive your files for review. We include revisions to ensure you're completely satisfied with the final result.</p>
+      </div>
+    </div>
+
+    <a href="#booking"
+       onclick="closeServiceModal()"
+       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
+       style="background: var(--accent);">
+      Book a Session
+    </a>
+  `;
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 // Close modal handlers
