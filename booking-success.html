@@ -101,14 +101,15 @@
 
   <!-- Hidden Netlify Form for Payment Confirmation -->
   <form
-    name="booking-confirmation"
+    name="payment-confirmation"
     method="POST"
     data-netlify="true"
     netlify-honeypot="bot-field"
     style="display: none;"
   >
-    <input type="hidden" name="form-name" value="booking-confirmation" />
+    <input type="hidden" name="form-name" value="payment-confirmation" />
     <input type="hidden" name="subject" value="Studio XV — Payment Confirmed ✅" />
+    <input type="hidden" name="reply-to" value="customer-email" />
     <input type="hidden" name="booking-status" value="✅ PAYMENT CONFIRMED" />
     <input type="hidden" name="customer-name" id="conf-name" />
     <input type="hidden" name="customer-email" id="conf-email" />
@@ -147,7 +148,7 @@
         document.getElementById('conf-date').value = formData.date || '';
 
         // Submit to Netlify Forms
-        const form = document.querySelector('form[name="booking-confirmation"]');
+        const form = document.querySelector('form[name="payment-confirmation"]');
         const netlifyFormData = new FormData(form);
         
         const response = await fetch('/', {
