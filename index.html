@@ -1314,6 +1314,15 @@ const SERVICE_DETAILS = {
       "Session recordings and notes provided",
       "Project feedback and guidance"
     ]
+  },
+  addons: {
+    description: "Enhance your session with professional add-ons. From vocal tuning to rush delivery, these optional extras ensure your project gets the attention and speed it deserves.",
+    includes: [
+      "Available with any service package",
+      "Professional tools and expertise",
+      "Quick turnaround options",
+      "Premium quality enhancements"
+    ]
   }
 };
 
@@ -1325,6 +1334,8 @@ function openServiceModal(serviceKey) {
   const details = SERVICE_DETAILS[serviceKey];
 
   if (!service || !details) return;
+
+  const isAddons = serviceKey === 'addons';
 
   modalBody.innerHTML = `
     <h2 class="text-3xl md:text-4xl font-bold mb-4">${service.label}</h2>
@@ -1349,11 +1360,17 @@ function openServiceModal(serviceKey) {
       </ul>
     </div>
 
-    <a href="/?service=${serviceKey}&source=service-modal#booking"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book ${service.label}
-    </a>
+    ${isAddons ? `
+      <p class="text-center text-sm opacity-70">
+        Add-ons can be selected when booking any service
+      </p>
+    ` : `
+      <a href="/?service=${serviceKey}&source=service-modal#booking"
+         class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
+         style="background: var(--accent);">
+        Book ${service.label}
+      </a>
+    `}
   `;
 
   modal.classList.add('active');
@@ -1391,12 +1408,10 @@ function renderServices() {
 
   Object.entries(PRICING).forEach(([key, service]) => {
     const isAddons = key === "addons";
-    
-    // Skip addons section
-    if (isAddons) return;
 
     const card = document.createElement("div");
     card.className = `
+      ${isAddons ? "lg:col-span-3" : ""}
       block group rounded-2xl p-8
       border border-white/10
       transition-all duration-300
