@@ -19,7 +19,7 @@
       --text-main: #ffffff;
       --text-muted: #b5b5b5;
 
-      --accent: #ec4899; /* pink */
+      --accent: #f97316; /* orange */
       --border-soft: rgba(255,255,255,0.12);
     }
 
@@ -81,7 +81,7 @@
 
     audio:hover {
       opacity: 1;
-      box-shadow: 0 0 0 1px rgba(236,72,153,0.4);
+      box-shadow: 0 0 0 1px rgba(249,115,22,0.4);
     }
 
     .badges {
@@ -134,7 +134,7 @@
       background: none;
       border: none;
       padding: 0;
-      color: #ec4899;
+      color: #f97316;
       cursor: pointer;
       font-weight: 500;
       text-decoration: none;
@@ -156,9 +156,9 @@
     }
 
     .waveform-player.playing {
-      background: rgba(236,72,153,0.08);
-      border: 1px solid rgba(236,72,153,0.3);
-      box-shadow: 0 0 20px rgba(236,72,153,0.15);
+      background: rgba(249,115,22,0.08);
+      border: 1px solid rgba(249,115,22,0.3);
+      box-shadow: 0 0 20px rgba(249,115,22,0.15);
       transition: all 0.3s ease;
     }
 
@@ -426,10 +426,10 @@
             name="audio"
             accept=".mp3,.wav,.zip"
             class="w-full text-sm
-              file:bg-pink-600 file:text-white
+              file:bg-orange-600 file:text-white
               file:border-none file:px-4 file:py-2
               file:rounded-lg file:cursor-pointer
-              hover:file:bg-pink-500"
+              hover:file:bg-orange-500"
           />
         </div>
 
@@ -451,7 +451,7 @@
 
           <div id="summary-addons" class="space-y-1"></div>
 
-          <div class="flex justify-between text-pink-500 font-semibold">
+          <div class="flex justify-between text-orange-500 font-semibold">
             <span>Deposit due today (50%)</span>
             <span>£<span id="deposit-display">0</span></span>
           </div>
@@ -468,7 +468,7 @@
         <button
           type="submit"
           id="booking-submit"
-          class="w-full h-14 rounded-lg bg-pink-600 font-bold text-lg hover:bg-pink-500 transition"
+          class="w-full h-14 rounded-lg bg-orange-600 font-bold text-lg hover:bg-orange-500 transition"
         >
           Submit Booking Request
         </button>
@@ -701,7 +701,7 @@ function renderPortfolio() {
     <div id="recent-mixes" class="space-y-6"></div>
     <p class="text-sm opacity-70 mt-6">
       Like this sound?
-      <a href="/?service=mixing&source=portfolio#booking" class="text-pink-500 font-semibold">Book a mixing session →</a>
+      <a href="/?service=mixing&source=portfolio#booking" class="text-orange-500 font-semibold">Book a mixing session →</a>
     </p>
   `;
 
@@ -716,7 +716,7 @@ function renderPortfolio() {
     <div id="beat-catalogue" class="space-y-6"></div>
     <p class="text-sm opacity-70 mt-6">
       Want to build on this?
-      <a href="/?service=production&source=portfolio#booking" class="text-pink-500 font-semibold">Start a session →</a>
+      <a href="/?service=production&source=portfolio#booking" class="text-orange-500 font-semibold">Start a session →</a>
     </p>
   `;
 
@@ -803,7 +803,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <p class="text-xs opacity-60 mt-3">
         Want to record on this beat? 
-        <a href="/?service=production&source=portfolio#booking" class="text-pink-500 font-semibold hover:underline">Start a session →</a>
+        <a href="/?service=production&source=portfolio#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
       </p>
     `;
 
@@ -851,7 +851,7 @@ document.addEventListener("click", e => {
   // 5. Visual state
   const buttons = e.target.parentElement.querySelectorAll(".mix-toggle");
   buttons.forEach(btn => {
-    btn.classList.toggle("text-pink-500", btn === e.target);
+    btn.classList.toggle("text-orange-500", btn === e.target);
     btn.classList.toggle("opacity-50", btn !== e.target);
   });
 });
@@ -893,7 +893,7 @@ function renderServices() {
     card.style.background = 'var(--bg-card)';
 
     card.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6 group-hover:text-pink-500 transition">
+      <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
         ${service.label}
       </h3>
       <ul class="space-y-4 text-sm">
@@ -1184,8 +1184,8 @@ bookingForm.addEventListener('submit', async (e) => {
       const wavesurfer = WaveSurfer.create({
         container: waveformEl,
         waveColor: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || "#666",
-        progressColor: "#ec4899",
-        cursorColor: "#ec4899",
+        progressColor: "#f97316",
+        cursorColor: "#f97316",
         height: 80,
         barWidth: 2,
         barGap: 2,
