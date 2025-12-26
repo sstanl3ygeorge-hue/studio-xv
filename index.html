@@ -123,6 +123,13 @@
     .toggle-btn:hover {
       text-decoration: underline;
     }
+
+    .waveform-player.playing {
+      background: rgba(236,72,153,0.08);
+      border: 1px solid rgba(236,72,153,0.3);
+      box-shadow: 0 0 20px rgba(236,72,153,0.15);
+      transition: all 0.3s ease;
+    }
   </style>
 </head>
 
@@ -1079,20 +1086,25 @@ bookingForm.addEventListener('submit', async (e) => {
       wavesurfer.load(player.dataset.after);
 
       playBtn.addEventListener("click", () => {
-        // Stop all other waveforms
-        players.forEach(p => {
-          if (p !== wavesurfer) p.pause();
+        // Stop all other waveforms and remove active state
+        players.forEach((p, idx) => {
+          if (p !== wavesurfer) {
+            p.pause();
+            document.querySelectorAll('.waveform-player')[idx]?.classList.remove('playing');
+          }
         });
 
         wavesurfer.playPause();
       });
 
-      // Update button text based on playback state
+      // Update button text and visual state based on playback
       wavesurfer.on('play', () => {
         playBtn.textContent = 'Pause';
+        player.classList.add('playing');
       });
 
       wavesurfer.on('pause', () => {
+        player.classList.remove('playing');
         playBtn.textContent = 'Play';
       });
 
