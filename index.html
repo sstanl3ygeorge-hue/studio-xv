@@ -819,7 +819,7 @@
           <input
             type="file"
             name="audio"
-            accept=".mp3,.wav,.zip"
+            accept=".mp3,.wav,.zip,.aiff"
             multiple
             class="w-full text-sm
               file:bg-orange-600 file:text-white
@@ -827,7 +827,22 @@
               file:rounded-lg file:cursor-pointer
               hover:file:bg-orange-500"
           />
-          <p class="text-xs opacity-60 mt-2">Upload one or more files. For stems, select all files at once. WAV or AIFF preferred.</p>
+          <p class="text-xs opacity-60 mt-2">Upload one or more files. For stems, select all files at once. WAV or AIFF preferred. For large sessions, a cloud link may be faster.</p>
+        </div>
+
+        <!-- Cloud Storage Link -->
+        <div>
+          <label class="block mb-2 font-semibold">
+            Or provide a cloud storage link (optional)
+          </label>
+          <input
+            type="url"
+            name="cloud-link"
+            placeholder="Dropbox, Google Drive, WeTransfer, etc."
+            class="w-full px-4 py-3 rounded-lg border focus:outline-none"
+            style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
+          />
+          <p id="upload-hint" class="text-xs opacity-60 mt-2" style="display: none;"></p>
         </div>
 
         <!-- Notes -->
@@ -1563,6 +1578,23 @@ function handleServiceChange() {
   // Update booking status text
   bookingStatus.textContent = `You're booking a ${service.label} session`;
   bookingStatus.style.opacity = "0.7";
+
+  // Update upload hint based on service
+  const uploadHint = document.getElementById("upload-hint");
+  const uploadHints = {
+    mixing: "Send your multi-track stems or full mix for reference. Please include session notes if available.",
+    mastering: "Send your mixed track as a stereo WAV file with -6dB headroom for best results.",
+    recording: "Reference tracks or demos are welcome but not required.",
+    production: "",
+    lessons: ""
+  };
+  
+  if (uploadHints[key]) {
+    uploadHint.textContent = uploadHints[key];
+    uploadHint.style.display = "block";
+  } else {
+    uploadHint.style.display = "none";
+  }
 
   if (service.type === "hourly") {
     hoursWrapper.classList.remove("hidden");
