@@ -228,6 +228,41 @@
         outline-offset: 2px;
       }
     }
+
+    /* Mobile spacing improvements */
+    @media (max-width: 768px) {
+      #booking .space-y-8 > * + * {
+        margin-top: 2rem;
+      }
+
+      #booking input:not([type="file"]):not([type="checkbox"]),
+      #booking select,
+      #booking textarea,
+      #booking button[type="submit"] {
+        min-height: 48px;
+        font-size: 16px;
+      }
+
+      #booking input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        min-height: 24px;
+      }
+
+      #booking label:has(input[type="checkbox"]) {
+        padding: 12px 0;
+        gap: 16px;
+      }
+
+      #booking .rounded-2xl {
+        padding: 24px;
+      }
+
+      #booking textarea {
+        min-height: 120px;
+      }
+    }
   </style>
 </head>
 
