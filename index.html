@@ -708,7 +708,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   PORTFOLIO.mixes.forEach((mix, index) => {
     const card = document.createElement("div");
-    card.className = "p-5 rounded-xl bg-black/60";
+    card.className = "p-5 rounded-xl";
+    card.style.background = 'var(--bg-card)';
 
     card.innerHTML = `
       <p class="font-semibold">🎵 ${mix.title} — ${mix.genre}</p>
@@ -751,7 +752,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   PORTFOLIO.beats.forEach((beat, index) => {
     const card = document.createElement("div");
-    card.className = "p-5 rounded-xl bg-black/60";
+    card.className = "p-5 rounded-xl";
+    card.style.background = 'var(--bg-card)';
 
     card.innerHTML = `
       <p class="font-semibold">🎹 ${beat.title} — ${beat.genre}</p>
@@ -1155,7 +1157,7 @@ bookingForm.addEventListener('submit', async (e) => {
 
       const wavesurfer = WaveSurfer.create({
         container: waveformEl,
-        waveColor: "#666",
+        waveColor: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || "#666",
         progressColor: "#ec4899",
         cursorColor: "#ec4899",
         height: 80,
