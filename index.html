@@ -671,7 +671,7 @@ function renderPortfolio() {
     <div id="recent-mixes" class="space-y-6"></div>
     <p class="text-sm opacity-70 mt-6">
       Like this sound?
-      <a href="#booking" class="text-pink-500 font-semibold">Book a mixing session →</a>
+      <a href="/booking?service=mixing&source=portfolio" class="text-pink-500 font-semibold">Book a mixing session →</a>
     </p>
   `;
 
@@ -686,7 +686,7 @@ function renderPortfolio() {
     <div id="beat-catalogue" class="space-y-6"></div>
     <p class="text-sm opacity-70 mt-6">
       Want to build on this?
-      <a href="#booking" class="text-pink-500 font-semibold">Start a session →</a>
+      <a href="/booking?service=production&source=portfolio" class="text-pink-500 font-semibold">Start a session →</a>
     </p>
   `;
 
@@ -771,7 +771,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <p class="text-xs opacity-60 mt-3">
         Want to record on this beat? 
-        <a href="#booking" class="text-pink-500 font-semibold hover:underline">Start a session →</a>
+        <a href="/booking?service=production&source=portfolio" class="text-pink-500 font-semibold hover:underline">Start a session →</a>
       </p>
     `;
 
@@ -908,6 +908,19 @@ document.addEventListener("input", calculateTotal);
 document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
   checkbox.addEventListener("change", calculateTotal);
 });
+
+// Pre-select service from query parameter
+const urlParams = new URLSearchParams(window.location.search);
+const serviceParam = urlParams.get('service');
+if (serviceParam) {
+  const matchingKey = Object.keys(PRICING).find(key => 
+    key.toLowerCase() === serviceParam.toLowerCase()
+  );
+  if (matchingKey && PRICING[matchingKey].type !== 'addons') {
+    serviceSelect.value = matchingKey;
+    handleServiceChange();
+  }
+}
 
 function handleServiceChange() {
   const key = serviceSelect.value.toLowerCase();
