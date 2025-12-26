@@ -1087,6 +1087,19 @@ bookingForm.addEventListener('submit', async (e) => {
         wavesurfer.playPause();
       });
 
+      // Update button text based on playback state
+      wavesurfer.on('play', () => {
+        playBtn.textContent = 'Pause';
+      });
+
+      wavesurfer.on('pause', () => {
+        playBtn.textContent = 'Play';
+      });
+
+      wavesurfer.on('finish', () => {
+        playBtn.textContent = 'Play';
+      });
+
       // Before/After toggle with seamless playback
       if (toggleBtn) {
         toggleBtn.addEventListener("click", () => {
