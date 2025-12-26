@@ -263,10 +263,90 @@
         min-height: 120px;
       }
     }
+
+    /* Service Modal */
+    #service-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #service-modal.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #service-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    #service-modal-content {
+      position: relative;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      padding: 40px;
+      animation: modalScale 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalScale {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    #service-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-card);
+    }
+
+    #service-modal-close:hover {
+      transform: scale(1.1);
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body>
+
+<!-- Service Modal -->
+<div id="service-modal">
+  <div id="service-modal-overlay"></div>
+  <div id="service-modal-content" style="background: var(--bg-soft);">
+    <div id="service-modal-close" title="Close">✕</div>
+    <div id="service-modal-body"></div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur"
@@ -333,24 +413,24 @@
       <p class="text-sm uppercase tracking-wider opacity-50 mb-8">What are you working on?</p>
       
       <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-base">
-        <a href="#recording" 
-           class="hover:text-orange-500 transition underline-offset-4 hover:underline">
+        <a href="javascript:void(0)" onclick="openServiceModal('recording')"
+           class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Recording
         </a>
-        <a href="#mixing"
-           class="hover:text-orange-500 transition underline-offset-4 hover:underline">
+        <a href="javascript:void(0)" onclick="openServiceModal('mixing')"
+           class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Mixing
         </a>
-        <a href="#mastering"
-           class="hover:text-orange-500 transition underline-offset-4 hover:underline">
+        <a href="javascript:void(0)" onclick="openServiceModal('mastering')"
+           class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Mastering
         </a>
-        <a href="#production"
-           class="hover:text-orange-500 transition underline-offset-4 hover:underline">
+        <a href="javascript:void(0)" onclick="openServiceModal('production')"
+           class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Beats & Production
         </a>
-        <a href="#lessons"
-           class="hover:text-orange-500 transition underline-offset-4 hover:underline">
+        <a href="javascript:void(0)" onclick="openServiceModal('lessons')"
+           class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Production Lessons
         </a>
       </div>
@@ -1175,6 +1255,125 @@ document.addEventListener("play", function(e) {
 </script>
 
 <script>
+// Service detail content
+const SERVICE_DETAILS = {
+  recording: {
+    description: "Professional studio recording sessions with high-end equipment and an experienced engineer. Whether you're tracking vocals, instruments, or full band sessions, we'll capture your sound with clarity and precision.",
+    includes: [
+      "Professional recording environment",
+      "High-end microphones and preamps",
+      "Experienced recording engineer",
+      "Session files provided"
+    ]
+  },
+  mixing: {
+    description: "Transform your recorded tracks into a polished, professional mix. We'll balance levels, add effects, and ensure every element sits perfectly in the stereo field. Mixing services include unlimited revisions until you're completely satisfied.",
+    includes: [
+      "Professional mixing with industry-standard plugins",
+      "Stereo balance and EQ optimization",
+      "Compression and dynamic control",
+      "Unlimited revisions",
+      "High-quality WAV file delivery"
+    ]
+  },
+  mastering: {
+    description: "Final polish for your mixes. Professional mastering ensures your tracks translate well across all playback systems, from earbuds to club sound systems. We'll optimize loudness, add final EQ touches, and prepare your music for distribution.",
+    includes: [
+      "Professional mastering chain",
+      "Loudness optimization for streaming platforms",
+      "Final EQ and compression",
+      "Stereo enhancement",
+      "Distribution-ready files (WAV & MP3)"
+    ]
+  },
+  production: {
+    description: "Custom beat production and exclusive licensing. Browse our catalogue of ready-made beats or commission a fully custom production tailored to your sound. All beats include stems and full commercial rights.",
+    includes: [
+      "High-quality beat production",
+      "Stems included (individual tracks)",
+      "Commercial rights and licensing",
+      "Custom revisions available",
+      "WAV file delivery"
+    ]
+  },
+  lessons: {
+    description: "One-on-one music production lessons tailored to your skill level and goals. Learn DAW fundamentals, mixing techniques, sound design, arrangement, or work on your own projects with expert guidance.",
+    includes: [
+      "Personalized 1-on-1 instruction",
+      "Flexible curriculum based on your goals",
+      "Hands-on learning with professional tools",
+      "Session recordings and notes provided",
+      "Project feedback and guidance"
+    ]
+  }
+};
+
+// Modal functionality
+function openServiceModal(serviceKey) {
+  const modal = document.getElementById('service-modal');
+  const modalBody = document.getElementById('service-modal-body');
+  const service = PRICING[serviceKey];
+  const details = SERVICE_DETAILS[serviceKey];
+
+  if (!service || !details) return;
+
+  modalBody.innerHTML = `
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">${service.label}</h2>
+    <p class="text-lg opacity-80 leading-relaxed mb-8">${details.description}</p>
+
+    <div class="mb-8">
+      <h3 class="text-xl font-bold mb-4">What's Included</h3>
+      <ul class="space-y-3 opacity-80">
+        ${details.includes.map(item => `<li>• ${item}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="mb-8 p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h3 class="text-xl font-bold mb-4">Pricing</h3>
+      <ul class="space-y-2 opacity-80">
+        ${service.items.map(item => `
+          <li class="flex justify-between">
+            <span>${item.label}</span>
+            <span>${item.price}</span>
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+
+    <a href="/?service=${serviceKey}&source=service-modal#booking"
+       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
+       style="background: var(--accent);">
+      Book ${service.label}
+    </a>
+  `;
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeServiceModal() {
+  const modal = document.getElementById('service-modal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close modal handlers
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('service-modal');
+  const overlay = document.getElementById('service-modal-overlay');
+  const closeBtn = document.getElementById('service-modal-close');
+
+  closeBtn?.addEventListener('click', closeServiceModal);
+  overlay?.addEventListener('click', closeServiceModal);
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeServiceModal();
+    }
+  });
+});
+
 function renderServices() {
   const container = document.getElementById("services-grid");
   if (!container) return;
@@ -1187,9 +1386,7 @@ function renderServices() {
     // Skip addons section
     if (isAddons) return;
 
-    const card = document.createElement("a");
-    card.href = `#${key}`;
-
+    const card = document.createElement("div");
     card.className = `
       block group rounded-2xl p-8
       border border-white/10
@@ -1201,6 +1398,7 @@ function renderServices() {
     `;
 
     card.style.background = 'var(--bg-card)';
+    card.onclick = () => openServiceModal(key);
 
     card.innerHTML = `
       <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
