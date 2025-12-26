@@ -630,19 +630,22 @@ const PORTFOLIO = {
     {
       title: "Neon Dreams",
       genre: "Trap / Melodic",
-      subtitle: "D♯ minor · 140 BPM · Available for lease or exclusive",
+      badges: ["D♯ minor", "140 BPM"],
+      subtitle: "Available for lease or exclusive",
       src: "/beats/neon-dreams.mp3"
     },
     {
       title: "Street Gospel",
       genre: "Afro pop",
-      subtitle: "D major · 113 BPM · Available for lease or exclusive",
+      badges: ["D major", "113 BPM"],
+      subtitle: "Available for lease or exclusive",
       src: "/beats/street-gospel.wav"
     },
     {
       title: "Summer Breeze",
       genre: "Afrobeats",
-      subtitle: "C minor · 100 BPM · Available for lease or exclusive",
+      badges: ["C minor", "100 BPM"],
+      subtitle: "Available for lease or exclusive",
       src: "/beats/summer-breeze.mp3"
     }
   ]
@@ -739,19 +742,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const beatContainer = document.getElementById("beat-catalogue");
   if (!beatContainer) return;
 
-  PORTFOLIO.beats.forEach(beat => {
+  PORTFOLIO.beats.forEach((beat, index) => {
     const card = document.createElement("div");
     card.className = "p-5 rounded-xl bg-black/60";
 
     card.innerHTML = `
       <p class="font-semibold">🎹 ${beat.title} — ${beat.genre}</p>
-      <p class="text-sm opacity-70 mb-3">
-        ${beat.subtitle}
-      </p>
+      ${beat.badges ? `
+        <div class="badges">
+          ${beat.badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
+        </div>
+      ` : ''}
+      <p class="text-sm opacity-70 mb-3">${beat.subtitle}</p>
 
-      <audio controls preload="metadata" class="w-full">
-        <source src="${beat.src}" type="audio/mpeg">
-      </audio>
+      <div class="waveform-player" 
+           data-after="${beat.src}" 
+           data-current="after" 
+           data-index="beat-${index}">
+        <div class="waveform"></div>
+
+        <div class="controls">
+          <button class="play-btn">Play</button>
+        </div>
+      </div>
 
       <p class="text-xs opacity-60 mt-3">
         Want to record on this beat? 
