@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoom Production Lessons — Studio XV</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.7;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Long-form typography */
+    article {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    article h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    article h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    article h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    article p {
+      margin-bottom: 1.5rem;
+      color: var(--text-main);
+    }
+
+    article ul, article ol {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+    }
+
+    article li {
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    article strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .subheading {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.125rem;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .cta-button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      article h1 {
+        font-size: 2rem;
+      }
+      article h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="py-6 px-6 border-b" style="border-color: var(--border-soft);">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <a href="/" class="text-xl font-bold tracking-wider hover:opacity-70 transition">
+        STUDIO XV
+      </a>
+      <a href="/" class="text-sm opacity-70 hover:opacity-100 transition">
+        ← Back to Home
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="py-16 px-6">
+    <article>
+      <h1>Zoom Production Lessons</h1>
+      <p class="subheading">
+        One-to-one instruction covering mixing, production, workflow, and sound design—tailored to where you're at and what you're trying to build.
+      </p>
+
+      <h2>Who This Is For</h2>
+      <p>
+        These lessons are for producers who want to level up but aren't sure where to start. Maybe you've been watching tutorials for months but struggle to apply what you've learned. Maybe your tracks sound good in your headphones but fall apart on other systems. Or maybe you just want someone to answer the specific questions YouTube can't.
+      </p>
+      <p>
+        This isn't a fixed curriculum. It's working through your actual problems in real time—whether that's cleaning up muddy low end, understanding compression, organizing your workflow, or finishing tracks without second-guessing every decision.
+      </p>
+
+      <h2>How It Works</h2>
+      <p>
+        Sessions are one-to-one over Zoom with screen sharing. You bring your project files, questions, or reference tracks. We work through them together.
+      </p>
+      <p>
+        Most people book single sessions to solve a specific problem or get feedback on a mix. Some book recurring weekly or bi-weekly sessions to build consistency and momentum. Both approaches work—it depends on what you need.
+      </p>
+      
+      <h3>Session Structure</h3>
+      <ul>
+        <li><strong>First 5 minutes:</strong> Quick check-in. What are you working on? What's not clicking?</li>
+        <li><strong>Next 50 minutes:</strong> We dive in. Screen share, walkthroughs, real-time problem solving.</li>
+        <li><strong>Last 5 minutes:</strong> Summary of what we covered and actionable next steps.</li>
+      </ul>
+
+      <h2>What We Cover</h2>
+      <p>
+        Lessons are flexible and adapt to your needs. Common areas include:
+      </p>
+      <ul>
+        <li><strong>Mixing fundamentals:</strong> EQ, compression, reverb, depth, clarity</li>
+        <li><strong>Project feedback:</strong> We listen to your tracks and identify what's working and what's not</li>
+        <li><strong>Workflow optimization:</strong> Faster decisions, better organization, less overthinking</li>
+        <li><strong>Sound design:</strong> Synth programming, layering, processing techniques</li>
+        <li><strong>Arrangement:</strong> Structure, energy, dynamics, transitions</li>
+        <li><strong>Reference analysis:</strong> Breaking down professional tracks to understand how they were made</li>
+        <li><strong>Troubleshooting:</strong> Fixing specific issues in your DAW or understanding a particular tool</li>
+      </ul>
+
+      <h2>What You'll Need</h2>
+      <p>
+        A computer with your DAW installed, a stable internet connection, and the ability to share your screen over Zoom. That's it.
+      </p>
+      <p>
+        If you want feedback on a specific track, have the project file ready before the session. If you're learning a new technique, we can start from scratch together.
+      </p>
+
+      <h2>Pricing</h2>
+      <p>
+        Sessions are <strong>£50 per hour</strong>, booked individually or in packages.
+      </p>
+      <ul>
+        <li><strong>Single session:</strong> £50 (1 hour)</li>
+        <li><strong>4-session package:</strong> £180 (£45/hour)</li>
+        <li><strong>8-session package:</strong> £320 (£40/hour)</li>
+      </ul>
+      <p style="font-size: 0.875rem; color: var(--text-muted);">
+        Packages are valid for 3 months from purchase and can be used flexibly. No subscription—book when you need it.
+      </p>
+
+      <h2>Frequently Asked Questions</h2>
+      
+      <h3>What if I'm a complete beginner?</h3>
+      <p>
+        That's fine. We'll start with the basics and build from there. The advantage of one-to-one lessons is that we move at your pace—no rushing, no confusion.
+      </p>
+
+      <h3>What if I use a different DAW?</h3>
+      <p>
+        The principles we cover apply to any DAW. Most concepts—EQ, compression, gain staging, arrangement—are universal. If you're using Ableton, Logic, FL Studio, or something else, we'll make it work.
+      </p>
+
+      <h3>Can I record the session?</h3>
+      <p>
+        Yes. Zoom allows you to record locally. You'll have the full session to review afterwards, which is useful for referencing specific techniques or settings we discussed.
+      </p>
+
+      <h3>What if I need to reschedule?</h3>
+      <p>
+        Just let me know at least 24 hours in advance. We'll find another time that works. Life happens—no penalties for reasonable rescheduling.
+      </p>
+
+      <h3>Do you offer group lessons?</h3>
+      <p>
+        Not currently. These sessions are designed to be focused and personalized. Group dynamics dilute that.
+      </p>
+
+      <h2>Why Zoom Instead of In-Person?</h2>
+      <p>
+        Flexibility. You don't have to travel, and we can fit sessions around your schedule—evenings, weekends, whatever works. Screen sharing also means I can see exactly what you're seeing, making it easier to troubleshoot and explain technical concepts.
+      </p>
+      <p>
+        For some people, remote learning feels less intimidating. You're in your own space, working on your own equipment, with the option to pause and take notes.
+      </p>
+
+      <h2>What Makes This Different</h2>
+      <p>
+        There's no shortage of production courses or YouTube tutorials. The difference here is direct feedback on your work. No generic advice—just specific, actionable guidance based on what you're actually making.
+      </p>
+      <p>
+        You're not passively watching someone else work. You're actively solving problems, making decisions, and learning by doing. That's how you improve.
+      </p>
+
+      <!-- CTA Section -->
+      <div class="mt-16 pt-12 border-t text-center" style="border-color: var(--border-soft);">
+        <h2 style="margin-top: 0;">Ready to Book?</h2>
+        <p style="max-width: 600px; margin: 0 auto 2rem;">
+          Choose your package, pick a time, and we'll get started. First session typically covers where you're at, what you want to work on, and immediate next steps.
+        </p>
+        <a href="/#booking" class="cta-button">
+          Book Your First Session
+        </a>
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 1.5rem;">
+          Questions? Email <a href="mailto:lessons@studioxv.co.uk" style="color: var(--accent); text-decoration: underline;">lessons@studioxv.co.uk</a>
+        </p>
+      </div>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-8 px-6 mt-16 border-t text-center" style="border-color: var(--border-soft);">
+    <p style="font-size: 0.875rem; color: var(--text-muted);">
+      © 2026 Studio XV. All rights reserved.
+    </p>
+  </footer>
+</body>
+</html>
