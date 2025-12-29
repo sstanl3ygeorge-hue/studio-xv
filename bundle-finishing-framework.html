@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Studio XV Finishing Framework • Studio XV</title>
+  
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #121212;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --border-soft: #2a2a2a;
+      --accent: #f97316;
+      
+      /* Layout */
+      --max-width: 1200px;
+      --spacing-section: 6rem;
+      --spacing-content: 3rem;
+    }
+    
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f8f8;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666666;
+        --border-soft: #e5e5e5;
+        --accent: #f97316;
+      }
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 py-5" style="background: var(--bg-primary); border-bottom: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+      
+      <div class="flex items-center gap-8 text-sm font-medium">
+        <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+        <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+        <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+        <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <a href="bundles.html" class="inline-block text-sm opacity-60 hover:opacity-100 transition mb-6">
+        ← Back to Bundles
+      </a>
+      
+      <div class="flex items-start justify-between gap-4 mb-6">
+        <h1 class="text-4xl md:text-5xl font-bold leading-tight">
+          The Studio XV Finishing Framework
+        </h1>
+        <span class="inline-block px-3 py-1.5 text-xs font-medium rounded" 
+              style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+          Available
+        </span>
+      </div>
+      
+      <p class="text-lg opacity-70 leading-relaxed max-w-2xl mb-8">
+        The complete system for finishing tracks with clarity. Combines written frameworks and video walkthroughs for understanding and application.
+      </p>
+      
+      <div class="flex flex-wrap gap-2 text-sm opacity-60">
+        <span>Ebook + Video course</span>
+        <span>·</span>
+        <span>Save £9</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Included -->
+  <section class="pb-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-semibold mb-8">What's included</h2>
+      
+      <div class="space-y-8">
+        <!-- Ebook -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="text-lg font-semibold">Finishing Tracks Without Overthinking (ebook)</h3>
+            <span class="text-sm opacity-60">£19</span>
+          </div>
+          <p class="text-base opacity-70 mb-3">
+            A practical guide to finishing tracks by understanding what prevents progress and what moves you forward.
+          </p>
+          <div class="flex flex-wrap gap-2 text-sm opacity-60">
+            <span>PDF</span>
+            <span>·</span>
+            <span>18 pages</span>
+            <span>·</span>
+            <span>45–60 min read</span>
+          </div>
+        </div>
+        
+        <!-- Video Course -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="text-lg font-semibold">Finishing Tracks Without Overthinking (video course)</h3>
+            <span class="text-sm opacity-60">£35</span>
+          </div>
+          <p class="text-base opacity-70 mb-3">
+            Real-world examples and walkthroughs showing how finishing decisions work in practice.
+          </p>
+          <div class="flex flex-wrap gap-2 text-sm opacity-60">
+            <span>Video mini course</span>
+            <span>·</span>
+            <span>~75 min</span>
+            <span>·</span>
+            <span>4 modules</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-8 p-4 rounded-lg" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2);">
+        <p class="text-sm opacity-80">
+          <span class="font-medium">Bundle pricing:</span> £45 (save £9)
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why This Bundle -->
+  <section class="pb-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-semibold mb-6">Why this bundle</h2>
+      
+      <div class="space-y-4 text-base opacity-70 leading-relaxed max-w-2xl">
+        <p>
+          The ebook provides the frameworks and mental models. The video course shows you how those concepts work in real sessions.
+        </p>
+        <p>
+          Together, they create a complete understanding of finishing tracks — not just what to do, but how to think about the process when you're stuck.
+        </p>
+        <p>
+          If you prefer written guidance, start with the ebook. If you prefer visual learning, the course works standalone. Both give you lifetime access.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pb-24 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="p-8 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <h3 class="text-2xl font-semibold mb-2">The Studio XV Finishing Framework</h3>
+            <p class="text-base opacity-70">Ebook + Video course</p>
+          </div>
+          <div class="text-right">
+            <div class="text-3xl font-bold">£45</div>
+            <div class="text-sm opacity-60 line-through">£54</div>
+          </div>
+        </div>
+        
+        <ul class="space-y-2 text-sm opacity-70 mb-8">
+          <li>✓ Finishing Tracks ebook (PDF, 18 pages)</li>
+          <li>✓ Finishing Tracks video course (~75 min)</li>
+          <li>✓ Lifetime access to both resources</li>
+          <li>✓ Updates included</li>
+        </ul>
+        
+        <button 
+           onclick="proceedToCheckout()"
+           class="w-full px-8 py-4 rounded-lg text-base font-medium transition"
+           style="background: var(--accent); color: white;"
+           onmouseover="this.style.opacity='0.9'" 
+           onmouseout="this.style.opacity='1'">
+          Get the bundle
+        </button>
+        
+        <p class="text-xs opacity-60 text-center mt-4">
+          Secure payment via Stripe · Instant access after purchase
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6" style="border-top: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="text-sm opacity-60">
+          © 2025 Studio XV. All rights reserved.
+        </div>
+        
+        <div class="flex gap-6 text-sm opacity-60">
+          <a href="#" class="hover:opacity-100 transition">Instagram</a>
+          <a href="#" class="hover:opacity-100 transition">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function proceedToCheckout() {
+      // Redirect to bundle order summary page
+      window.location.href = 'bundle-order-summary.html';
+    }
+  </script>
+
+</body>
+</html>

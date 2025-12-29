@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "Studio XV booking system",
   "dependencies": {
-    "stripe": "^14.0.0"
+    "stripe": "^14.25.0"
   }
 }

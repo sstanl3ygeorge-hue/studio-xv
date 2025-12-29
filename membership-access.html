@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membership access — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- MEMBERSHIP ACCESS PAGE -->
+<!-- Post-purchase access for active members -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Page Header -->
+    <div class="mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold mb-3">Membership access</h1>
+      <p class="text-base opacity-60">
+        Your learning materials
+      </p>
+    </div>
+    
+    <!-- Ebooks Section -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">Ebooks</h2>
+      
+      <div class="space-y-4">
+        <!-- Ebook 1 -->
+        <a href="ebook-access.html" 
+           class="block p-6 rounded-xl border hover:opacity-80 transition" 
+           style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-2">Finishing Tracks Without Overthinking</h3>
+          <p class="text-sm opacity-60">PDF · 18 pages · 45–60 min read</p>
+        </a>
+        
+        <!-- Ebook 2 (Coming Soon) -->
+        <div class="p-6 rounded-xl border opacity-50" 
+             style="background: var(--bg-soft); border-color: var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-2">Balancing Vocals Without Fighting the Mix</h3>
+          <p class="text-sm opacity-60">PDF · Coming soon</p>
+        </div>
+        
+        <!-- Ebook 3 (Planned) -->
+        <div class="p-6 rounded-xl border opacity-50" 
+             style="background: var(--bg-soft); border-color: var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-2">Space, Depth & Translation</h3>
+          <p class="text-sm opacity-60">PDF · Planned</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Courses Section -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">Courses</h2>
+      
+      <div class="space-y-4">
+        <!-- Course 1 -->
+        <a href="course-access.html" 
+           class="block p-6 rounded-xl border hover:opacity-80 transition" 
+           style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-2">Finishing Tracks Without Overthinking</h3>
+          <p class="text-sm opacity-60">Video · ~75 min · Self-paced</p>
+        </a>
+        
+        <!-- Course 2 (Coming Soon) -->
+        <div class="p-6 rounded-xl border opacity-50" 
+             style="background: var(--bg-soft); border-color: var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-2">Balancing Vocals Without Fighting the Mix</h3>
+          <p class="text-sm opacity-60">Video · Coming soon</p>
+        </div>
+        
+        <!-- Course 3 (Planned) -->
+        <div class="p-6 rounded-xl border opacity-50" 
+             style="background: var(--bg-soft); border-color: var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-2">Creative Clarity & Decision-Making</h3>
+          <p class="text-sm opacity-60">Video · Planned</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tools Section -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">Tools & planners</h2>
+      
+      <a href="tools.html" 
+         class="block p-6 rounded-xl border hover:opacity-80 transition" 
+         style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Studio utilities</h3>
+        <p class="text-sm opacity-60">BPM counter, tap tempo, planners & more · Coming soon</p>
+      </a>
+    </div>
+    
+    <!-- Footer Note -->
+    <div class="text-center">
+      <p class="text-sm opacity-50 leading-relaxed">
+        You can return to this page at any time. New content will appear here as it's released.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bundles • Studio XV</title>
+  
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #121212;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --border-soft: #2a2a2a;
+      --accent: #f97316;
+      
+      /* Layout */
+      --max-width: 1200px;
+      --spacing-section: 6rem;
+      --spacing-content: 3rem;
+    }
+    
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f8f8;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666666;
+        --border-soft: #e5e5e5;
+        --accent: #f97316;
+      }
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 py-5" style="background: var(--bg-primary); border-bottom: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+      
+      <div class="flex items-center gap-8 text-sm font-medium">
+        <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+        <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+        <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+        <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 px-6">
+    <div class="max-w-4xl mx-auto">
+      <a href="index.html#learn" class="inline-block text-sm opacity-60 hover:opacity-100 transition mb-6">
+        ← Back to Learn
+      </a>
+      
+      <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+        Bundles
+      </h1>
+      
+      <p class="text-lg opacity-70 leading-relaxed max-w-2xl">
+        Combined PDF ebooks for deeper understanding. These packages bring together complementary resources to support your workflow from multiple angles.
+      </p>
+    </div>
+  </section>
+
+  <!-- Search & Filter UI -->
+  <section class="pb-12 px-6">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <!-- Search Bar -->
+      <div class="relative">
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Search bundles..." 
+          class="w-full px-4 py-3 rounded-lg border focus:outline-none transition"
+          style="background: var(--bg-secondary); border-color: var(--border-soft); color: var(--text-primary);"
+        />
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3">
+        <button class="filter-btn active" data-filter="all">
+          All bundles
+        </button>
+        <button class="filter-btn" data-filter="available">
+          Available
+        </button>
+        <button class="filter-btn" data-filter="coming-soon">
+          Coming soon
+        </button>
+      </div>
+      
+      <!-- Results count -->
+      <div id="results-count" class="text-sm opacity-60">
+        Showing <span id="count-number">4</span> bundles
+      </div>
+    </div>
+  </section>
+
+  <!-- Academy: Bundles -->
+  <section class="pb-24 px-6">
+    <div class="max-w-4xl mx-auto space-y-12">
+      
+      <!-- Bundle 1: The Finishing Framework -->
+      <div class="bundle-item border-b pb-12 opacity-50" data-status="coming-soon" data-title="The Finishing Framework" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">The Finishing Framework</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Complete finishing process from decision-making to export.
+        </p>
+        
+        <div class="mb-6">
+          <p class="text-sm font-medium opacity-60 mb-3">What's included (PDF Ebooks):</p>
+          <ul class="space-y-2 text-sm opacity-70">
+            <li>• Finishing Tracks Without Overthinking</li>
+            <li>• Mastering for Producers</li>
+            <li>• Export & Delivery Standards</li>
+          </ul>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>3 PDF Ebooks</span>
+          <span>·</span>
+          <span>~130 min total reading</span>
+        </div>
+      </div>
+      
+      <!-- Bundle 2: The Vocal Clarity Bundle -->
+      <div class="bundle-item border-b pb-12 opacity-50" data-status="coming-soon" data-title="The Vocal Clarity Bundle" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">The Vocal Clarity Bundle</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Complete vocal workflow from recording to final mix balance.
+        </p>
+        
+        <div class="mb-6">
+          <p class="text-sm font-medium opacity-60 mb-3">What's included (PDF Ebooks):</p>
+          <ul class="space-y-2 text-sm opacity-70">
+            <li>• Vocal Production Essentials</li>
+            <li>• Balancing Vocals Without Fighting the Mix</li>
+            <li>• De-Essing & Sibilance Control</li>
+            <li>• Compression Without Confusion</li>
+          </ul>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>4 PDF Ebooks</span>
+          <span>·</span>
+          <span>~180 min total reading</span>
+        </div>
+      </div>
+      
+      <!-- Bundle 3: From Loop to Release -->
+      <div class="bundle-item border-b pb-12 opacity-50" data-status="coming-soon" data-title="From Loop to Release" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">From Loop to Release</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Complete production pathway from arrangement through final delivery.
+        </p>
+        
+        <div class="mb-6">
+          <p class="text-sm font-medium opacity-60 mb-3">What's included (PDF Ebooks):</p>
+          <ul class="space-y-2 text-sm opacity-70">
+            <li>• From Loop to Arrangement</li>
+            <li>• Energy & Dynamics</li>
+            <li>• Finishing Tracks Without Overthinking</li>
+            <li>• Mastering for Producers</li>
+            <li>• Export & Delivery Standards</li>
+          </ul>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>5 PDF Ebooks</span>
+          <span>·</span>
+          <span>~220 min total reading</span>
+        </div>
+      </div>
+      
+      <!-- Bundle 4: Mix Decisions That Matter -->
+      <div class="bundle-item border-b pb-12 opacity-50" data-status="coming-soon" data-title="Mix Decisions That Matter" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Mix Decisions That Matter</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Core mixing tools and decision-making frameworks for balanced, translating mixes.
+        </p>
+        
+        <div class="mb-6">
+          <p class="text-sm font-medium opacity-60 mb-3">What's included (PDF Ebooks):</p>
+          <ul class="space-y-2 text-sm opacity-70">
+            <li>• EQ Fundamentals for Producers</li>
+            <li>• Compression Without Confusion</li>
+            <li>• Space, Depth & Translation</li>
+            <li>• Reference Tracks That Help</li>
+            <li>• Gain Staging for Clarity</li>
+            <li>• Bass & Low End Management</li>
+          </ul>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>6 PDF Ebooks</span>
+          <span>·</span>
+          <span>~260 min total reading</span>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6" style="border-top: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="text-sm opacity-60">
+          © 2025 Studio XV. All rights reserved.
+        </div>
+        
+        <div class="flex gap-6 text-sm opacity-60">
+          <a href="#" class="hover:opacity-100 transition">Instagram</a>
+          <a href="#" class="hover:opacity-100 transition">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<style>
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--border-soft);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-btn:hover {
+    border-color: var(--accent);
+    opacity: 0.8;
+  }
+  
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  
+  .bundle-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .bundle-item.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const bundleItems = document.querySelectorAll('.bundle-item');
+  const countNumber = document.getElementById('count-number');
+  
+  let currentFilter = 'all';
+  let currentSearch = '';
+  
+  function updateDisplay() {
+    let visibleCount = 0;
+    
+    bundleItems.forEach(item => {
+      const title = item.dataset.title?.toLowerCase() || '';
+      const status = item.dataset.status || '';
+      
+      // Search match
+      const searchMatch = !currentSearch || title.includes(currentSearch.toLowerCase());
+      
+      // Filter match
+      let filterMatch = currentFilter === 'all' || currentFilter === status;
+      
+      // Show/hide
+      if (searchMatch && filterMatch) {
+        item.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+    
+    countNumber.textContent = visibleCount;
+  }
+  
+  // Search input
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value;
+    updateDisplay();
+  });
+  
+  // Filter buttons
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      updateDisplay();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

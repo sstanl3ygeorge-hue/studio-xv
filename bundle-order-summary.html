@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Summary • Studio XV</title>
+  
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #121212;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --border-soft: #2a2a2a;
+      --accent: #f97316;
+      
+      /* Layout */
+      --max-width: 1200px;
+      --spacing-section: 6rem;
+      --spacing-content: 3rem;
+    }
+    
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f8f8;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666666;
+        --border-soft: #e5e5e5;
+        --accent: #f97316;
+      }
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 py-5" style="background: var(--bg-primary); border-bottom: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+      
+      <div class="flex items-center gap-8 text-sm font-medium">
+        <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+        <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+        <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+        <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Order Summary -->
+  <section class="pt-32 pb-24 px-6">
+    <div class="max-w-2xl mx-auto">
+      <a href="bundle-finishing-framework.html" class="inline-block text-sm opacity-60 hover:opacity-100 transition mb-6">
+        ← Back to bundle
+      </a>
+      
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">Order summary</h1>
+      <p class="text-base opacity-70 mb-12">Review your purchase before checkout</p>
+      
+      <!-- Order Details Card -->
+      <div class="p-8 rounded-lg mb-8" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+        <h2 class="text-xl font-semibold mb-6">The Studio XV Finishing Framework</h2>
+        
+        <div class="space-y-3 mb-6 pb-6" style="border-bottom: 1px solid var(--border-soft);">
+          <p class="text-sm opacity-70">What you're getting:</p>
+          <ul class="space-y-2 text-sm opacity-70">
+            <li>✓ Finishing Tracks Without Overthinking (ebook)</li>
+            <li>✓ Finishing Tracks Without Overthinking (video course)</li>
+            <li>✓ Lifetime access to both resources</li>
+            <li>✓ Updates included</li>
+          </ul>
+        </div>
+        
+        <div class="space-y-2 mb-6">
+          <div class="flex justify-between text-sm opacity-70">
+            <span>Ebook (PDF, 18 pages)</span>
+            <span>£19</span>
+          </div>
+          <div class="flex justify-between text-sm opacity-70">
+            <span>Video course (~75 min)</span>
+            <span>£35</span>
+          </div>
+          <div class="flex justify-between text-sm font-medium" style="color: var(--accent);">
+            <span>Bundle discount</span>
+            <span>−£9</span>
+          </div>
+        </div>
+        
+        <div class="pt-4" style="border-top: 1px solid var(--border-soft);">
+          <div class="flex justify-between items-center">
+            <span class="text-lg font-semibold">Total</span>
+            <span class="text-2xl font-bold">£45</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Checkout Button -->
+      <button 
+         onclick="proceedToStripe()"
+         class="w-full px-8 py-4 rounded-lg text-base font-medium transition mb-4"
+         style="background: var(--accent); color: white;"
+         onmouseover="this.style.opacity='0.9'" 
+         onmouseout="this.style.opacity='1'">
+        Proceed to secure checkout
+      </button>
+      
+      <p class="text-xs opacity-60 text-center">
+        Payment via Stripe · You'll receive instant access to both resources after purchase
+      </p>
+      
+      <!-- Info Boxes -->
+      <div class="mt-12 space-y-4">
+        <div class="p-4 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+          <p class="text-sm opacity-70">
+            <span class="font-medium opacity-100">Secure payment:</span> Your payment is processed securely by Stripe. Studio XV does not store your card details.
+          </p>
+        </div>
+        
+        <div class="p-4 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+          <p class="text-sm opacity-70">
+            <span class="font-medium opacity-100">Instant access:</span> After purchase, you'll be redirected to access both the ebook and video course immediately.
+          </p>
+        </div>
+        
+        <div class="p-4 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+          <p class="text-sm opacity-70">
+            <span class="font-medium opacity-100">Questions?</span> Email hello@studioxv.com if you need help.
+          </p>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6" style="border-top: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="text-sm opacity-60">
+          © 2025 Studio XV. All rights reserved.
+        </div>
+        
+        <div class="flex gap-6 text-sm opacity-60">
+          <a href="#" class="hover:opacity-100 transition">Instagram</a>
+          <a href="#" class="hover:opacity-100 transition">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function proceedToStripe() {
+      // PLACEHOLDER: Replace with actual Stripe Payment Link for bundle
+      // When ready, create a bundle product in Stripe Dashboard and use that payment link here
+      const stripePaymentLink = 'BUNDLE_STRIPE_PAYMENT_LINK_PLACEHOLDER';
+      
+      // Success URL should point to bundle confirmation page
+      // Set this in Stripe Dashboard: bundle-confirmation.html
+      
+      // For now, redirect to bundle confirmation (for testing)
+      // Uncomment the line below when Stripe link is ready:
+      // window.location.href = stripePaymentLink;
+      
+      alert('Bundle purchase flow ready. Add Stripe Payment Link for bundle (£45) in script.js');
+    }
+  </script>
+
+</body>
+</html>

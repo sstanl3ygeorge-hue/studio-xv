@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order summary — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ORDER SUMMARY PAGE START -->
+<!-- Pre-checkout confirmation page -->
+<!-- Shows order details before redirecting to Stripe -->
+<!-- Minimal inline JS for Stripe redirect only -->
+
+<section class="min-h-screen py-32 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
+    
+    <!-- Page Title -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Order summary</h1>
+      <p class="text-base opacity-60">
+        Review your order before proceeding to payment
+      </p>
+    </div>
+    
+    <!-- Order Details Card -->
+    <div class="rounded-2xl p-8 md:p-10 border mb-8" style="background: var(--bg-card); border-color: var(--border-soft);">
+      
+      <!-- Product Info -->
+      <div class="mb-8 pb-8 border-b" style="border-color: var(--border-soft);">
+        <h2 class="text-xl font-semibold mb-2">Finishing Tracks Without Overthinking</h2>
+        <div class="flex items-center gap-3 text-sm opacity-60 mb-4">
+          <span>Format: Video course</span>
+          <span>·</span>
+          <span>Delivery: Instant access</span>
+        </div>
+        <div class="text-2xl font-bold">£35</div>
+      </div>
+      
+      <!-- What's Included -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-4">What's included</h3>
+        <ul class="space-y-3 text-base opacity-70">
+          <li class="flex items-start gap-3">
+            <span style="color: var(--accent);">✓</span>
+            <span>Lifetime access</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span style="color: var(--accent);">✓</span>
+            <span>Self-paced</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span style="color: var(--accent);">✓</span>
+            <span>Includes PDF ebook</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Payment Note -->
+      <div class="p-4 rounded" style="background: var(--bg-soft);">
+        <p class="text-sm opacity-60 leading-relaxed">
+          Payment is processed securely via Stripe. You'll be redirected to complete your purchase.
+        </p>
+      </div>
+      
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="space-y-4">
+      
+      <!-- Primary Button: Proceed to Payment -->
+      <button 
+        id="proceed-to-checkout"
+        class="w-full px-8 py-4 rounded-lg text-base font-medium transition"
+        style="background: var(--accent); color: white; border: none; cursor: pointer;"
+        onmouseover="this.style.opacity='0.9'" 
+        onmouseout="this.style.opacity='1'">
+        Proceed to secure payment
+      </button>
+      
+      <!-- Secondary Button: Back -->
+      <a href="course.html"
+         class="block w-full px-8 py-4 rounded-lg text-base font-medium text-center transition border"
+         style="border-color: var(--border-soft);"
+         onmouseover="this.style.opacity='0.7'" 
+         onmouseout="this.style.opacity='1'">
+        Back to course details
+      </a>
+      
+    </div>
+    
+    <!-- Security Note -->
+    <div class="text-center mt-8">
+      <p class="text-xs opacity-50">
+        Secure checkout powered by Stripe
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- ORDER SUMMARY PAGE END -->
+
+<script>
+  // ========================================
+  // DYNAMIC ORDER SUMMARY WITH STRIPE REDIRECT
+  // ========================================
+  // Detects product from URL parameter (?product=course or ?product=ebook)
+  // Updates page content dynamically
+  // Redirects to appropriate Stripe payment link
+  
+  // Product configurations
+  const products = {
+    course: {
+      name: 'Finishing Tracks Without Overthinking',
+      format: 'Video course',
+      delivery: 'Instant access',
+      price: '£35',
+      included: [
+        'Lifetime access',
+        'Self-paced',
+        'Includes PDF ebook'
+      ],
+      stripeUrl: 'https://buy.stripe.com/test_28E14neDteada9MaY48g001',
+      backUrl: 'course-finishing-tracks.html'
+    },
+    ebook: {
+      name: 'Finishing Tracks Without Overthinking — Ebook',
+      format: 'PDF',
+      delivery: 'Secure download',
+      price: '£19',
+      included: [
+        'Instant access',
+        'DRM-free PDF',
+        'Read offline'
+      ],
+      stripeUrl: 'https://buy.stripe.com/test_14A5kD9j92rva9M7LS8g000',
+      backUrl: 'course-finishing-tracks.html'
+    }
+  };
+  
+  // Get product from URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const productType = urlParams.get('product') || 'course';
+  const product = products[productType];
+  
+  // Update page content
+  document.querySelector('h2').textContent = product.name;
+  document.querySelector('.flex.items-center.gap-3').innerHTML = `
+    <span>Format: ${product.format}</span>
+    <span>·</span>
+    <span>Delivery: ${product.delivery}</span>
+  `;
+  document.querySelector('.text-2xl.font-bold').textContent = product.price;
+  
+  // Update included items
+  const includedList = document.querySelector('ul.space-y-3');
+  includedList.innerHTML = product.included.map(item => `
+    <li class="flex items-start gap-3">
+      <span style="color: var(--accent);">✓</span>
+      <span>${item}</span>
+    </li>
+  `).join('');
+  
+  // Update back button
+  document.querySelector('a[href^="course"]').setAttribute('href', product.backUrl);
+  
+  // Handle checkout button click
+  document.getElementById('proceed-to-checkout').addEventListener('click', function() {
+    window.location.href = product.stripeUrl;
+  });
+</script>
+
+</body>
+</html>

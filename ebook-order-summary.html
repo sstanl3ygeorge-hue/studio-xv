@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order summary — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- EBOOK ORDER SUMMARY PAGE START -->
+<!-- Pre-checkout confirmation page for ebook purchase -->
+<!-- Shows ebook order details before redirecting to Stripe -->
+<!-- Minimal inline JS for Stripe redirect only -->
+
+<section class="min-h-screen py-32 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
+    
+    <!-- Page Title -->
+    <div class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Order summary</h1>
+      <p class="text-base opacity-60">
+        Review your order before proceeding to payment
+      </p>
+    </div>
+    
+    <!-- Order Details Card -->
+    <div class="rounded-2xl p-8 md:p-10 border mb-8" style="background: var(--bg-card); border-color: var(--border-soft);">
+      
+      <!-- Product Info -->
+      <div class="mb-8 pb-8 border-b" style="border-color: var(--border-soft);">
+        <h2 class="text-xl font-semibold mb-2">Finishing Tracks Without Overthinking — Ebook</h2>
+        <div class="space-y-1 text-sm opacity-60 mb-4">
+          <div class="flex items-center gap-3">
+            <span>Format: PDF</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span>Length: 18 pages</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span>Reading time: 45–60 minutes</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span>Delivery: Secure download</span>
+          </div>
+        </div>
+        <div class="text-2xl font-bold">£19</div>
+      </div>
+      
+      <!-- What's Included -->
+      <div class="mb-8">
+        <h3 class="text-lg font-semibold mb-4">What's included</h3>
+        <ul class="space-y-3 text-base opacity-70">
+          <li class="flex items-start gap-3">
+            <span style="color: var(--accent);">✓</span>
+            <span>Instant access</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span style="color: var(--accent);">✓</span>
+            <span>DRM-free PDF</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span style="color: var(--accent);">✓</span>
+            <span>Read offline</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Payment Note -->
+      <div class="p-4 rounded" style="background: var(--bg-soft);">
+        <p class="text-sm opacity-60 leading-relaxed">
+          Payment is processed securely via Stripe. You'll be redirected to complete your purchase.
+        </p>
+      </div>
+      
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="space-y-4">
+      
+      <!-- Primary Button: Proceed to Payment -->
+      <button 
+        id="proceed-to-checkout"
+        class="w-full px-8 py-4 rounded-lg text-base font-medium transition"
+        style="background: var(--accent); color: white; border: none; cursor: pointer;"
+        onmouseover="this.style.opacity='0.9'" 
+        onmouseout="this.style.opacity='1'">
+        Proceed to secure payment
+      </button>
+      
+      <!-- Secondary Button: Back -->
+      <a href="index.html#course-finishing-tracks"
+         class="block w-full px-8 py-4 rounded-lg text-base font-medium text-center transition border"
+         style="border-color: var(--border-soft);"
+         onmouseover="this.style.opacity='0.7'" 
+         onmouseout="this.style.opacity='1'">
+        Back to ebook details
+      </a>
+      
+    </div>
+    
+    <!-- Security Note -->
+    <div class="text-center mt-8">
+      <p class="text-xs opacity-50">
+        Secure checkout powered by Stripe
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- EBOOK ORDER SUMMARY PAGE END -->
+
+<script>
+  // ========================================
+  // STRIPE TEST EBOOK CHECKOUT REDIRECT
+  // ========================================
+  // Minimal inline JS to handle Stripe ebook checkout redirect
+  // No global JS, no webhooks, isolated to this page only
+  
+  // Actual Stripe ebook payment link
+  const STRIPE_TEST_EBOOK_CHECKOUT_URL = 'https://buy.stripe.com/test_14A5kD9j92rva9M7LS8g000';
+  
+  // Success/Cancel URLs (configured in Stripe Dashboard)
+  // Success: ebook-confirmation.html
+  // Cancel: ebook-order-summary.html?cancelled=true
+  
+  document.getElementById('proceed-to-checkout').addEventListener('click', function() {
+    // Redirect to Stripe Checkout for ebook purchase
+    window.location.href = STRIPE_TEST_EBOOK_CHECKOUT_URL;
+  });
+</script>
+
+</body>
+</html>

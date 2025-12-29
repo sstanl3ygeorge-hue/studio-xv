@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOOLS PAGE (PLACEHOLDER) -->
+<!-- Coming soon - practical tools for Studio XV process -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Page Header -->
+    <div class="mb-12">
+      <div class="flex items-start gap-4 mb-3">
+        <h1 class="text-3xl md:text-4xl font-bold">Tools & worksheets</h1>
+        <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+              style="border-color: var(--border-soft);">
+          Coming soon
+        </span>
+      </div>
+      <p class="text-base opacity-60">
+        Practical tools designed to support the Studio XV process.
+      </p>
+      <a href="index.html#learn" class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline mt-4 inline-block">
+        ← Back to Learn
+      </a>
+    </div>
+    
+    <!-- Placeholder Content -->
+    <div class="rounded-xl p-8 border opacity-50" style="background: var(--bg-card); border-color: var(--border-soft);">
+      <p class="text-base opacity-70 leading-relaxed">
+        This section will include practical worksheets, checklists, and decision frameworks to help you apply the Studio XV process to your own projects.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+</body>
+</html>

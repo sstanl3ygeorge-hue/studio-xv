@@ -1,0 +1,129 @@
+<!--
+BOOKING SUMMARY PAGE
+Final review step before Stripe payment.
+Do not bypass or auto-submit.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking Summary — Studio XV</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 480px;
+      margin: 2rem auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .summary-label {
+      font-weight: 600;
+      opacity: 0.7;
+      margin-bottom: 0.25rem;
+    }
+    .summary-value {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover {
+      background: #ea580c;
+    }
+    .link-secondary {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--accent);
+      text-decoration: underline;
+      font-size: 1rem;
+    }
+    .error {
+      color: #f87171;
+      text-align: center;
+      margin: 2rem 0;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="card" id="summary-card" style="display:none;">
+      <h2 class="text-2xl font-bold mb-6 text-center">Review Your Booking</h2>
+      <div id="summary-details"></div>
+      <button class="btn-primary" id="continue-btn">Continue to secure payment →</button>
+      <a href="index.html#booking" class="link-secondary">← Edit booking details</a>
+    </div>
+    <div class="error" id="error-message" style="display:none;"></div>
+  </main>
+  <script>
+    // Try to read bookingData from localStorage
+    let bookingData = null;
+    try {
+      bookingData = JSON.parse(localStorage.getItem('bookingData'));
+    } catch(e) {
+      bookingData = null;
+    }
+    function showError(msg) {
+      document.getElementById('summary-card').style.display = 'none';
+      const error = document.getElementById('error-message');
+      error.textContent = msg;
+      error.style.display = 'block';
+    }
+    function renderSummary(data) {
+      const details = document.getElementById('summary-details');
+      details.innerHTML = '';
+      function row(label, value) {
+        details.innerHTML += `<div><div class='summary-label'>${label}</div><div class='summary-value'>${value}</div></div>`;
+      }
+      row('Service', data.service || '—');
+      if (data.hours) {
+        row('Duration', data.hours + ' hour(s)');
+      } else if (data.package) {
+        row('Package', data.package);
+      }
+      row('Date', data.date || '—');
+      if (data.addons && data.addons.length) {
+        row('Add-ons', data.addons.map(a => a.label).join(', '));
+      } else {
+        row('Add-ons', 'None');
+      }
+      row('Upload status', data.hasFiles ? 'Files uploaded' : 'No files');
+      row('Cloud link', data.hasCloudLink ? 'Provided' : 'Not provided');
+      row('Total price', data.total ? '£' + data.total.toFixed(2) : '—');
+      row('Deposit due', data.deposit ? '£' + data.deposit.toFixed(2) : '—');
+    }
+    if (!bookingData || !bookingData.service) {
+      showError('Booking details not found. Please return to the booking form.');
+    } else {
+      document.getElementById('summary-card').style.display = 'block';
+      renderSummary(bookingData);
+    }
+    document.getElementById('continue-btn').onclick = function() {
+      // Trigger Stripe payment flow (same as booking form)
+      window.location.href = 'index.html#booking';
+      // Optionally, you could trigger a custom event or call a function here
+    };
+  </script>
+</body>
+</html>

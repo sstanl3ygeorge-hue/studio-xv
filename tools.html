@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools & planners — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOOLS & PLANNERS PAGE -->
+<!-- Practical utilities for music production workflow -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Page Header -->
+    <div class="mb-12">
+      <div class="flex items-start gap-4 mb-3">
+        <h1 class="text-3xl md:text-4xl font-bold">Tools & planners</h1>
+        <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+              style="border-color: var(--border-soft);">
+          Coming soon
+        </span>
+      </div>
+      <p class="text-base opacity-60 max-w-2xl">
+        Practical utilities to support the Studio XV process. Simple tools for better decisions.
+      </p>
+      <a href="index.html#learn" class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline mt-4 inline-block">
+        ← Back to Learn
+      </a>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="mb-8 space-y-4">
+      <!-- Search Bar -->
+      <div class="relative">
+        <input 
+          type="text" 
+          id="search-input"
+          placeholder="Search tools..." 
+          class="w-full px-4 py-3 pl-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
+          style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
+        />
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="flex flex-wrap gap-2">
+        <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition" data-filter="all">
+          All
+        </button>
+        <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition" data-filter="coming-soon">
+          Coming soon
+        </button>
+      </div>
+
+      <!-- Results Counter -->
+      <p class="text-sm opacity-60">
+        <span id="results-count">9</span> tools
+      </p>
+    </div>
+    
+    <!-- Tools List -->
+    <div class="space-y-6">
+      
+      <!-- BPM Counter -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="bpm counter find the tempo of any track or loop by tapping along" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">BPM counter</h3>
+        <p class="text-base opacity-70">
+          Find the tempo of any track or loop by tapping along.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Tap Tempo -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="tap tempo match your daw tempo to a reference track by tapping" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Tap tempo</h3>
+        <p class="text-base opacity-70">
+          Match your DAW tempo to a reference track by tapping.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Checklist Generator -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="checklist generator create custom finishing checklists based on your workflow" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Checklist generator</h3>
+        <p class="text-base opacity-70">
+          Create custom finishing checklists based on your workflow.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Session Planner -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="session planner plan focused studio sessions with clear time blocks and goals" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Session planner</h3>
+        <p class="text-base opacity-70">
+          Plan focused studio sessions with clear time blocks and goals.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Arrangement Planner -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="arrangement planner sketch track structures before opening your daw" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Arrangement planner</h3>
+        <p class="text-base opacity-70">
+          Sketch track structures before opening your DAW.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Energy Curve Visualiser -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="energy curve visualiser map the energy flow of your track to identify pacing issues" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Energy curve visualiser</h3>
+        <p class="text-base opacity-70">
+          Map the energy flow of your track to identify pacing issues.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Key Detection -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="key detection identify the key and scale of audio files for harmonic mixing" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Key detection</h3>
+        <p class="text-base opacity-70">
+          Identify the key and scale of audio files for harmonic mixing.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Audio Analysis -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="audio analysis analyze frequency content dynamics and loudness of your tracks" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Audio analysis</h3>
+        <p class="text-base opacity-70">
+          Analyze frequency content, dynamics, and loudness of your tracks.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+      <!-- Mix Comparison -->
+      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="mix comparison compare your mix against reference tracks side-by-side" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Mix comparison</h3>
+        <p class="text-base opacity-70">
+          Compare your mix against reference tracks side-by-side.
+        </p>
+        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<style>
+  .filter-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    color: var(--text-main);
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .tool-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .tool-item.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  // Search and Filter Functionality
+  const searchInput = document.getElementById('search-input');
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const toolItems = document.querySelectorAll('.tool-item');
+  const resultsCount = document.getElementById('results-count');
+
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  // Filter button click handlers
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Update active state
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      // Update current filter
+      currentFilter = button.dataset.filter;
+      
+      // Update display
+      updateDisplay();
+    });
+  });
+
+  // Search input handler
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value.toLowerCase();
+    updateDisplay();
+  });
+
+  // Update display based on current filter and search
+  function updateDisplay() {
+    let visibleCount = 0;
+
+    toolItems.forEach(item => {
+      const status = item.dataset.status;
+      const title = item.dataset.title.toLowerCase();
+      
+      // Check filter match
+      const filterMatch = currentFilter === 'all' || status === currentFilter;
+      
+      // Check search match
+      const searchMatch = currentSearch === '' || title.includes(currentSearch);
+      
+      // Show/hide item
+      if (filterMatch && searchMatch) {
+        item.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+
+    // Update results count
+    resultsCount.textContent = visibleCount;
+  }
+
+  // Initialize display
+  updateDisplay();
+</script>
+
+</body>
+</html>

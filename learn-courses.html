@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- COURSES PAGE -->
+<!-- Detailed course catalog moved from Learn section -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Academy: Courses Index -->
+    <!-- Page Header -->
+    <div class="mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold mb-3">Courses</h1>
+      <p class="text-base opacity-60">
+        Practical PDF ebooks that guide you through the Studio XV process.
+      </p>
+      <a href="index.html#learn" class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline mt-4 inline-block">
+        ← Back to Learn
+      </a>
+    </div>
+    
+    <!-- Search & Filter UI -->
+    <div class="mb-12 space-y-6">
+      <!-- Search Bar -->
+      <div class="relative">
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Search courses..." 
+          class="w-full px-4 py-3 rounded-lg border focus:outline-none transition"
+          style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
+        />
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3">
+        <button class="filter-btn active" data-filter="all">
+          All courses
+        </button>
+        <button class="filter-btn" data-filter="available">
+          Available
+        </button>
+        <button class="filter-btn" data-filter="novice">
+          Novice
+        </button>
+        <button class="filter-btn" data-filter="beginner">
+          Beginner
+        </button>
+        <button class="filter-btn" data-filter="intermediate">
+          Intermediate
+        </button>
+      </div>
+      
+      <!-- Results count -->
+      <div id="results-count" class="text-sm opacity-60">
+        Showing <span id="count-number">30</span> courses
+      </div>
+    </div>
+    
+    <!-- Academy: Course List -->
+    <div class="space-y-12">
+      
+      <!-- Course 1: Finishing Tracks (Available) -->
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner,intermediate" data-title="Finishing Tracks Without Overthinking" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Finishing Tracks Without Overthinking</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          A practical approach to finishing tracks by understanding what slows you down and what moves you forward.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>18 pages</span>
+          <span>·</span>
+          <span>45–60 min read</span>
+          <span>·</span>
+          <span>Beginner → Intermediate</span>
+        </div>
+        
+        <a 
+           href="course-finishing-tracks.html"
+           class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
+           style="background: var(--accent); color: white;"
+           onmouseover="this.style.opacity='0.9'" 
+           onmouseout="this.style.opacity='1'">
+          View course
+        </a>
+      </div>
+      
+      <!-- Course 2: Balancing Vocals -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Balancing Vocals Without Fighting the Mix" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Balancing Vocals Without Fighting the Mix</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Clear vocal positioning and compression strategies for clarity without volume wars.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>16–20 pages</span>
+          <span>·</span>
+          <span>40–55 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 3: Space, Depth & Translation -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Space, Depth & Translation" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Space, Depth & Translation</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding how mixes translate by focusing on spatial relationships and depth perception.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>22–28 pages</span>
+          <span>·</span>
+          <span>55–75 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 4: Creative Clarity for Producers -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Creative Clarity for Producers" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Creative Clarity for Producers</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Recognizing patterns in your workflow and building trust in your creative decisions.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>14–18 pages</span>
+          <span>·</span>
+          <span>35–45 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 5: From Loop to Arrangement -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="From Loop to Arrangement" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">From Loop to Arrangement</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Practical strategies for turning 8-bar loops into complete arrangements with flow and structure.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>20–24 pages</span>
+          <span>·</span>
+          <span>50–60 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 6: EQ Fundamentals -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="EQ Fundamentals for Producers" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">EQ Fundamentals for Producers</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding frequency relationships and making intentional EQ decisions that serve the mix.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>18–22 pages</span>
+          <span>·</span>
+          <span>45–55 min read</span>
+          <span>·</span>
+          <span>Novice</span>
+        </div>
+      </div>
+      
+      <!-- Course 7: Compression Without Confusion -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Compression Without Confusion" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Compression Without Confusion</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Clear explanations of attack, release, ratio, and threshold for practical compression decisions.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>16–20 pages</span>
+          <span>·</span>
+          <span>40–50 min read</span>
+          <span>·</span>
+          <span>Novice</span>
+        </div>
+      </div>
+      
+      <!-- Course 8: Reverb & Space -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Reverb & Space" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Reverb & Space</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Using reverb and spatial effects to create depth and cohesion without muddiness.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>14–18 pages</span>
+          <span>·</span>
+          <span>35–45 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 9: Stereo Width Decisions -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Stereo Width Decisions" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Stereo Width Decisions</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding mono compatibility, panning strategies, and width processing that translates.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>12–16 pages</span>
+          <span>·</span>
+          <span>30–40 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 10: Reference Tracks That Help -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Reference Tracks That Help" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Reference Tracks That Help</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          How to choose and use reference tracks effectively without copying or second-guessing.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>10–14 pages</span>
+          <span>·</span>
+          <span>25–35 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 11: Gain Staging for Clarity -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Gain Staging for Clarity" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Gain Staging for Clarity</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Practical gain staging that prevents clipping and maintains headroom throughout your mix.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>12–16 pages</span>
+          <span>·</span>
+          <span>30–40 min read</span>
+          <span>·</span>
+          <span>Novice</span>
+        </div>
+      </div>
+      
+      <!-- Course 12: Bass & Low End Management -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Bass & Low End Management" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Bass & Low End Management</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Controlling bass frequencies, managing kick-bass relationships, and achieving clean low end.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>18–22 pages</span>
+          <span>·</span>
+          <span>45–55 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 13: Mastering for Producers -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Mastering for Producers" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Mastering for Producers</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Basic mastering principles for preparing your own tracks for release or sending to mastering engineers.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>16–20 pages</span>
+          <span>·</span>
+          <span>40–50 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 14: Automation Essentials -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Automation Essentials" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Automation Essentials</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Using automation to add movement, focus, and emotional dynamics to your mixes.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>14–18 pages</span>
+          <span>·</span>
+          <span>35–45 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 15: Saturation & Harmonic Distortion -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Saturation & Harmonic Distortion" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Saturation & Harmonic Distortion</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Adding warmth, presence, and character through controlled saturation and harmonic distortion.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>12–16 pages</span>
+          <span>·</span>
+          <span>30–40 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 16: Sidechain Compression -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Sidechain Compression" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Sidechain Compression</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Practical sidechain techniques for creating space, movement, and rhythmic interest in your mixes.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>10–14 pages</span>
+          <span>·</span>
+          <span>25–35 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 17: Parallel Processing -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Parallel Processing" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Parallel Processing</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Using parallel compression, EQ, and effects to add intensity without losing the original signal.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>14–18 pages</span>
+          <span>·</span>
+          <span>35–45 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 18: Delay & Echo -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Delay & Echo" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Delay & Echo</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding delay types, sync rates, and creative echo techniques for depth and rhythm.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>12–16 pages</span>
+          <span>·</span>
+          <span>30–40 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 19: Multiband Processing -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Multiband Processing" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Multiband Processing</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Using multiband compression and EQ for frequency-specific control and surgical corrections.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>14–18 pages</span>
+          <span>·</span>
+          <span>35–45 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 20: Transient Shaping -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Transient Shaping" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Transient Shaping</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Controlling attack and sustain on drums, percussion, and dynamic sources for punch and clarity.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>10–14 pages</span>
+          <span>·</span>
+          <span>25–35 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 21: Limiting Without Crushing -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Limiting Without Crushing" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Limiting Without Crushing</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding brick-wall limiting, loudness targets, and preserving dynamics while maximizing levels.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>12–16 pages</span>
+          <span>·</span>
+          <span>30–40 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 22: De-Essing & Sibilance Control -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="De-Essing & Sibilance Control" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">De-Essing & Sibilance Control</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Controlling harsh sibilance and high-frequency content in vocals without losing presence.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>8–12 pages</span>
+          <span>·</span>
+          <span>20–30 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 23: Genre-Specific Mix Balance -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Genre-Specific Mix Balance" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Genre-Specific Mix Balance</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding mix balance conventions across electronic, hip-hop, rock, and pop genres.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>20–24 pages</span>
+          <span>·</span>
+          <span>50–60 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 24: Listening Environment Setup -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Listening Environment Setup" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Listening Environment Setup</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Optimizing your room, monitor placement, and acoustic treatment for accurate listening.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>16–20 pages</span>
+          <span>·</span>
+          <span>40–50 min read</span>
+          <span>·</span>
+          <span>Novice</span>
+        </div>
+      </div>
+      
+      <!-- Course 25: Mixing on Headphones -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Mixing on Headphones" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Mixing on Headphones</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Strategies for achieving balanced mixes when working primarily or exclusively on headphones.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>12–16 pages</span>
+          <span>·</span>
+          <span>30–40 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 26: Energy & Dynamics -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Energy & Dynamics" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Energy & Dynamics</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Controlling emotional dynamics and energy curves throughout your arrangements and mixes.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>14–18 pages</span>
+          <span>·</span>
+          <span>35–45 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 27: Vocal Production Essentials -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Vocal Production Essentials" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Vocal Production Essentials</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Recording, editing, tuning, and processing vocals for clarity, presence, and emotional impact.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>22–28 pages</span>
+          <span>·</span>
+          <span>55–70 min read</span>
+          <span>·</span>
+          <span>Beginner</span>
+        </div>
+      </div>
+      
+      <!-- Course 28: Drum Processing & Layering -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Drum Processing & Layering" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Drum Processing & Layering</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Building powerful drum sounds through layering, processing, and balancing kick, snare, and percussion.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>18–22 pages</span>
+          <span>·</span>
+          <span>45–55 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 29: Creative Effects Chains -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Creative Effects Chains" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Creative Effects Chains</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Building intentional effects chains for unique textures, movement, and sonic character.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>16–20 pages</span>
+          <span>·</span>
+          <span>40–50 min read</span>
+          <span>·</span>
+          <span>Intermediate</span>
+        </div>
+      </div>
+      
+      <!-- Course 30: Export & Delivery Standards -->
+      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Export & Delivery Standards" style="border-color: var(--border-soft);">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h2 class="text-2xl font-semibold">Export & Delivery Standards</h2>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+        
+        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
+          Understanding file formats, sample rates, bit depth, and delivery requirements for streaming and mastering.
+        </p>
+        
+        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
+          <span>PDF Ebook</span>
+          <span>·</span>
+          <span>10–14 pages</span>
+          <span>·</span>
+          <span>25–35 min read</span>
+          <span>·</span>
+          <span>Novice</span>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<style>
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--border-soft);
+    background: var(--bg-card);
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .filter-btn:hover {
+    border-color: var(--accent);
+    opacity: 0.8;
+  }
+  
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  
+  .course-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .course-item.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const courseItems = document.querySelectorAll('.course-item');
+  const countNumber = document.getElementById('count-number');
+  
+  let currentFilter = 'all';
+  let currentSearch = '';
+  
+  function updateDisplay() {
+    let visibleCount = 0;
+    
+    courseItems.forEach(item => {
+      const title = item.dataset.title?.toLowerCase() || '';
+      const status = item.dataset.status || '';
+      const level = item.dataset.level || '';
+      
+      // Search match
+      const searchMatch = !currentSearch || title.includes(currentSearch.toLowerCase());
+      
+      // Filter match
+      let filterMatch = currentFilter === 'all';
+      if (currentFilter === 'available') {
+        filterMatch = status === 'available';
+      } else if (['novice', 'beginner', 'intermediate'].includes(currentFilter)) {
+        filterMatch = level.includes(currentFilter);
+      }
+      
+      // Show/hide
+      if (searchMatch && filterMatch) {
+        item.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+    
+    countNumber.textContent = visibleCount;
+  }
+  
+  // Search input
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value;
+    updateDisplay();
+  });
+  
+  // Filter buttons
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      updateDisplay();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

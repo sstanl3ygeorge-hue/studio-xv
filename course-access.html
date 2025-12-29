@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course access — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- COURSE ACCESS PAGE START -->
+<!-- Post-purchase course access page -->
+<!-- No payment logic, no Stripe links -->
+<!-- Video embeds will be added later -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Page Header -->
+    <div class="mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold mb-3">Finishing Tracks Without Overthinking</h1>
+      <p class="text-base opacity-60">Course access</p>
+    </div>
+    
+    <!-- MODULES SECTION -->
+    <!-- Video embeds will be added here later -->
+    <!-- Replace "Play" buttons with actual Bunny.net iframe embeds when ready -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-semibold mb-8">Modules</h2>
+      
+      <div class="space-y-6">
+        
+        <!-- Module 1 -->
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Module 1: The finishing mindset</h3>
+              <p class="text-base opacity-70 mb-3">
+                Understand the mental blocks that prevent you from finishing tracks and how to overcome them.
+              </p>
+              <p class="text-sm opacity-50">Duration: 12 minutes</p>
+            </div>
+          </div>
+          <!-- PLACEHOLDER: Video embed will go here -->
+          <!-- Format: <iframe src="https://iframe.mediadelivery.net/embed/YOUR_LIBRARY_ID/YOUR_VIDEO_ID" ...></iframe> -->
+          <button 
+            class="mt-4 px-6 py-2 rounded-lg text-sm font-medium transition"
+            style="background: var(--accent); color: white; border: none; cursor: pointer;"
+            onmouseover="this.style.opacity='0.9'" 
+            onmouseout="this.style.opacity='1'">
+            Play
+          </button>
+        </div>
+        
+        <!-- Module 2 -->
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Module 2: Simplify your workflow</h3>
+              <p class="text-base opacity-70 mb-3">
+                Learn to identify what matters most in your mix and eliminate unnecessary steps.
+              </p>
+              <p class="text-sm opacity-50">Duration: 15 minutes</p>
+            </div>
+          </div>
+          <!-- PLACEHOLDER: Video embed will go here -->
+          <button 
+            class="mt-4 px-6 py-2 rounded-lg text-sm font-medium transition"
+            style="background: var(--accent); color: white; border: none; cursor: pointer;"
+            onmouseover="this.style.opacity='0.9'" 
+            onmouseout="this.style.opacity='1'">
+            Play
+          </button>
+        </div>
+        
+        <!-- Module 3 -->
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Module 3: Making final decisions</h3>
+              <p class="text-base opacity-70 mb-3">
+                Practical techniques for committing to your creative choices and moving forward.
+              </p>
+              <p class="text-sm opacity-50">Duration: 18 minutes</p>
+            </div>
+          </div>
+          <!-- PLACEHOLDER: Video embed will go here -->
+          <button 
+            class="mt-4 px-6 py-2 rounded-lg text-sm font-medium transition"
+            style="background: var(--accent); color: white; border: none; cursor: pointer;"
+            onmouseover="this.style.opacity='0.9'" 
+            onmouseout="this.style.opacity='1'">
+            Play
+          </button>
+        </div>
+        
+        <!-- Module 4 -->
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Module 4: Publishing with confidence</h3>
+              <p class="text-base opacity-70 mb-3">
+                How to know when your track is ready and release it without second-guessing.
+              </p>
+              <p class="text-sm opacity-50">Duration: 10 minutes</p>
+            </div>
+          </div>
+          <!-- PLACEHOLDER: Video embed will go here -->
+          <button 
+            class="mt-4 px-6 py-2 rounded-lg text-sm font-medium transition"
+            style="background: var(--accent); color: white; border: none; cursor: pointer;"
+            onmouseover="this.style.opacity='0.9'" 
+            onmouseout="this.style.opacity='1'">
+            Play
+          </button>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- EBOOK ACCESS SECTION -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-semibold mb-6">Ebook access</h2>
+      
+      <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <p class="text-base opacity-70 mb-4">
+          Download the PDF reference guide
+        </p>
+        
+        <!-- PDF Download Link -->
+        <!-- Replace with actual Bunny.net CDN URL when ready -->
+        <a href="finishing-tracks-without-overthinking.pdf"
+           download
+           class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
+           style="background: var(--accent); color: white;"
+           onmouseover="this.style.opacity='0.9'" 
+           onmouseout="this.style.opacity='1'">
+          Download PDF
+        </a>
+      </div>
+    </div>
+    
+    <!-- FOOTER NOTE -->
+    <div class="text-center">
+      <p class="text-sm opacity-50">
+        You can return to this page at any time.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- COURSE ACCESS PAGE END -->
+
+</body>
+</html>

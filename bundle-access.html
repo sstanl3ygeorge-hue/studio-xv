@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bundle Access • Studio XV</title>
+  
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Colors */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #121212;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --border-soft: #2a2a2a;
+      --accent: #f97316;
+      
+      /* Layout */
+      --max-width: 1200px;
+      --spacing-section: 6rem;
+      --spacing-content: 3rem;
+    }
+    
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f8f8;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666666;
+        --border-soft: #e5e5e5;
+        --accent: #f97316;
+      }
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 py-5" style="background: var(--bg-primary); border-bottom: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+      
+      <div class="flex items-center gap-8 text-sm font-medium">
+        <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+        <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+        <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+        <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Access Section -->
+  <section class="pt-32 pb-24 px-6">
+    <div class="max-w-4xl mx-auto">
+      
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Your bundle access</h1>
+      <p class="text-lg opacity-70 mb-12">
+        The Studio XV Finishing Framework — ebook and video course
+      </p>
+      
+      <!-- Ebook Section -->
+      <div class="mb-8 p-8 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+        <h2 class="text-2xl font-semibold mb-4">Finishing Tracks Without Overthinking (ebook)</h2>
+        <p class="text-base opacity-70 mb-6">
+          Download your PDF. Read it anytime, no account needed.
+        </p>
+        
+        <a 
+           href="https://studioxv.b-cdn.net/ebooks/finishing-tracks-ebook.pdf" 
+           target="_blank"
+           class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
+           style="background: var(--accent); color: white;"
+           onmouseover="this.style.opacity='0.9'" 
+           onmouseout="this.style.opacity='1'">
+          Download ebook (PDF)
+        </a>
+        
+        <p class="text-xs opacity-60 mt-4">
+          18 pages · PDF format · Save this link to re-download anytime
+        </p>
+      </div>
+      
+      <!-- Video Course Section -->
+      <div class="mb-12 p-8 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+        <h2 class="text-2xl font-semibold mb-4">Finishing Tracks Without Overthinking (video course)</h2>
+        <p class="text-base opacity-70 mb-6">
+          Access all video modules below.
+        </p>
+        
+        <!-- Module 1 -->
+        <div class="mb-6 pb-6" style="border-bottom: 1px solid var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">Module 1: Understanding Finishing</h3>
+              <p class="text-sm opacity-60">15 min</p>
+            </div>
+            <button 
+               onclick="alert('Video player integration coming soon')"
+               class="px-4 py-2 rounded text-sm font-medium transition"
+               style="background: var(--accent); color: white;"
+               onmouseover="this.style.opacity='0.9'" 
+               onmouseout="this.style.opacity='1'">
+              Play
+            </button>
+          </div>
+          <p class="text-sm opacity-70">
+            What finishing actually means and why it's different from mixing.
+          </p>
+        </div>
+        
+        <!-- Module 2 -->
+        <div class="mb-6 pb-6" style="border-bottom: 1px solid var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">Module 2: Decision Frameworks</h3>
+              <p class="text-sm opacity-60">20 min</p>
+            </div>
+            <button 
+               onclick="alert('Video player integration coming soon')"
+               class="px-4 py-2 rounded text-sm font-medium transition"
+               style="background: var(--accent); color: white;"
+               onmouseover="this.style.opacity='0.9'" 
+               onmouseout="this.style.opacity='1'">
+              Play
+            </button>
+          </div>
+          <p class="text-sm opacity-70">
+            How to make clear decisions when you're stuck or second-guessing.
+          </p>
+        </div>
+        
+        <!-- Module 3 -->
+        <div class="mb-6 pb-6" style="border-bottom: 1px solid var(--border-soft);">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">Module 3: Real Session Walkthrough</h3>
+              <p class="text-sm opacity-60">25 min</p>
+            </div>
+            <button 
+               onclick="alert('Video player integration coming soon')"
+               class="px-4 py-2 rounded text-sm font-medium transition"
+               style="background: var(--accent); color: white;"
+               onmouseover="this.style.opacity='0.9'" 
+               onmouseout="this.style.opacity='1'">
+              Play
+            </button>
+          </div>
+          <p class="text-sm opacity-70">
+            Watch a full finishing session from start to export.
+          </p>
+        </div>
+        
+        <!-- Module 4 -->
+        <div class="mb-6">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">Module 4: Common Issues</h3>
+              <p class="text-sm opacity-60">15 min</p>
+            </div>
+            <button 
+               onclick="alert('Video player integration coming soon')"
+               class="px-4 py-2 rounded text-sm font-medium transition"
+               style="background: var(--accent); color: white;"
+               onmouseover="this.style.opacity='0.9'" 
+               onmouseout="this.style.opacity='1'">
+              Play
+            </button>
+          </div>
+          <p class="text-sm opacity-70">
+            Troubleshooting the most common finishing problems.
+          </p>
+        </div>
+        
+      </div>
+      
+      <!-- Info Box -->
+      <div class="p-6 rounded-lg" style="background: var(--bg-secondary); border: 1px solid var(--border-soft);">
+        <p class="text-sm opacity-70 mb-3">
+          <span class="font-medium opacity-100">Lifetime access:</span> Bookmark this page. You can return anytime to access your materials.
+        </p>
+        <p class="text-sm opacity-70">
+          <span class="font-medium opacity-100">Questions?</span> Email hello@studioxv.com if you need help.
+        </p>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6" style="border-top: 1px solid var(--border-soft);">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="text-sm opacity-60">
+          © 2025 Studio XV. All rights reserved.
+        </div>
+        
+        <div class="flex gap-6 text-sm opacity-60">
+          <a href="#" class="hover:opacity-100 transition">Instagram</a>
+          <a href="#" class="hover:opacity-100 transition">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

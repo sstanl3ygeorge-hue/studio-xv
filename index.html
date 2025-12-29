@@ -8,6 +8,10 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Stripe.js for ebook checkout (TEST MODE) -->
+  <!-- SAFE TO REMOVE: Delete this line to disable Stripe checkout -->
+  <script src="https://js.stripe.com/v3/"></script>
+
   <style>
     :root {
       /* DARK MODE (DEFAULT) */
@@ -358,6 +362,7 @@
 </div>
 
 <!-- NAV -->
+<!-- Navigation clarified to separate exploration, learning, listening, and booking. -->
 <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur"
      style="background: var(--bg-main); color: var(--text-main);">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -367,9 +372,9 @@
     <div class="hidden md:flex space-x-8">
       <a href="#home" class="transition hover:text-[var(--accent)]">Home</a>
       <a href="#services" class="transition hover:text-[var(--accent)]">Services</a>
-      <a href="#portfolio" class="transition hover:text-[var(--accent)]">Portfolio</a>
-      <a href="#booking" class="transition hover:text-[var(--accent)]">Booking</a>
-      <a href="#about" class="transition hover:text-[var(--accent)]">About</a>
+      <a href="#portfolio" class="transition hover:text-[var(--accent)]">Listen</a>
+      <a href="#learn" class="transition hover:text-[var(--accent)]">Learn</a>
+      <a href="#booking" class="transition hover:text-[var(--accent)]">Book</a>
     </div>
 
     <!-- Mobile toggle -->
@@ -389,9 +394,9 @@
   <nav class="flex flex-col gap-8 text-center mt-10 text-xl">
     <a href="#home" class="mobile-link hover:text-[var(--accent)]">Home</a>
     <a href="#services" class="mobile-link hover:text-[var(--accent)]">Services</a>
-    <a href="#portfolio" class="mobile-link hover:text-[var(--accent)]">Portfolio</a>
-    <a href="#booking" class="mobile-link hover:text-[var(--accent)]">Booking</a>
-    <a href="#about" class="mobile-link hover:text-[var(--accent)]">About</a>
+    <a href="#portfolio" class="mobile-link hover:text-[var(--accent)]">Listen</a>
+    <a href="#learn" class="mobile-link hover:text-[var(--accent)]">Learn</a>
+    <a href="#booking" class="mobile-link hover:text-[var(--accent)]">Book</a>
   </nav>
 </div>
 
@@ -408,6 +413,10 @@
 
     <div class="space-y-6 max-w-2xl mx-auto">
       <h1 class="text-3xl md:text-4xl font-bold leading-tight">Professional recording, mixing, and production</h1>
+      <!-- Homepage orientation: clarifying purpose -->
+      <p class="text-base opacity-60" style="color: var(--text-muted);">
+        A London-based studio for recording, mixing, production lessons, and learning resources.
+      </p>
       <p class="text-lg md:text-xl opacity-80 leading-relaxed">A dedicated studio space in London for artists, producers, and songwriters. Whether you're tracking, mixing, or need production support — everything's handled with care and precision.</p>
     </div>
 
@@ -438,298 +447,436 @@
            class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Beats & Production
         </a>
-        <a href="javascript:void(0)" onclick="openServiceModal('lessons')"
-           class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
-          Production Lessons
-        </a>
+        <!-- Production Lessons removed from hero list (not needed here, still accessible via Services section and modal system) -->
       </div>
+      
+      <!-- Contextual lessons note (easily removable) -->
+      <p class="text-sm leading-relaxed mt-8 max-w-2xl mx-auto" style="color: var(--text-muted);">
+        If you're working through a project and want guidance, one-to-one Zoom lessons and self-paced courses are available alongside sessions.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- NEW: READING PATH (easily removable - encourages 20-30min exploration) -->
-<section class="py-12 px-6 border-t border-b" style="background: var(--bg-section); border-color: var(--border-soft);">
-  <div class="max-w-3xl mx-auto text-center">
-    <h2 class="text-xl md:text-2xl font-semibold mb-3">Not sure where to start?</h2>
-    <p class="text-base opacity-70 leading-relaxed mb-6 max-w-2xl mx-auto">
-      Take a few minutes to explore how Studio XV works, how lessons are run, and how artists prepare tracks for mixing and mastering.
-    </p>
-    <div class="flex flex-col gap-3 text-base max-w-xl mx-auto">
-      <a href="/zoom-lessons.html" class="opacity-70 hover:opacity-100 transition underline-offset-4 hover:underline">
-        How online Zoom lessons work
-      </a>
-      <a href="/teaching-approach.html" class="opacity-70 hover:opacity-100 transition underline-offset-4 hover:underline">
-        What I listen for when mixing & mastering
-      </a>
-      <a href="/track-feedback.html" class="opacity-70 hover:opacity-100 transition underline-offset-4 hover:underline">
-        Send a track for feedback (no booking required)
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- NEW: WHO THIS IS FOR (easily removable) -->
-<section class="py-16 px-6" style="background: var(--bg-main);">
-  <div class="max-w-4xl mx-auto">
-    <div class="text-center space-y-8">
-      <h2 class="text-2xl md:text-3xl font-semibold opacity-90">This studio is for anyone building something they care about</h2>
-      <div class="grid md:grid-cols-3 gap-8 text-left">
-        <div class="space-y-3">
-          <div class="text-5xl opacity-20">🎤</div>
-          <h3 class="font-semibold text-lg">Recording Artists</h3>
-          <p class="text-sm opacity-70 leading-relaxed">Vocals, instruments, full band sessions. Comfortable environment with quality gear and an engineer who listens.</p>
-        </div>
-        <div class="space-y-3">
-          <div class="text-5xl opacity-20">🎚️</div>
-          <h3 class="font-semibold text-lg">Producers & Beatmakers</h3>
-          <p class="text-sm opacity-70 leading-relaxed">Mix support, mastering, or production lessons. Get your tracks sounding right without the guesswork.</p>
-        </div>
-        <div class="space-y-3">
-          <div class="text-5xl opacity-20">📀</div>
-          <h3 class="font-semibold text-lg">Independent Releases</h3>
-          <p class="text-sm opacity-70 leading-relaxed">Singles, EPs, albums. Consistent quality across your project with flexible packages that adapt to your workflow.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- NEW: PHILOSOPHY (easily removable) -->
-<section class="py-16 px-6" style="background: var(--bg-section);">
-  <div class="max-w-3xl mx-auto text-center space-y-6">
-    <h2 class="text-2xl md:text-3xl font-semibold opacity-90">No pressure. No upselling. Just focused work.</h2>
-    <p class="text-base md:text-lg opacity-70 leading-relaxed max-w-2xl mx-auto">
-      This isn't a factory. Sessions are booked with intention, and the aim is simple: help you get the sound you're after. Whether you're here for an hour or working on a full project, you'll have the space and support to do it properly.
-    </p>
-    <p class="text-sm opacity-60 max-w-xl mx-auto">
-      Transparent pricing. Clear communication. Equipment that works. That's the standard.
-    </p>
-  </div>
-</section>
-
-<!-- SERVICES -->
+<!-- ========================================== -->
+<!-- SERVICES SECTION -->
+<!-- ========================================== -->
 <section id="services" class="pt-16 pb-24 px-6" style="background: var(--bg-section);">
   <div class="max-w-6xl mx-auto">
     <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">
       Services
     </h2>
     <p class="text-center mb-16">
-      <a href="javascript:void(0)" onclick="openHowItWorksModal()" 
-         class="text-sm opacity-70 hover:text-orange-500 hover:opacity-100 transition underline-offset-4 hover:underline cursor-pointer">
+      <a href="javascript:void(0)" onclick="openHowItWorksModal()" class="text-sm opacity-70 hover:text-orange-500 hover:opacity-100 transition underline-offset-4 hover:underline cursor-pointer">
         How sessions work →
       </a>
     </p>
 
-    <div
-      id="services-grid"
-      class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-    ></div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Recording -->
+      <div onclick="openServiceModal('recording')" class="block group rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl cursor-pointer" style="background: var(--bg-card);">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
+          Recording
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between">
+            <span>Hourly Session</span>
+            <span>£30/hr</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Half-Day (4hrs)</span>
+            <span>£140</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Full-Day (8hrs)</span>
+            <span>£260</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mixing -->
+      <div onclick="openServiceModal('mixing')" class="block group rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl cursor-pointer" style="background: var(--bg-card);">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
+          Mixing
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between">
+            <span>Per Track</span>
+            <span>£50</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Mix + Master</span>
+            <span>£75</span>
+          </li>
+          <li class="flex justify-between">
+            <span>EP (4–6 tracks)</span>
+            <span>£280</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mastering -->
+      <div onclick="openServiceModal('mastering')" class="block group rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl cursor-pointer" style="background: var(--bg-card);">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
+          Mastering
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between">
+            <span>Single</span>
+            <span>£35</span>
+          </li>
+          <li class="flex justify-between">
+            <span>EP (4–6 tracks)</span>
+            <span>£120</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Album (10+ tracks)</span>
+            <span>£250</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Production -->
+      <div onclick="openServiceModal('production')" class="block group rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl cursor-pointer" style="background: var(--bg-card);">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
+          Production
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between">
+            <span>Beat Lease</span>
+            <span>£40</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Exclusive Beat</span>
+            <span>£150</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Custom Production</span>
+            <span>POA</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Lessons -->
+      <div onclick="openServiceModal('lessons')" class="block group rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl cursor-pointer" style="background: var(--bg-card);">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
+          Lessons
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between">
+            <span>Hourly Session</span>
+            <span>£40/hr</span>
+          </li>
+          <li class="flex justify-between">
+            <span>2-Hour Session</span>
+            <span>£80</span>
+          </li>
+          <li class="flex justify-between">
+            <span>4-Hour Session</span>
+            <span>£160</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Add-Ons -->
+      <div onclick="openServiceModal('addons')" class="lg:col-span-3 block group rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl cursor-pointer" style="background: var(--bg-card);">
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
+          Add-Ons
+        </h3>
+        <ul class="space-y-4 text-sm">
+          <li class="flex justify-between">
+            <span>Vocal Tuning</span>
+            <span>£25</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Stems Export</span>
+            <span>£20</span>
+          </li>
+          <li class="flex justify-between">
+            <span>Rush Delivery</span>
+            <span>+50%</span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
+<!-- END SERVICES SECTION -->
 
-<!-- RECORDING SERVICE DETAIL -->
-<section id="recording" class="py-24 px-6" style="background: var(--bg-main);">
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold mb-6">Recording</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-12">
-      Professional studio recording sessions with high-end equipment and an experienced engineer. Whether you're tracking vocals, instruments, or full band sessions, we'll capture your sound with clarity and precision.
-    </p>
-
-    <div class="mb-12">
-      <h3 class="text-xl font-bold mb-4">What's Included</h3>
-      <ul class="space-y-3 opacity-80">
-        <li>• Professional recording environment</li>
-        <li>• High-end microphones and preamps</li>
-        <li>• Experienced recording engineer</li>
-        <li>• Session files provided</li>
-      </ul>
-    </div>
-
-    <div class="mb-12 p-6 rounded-xl" style="background: var(--bg-soft); border: 1px solid var(--border-soft);">
-      <h3 class="text-xl font-bold mb-4">Pricing</h3>
-      <ul class="space-y-2 opacity-80">
-        <li class="flex justify-between"><span>Hourly Session</span> <span>£30/hr</span></li>
-        <li class="flex justify-between"><span>Half-Day (4hrs)</span> <span>£140</span></li>
-        <li class="flex justify-between"><span>Full-Day (8hrs)</span> <span>£260</span></li>
-      </ul>
-    </div>
-
-    <a href="/?service=recording&source=service-page#booking"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book Recording Session
-    </a>
-  </div>
-</section>
-
-<!-- MIXING SERVICE DETAIL -->
-<section id="mixing" class="py-24 px-6" style="background: var(--bg-section);">
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold mb-6">Mixing</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-12">
-      Transform your recorded tracks into a polished, professional mix. We'll balance levels, add effects, and ensure every element sits perfectly in the stereo field. Mixing services include unlimited revisions until you're completely satisfied.
-    </p>
-
-    <div class="mb-12">
-      <h3 class="text-xl font-bold mb-4">What's Included</h3>
-      <ul class="space-y-3 opacity-80">
-        <li>• Professional mixing with industry-standard plugins</li>
-        <li>• Stereo balance and EQ optimization</li>
-        <li>• Compression and dynamic control</li>
-        <li>• Unlimited revisions</li>
-        <li>• High-quality WAV file delivery</li>
-      </ul>
-    </div>
-
-    <div class="mb-12 p-6 rounded-xl" style="background: var(--bg-soft); border: 1px solid var(--border-soft);">
-      <h3 class="text-xl font-bold mb-4">Pricing</h3>
-      <ul class="space-y-2 opacity-80">
-        <li class="flex justify-between"><span>Per Track</span> <span>£50</span></li>
-        <li class="flex justify-between"><span>Mix + Master</span> <span>£75</span></li>
-        <li class="flex justify-between"><span>EP (4–6 tracks)</span> <span>£280</span></li>
-      </ul>
-    </div>
-
-    <a href="/?service=mixing&source=service-page#booking"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book Mixing Service
-    </a>
-  </div>
-</section>
-
-<!-- MASTERING SERVICE DETAIL -->
-<section id="mastering" class="py-24 px-6" style="background: var(--bg-main);">
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold mb-6">Mastering</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-12">
-      Final polish for your mixes. Professional mastering ensures your tracks translate well across all playback systems, from earbuds to club sound systems. We'll optimize loudness, add final EQ touches, and prepare your music for distribution.
-    </p>
-
-    <div class="mb-12">
-      <h3 class="text-xl font-bold mb-4">What's Included</h3>
-      <ul class="space-y-3 opacity-80">
-        <li>• Professional mastering chain</li>
-        <li>• Loudness optimization for streaming platforms</li>
-        <li>• Final EQ and compression</li>
-        <li>• Stereo enhancement</li>
-        <li>• Distribution-ready files (WAV & MP3)</li>
-      </ul>
-    </div>
-
-    <div class="mb-12 p-6 rounded-xl" style="background: var(--bg-soft); border: 1px solid var(--border-soft);">
-      <h3 class="text-xl font-bold mb-4">Pricing</h3>
-      <ul class="space-y-2 opacity-80">
-        <li class="flex justify-between"><span>Single</span> <span>£35</span></li>
-        <li class="flex justify-between"><span>EP (4–6 tracks)</span> <span>£120</span></li>
-        <li class="flex justify-between"><span>Album (10+ tracks)</span> <span>£250</span></li>
-      </ul>
-    </div>
-
-    <a href="/?service=mastering&source=service-page#booking"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book Mastering Service
-    </a>
-  </div>
-</section>
-
-<!-- PRODUCTION SERVICE DETAIL -->
-<section id="production" class="py-24 px-6" style="background: var(--bg-section);">
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold mb-6">Production</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-12">
-      Custom beat production and exclusive licensing. Browse our catalogue of ready-made beats or commission a fully custom production tailored to your sound. All beats include stems and full commercial rights.
-    </p>
-
-    <div class="mb-12">
-      <h3 class="text-xl font-bold mb-4">What's Included</h3>
-      <ul class="space-y-3 opacity-80">
-        <li>• High-quality beat production</li>
-        <li>• Stems included (individual tracks)</li>
-        <li>• Commercial rights and licensing</li>
-        <li>• Custom revisions available</li>
-        <li>• WAV file delivery</li>
-      </ul>
-    </div>
-
-    <div class="mb-12 p-6 rounded-xl" style="background: var(--bg-soft); border: 1px solid var(--border-soft);">
-      <h3 class="text-xl font-bold mb-4">Pricing</h3>
-      <ul class="space-y-2 opacity-80">
-        <li class="flex justify-between"><span>Beat Lease</span> <span>£40</span></li>
-        <li class="flex justify-between"><span>Exclusive Beat</span> <span>£150</span></li>
-        <li class="flex justify-between"><span>Custom Production</span> <span>POA</span></li>
-      </ul>
-    </div>
-
-    <a href="/?service=production&source=service-page#booking"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book Production Service
-    </a>
-  </div>
-</section>
-
-<!-- LESSONS SERVICE DETAIL -->
-<section id="lessons" class="py-24 px-6" style="background: var(--bg-main);">
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-4xl md:text-5xl font-bold mb-6">Production Lessons</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-12">
-      One-on-one music production lessons tailored to your skill level and goals. Learn DAW fundamentals, mixing techniques, sound design, arrangement, or work on your own projects with expert guidance.
-    </p>
-
-    <div class="mb-12">
-      <h3 class="text-xl font-bold mb-4">What's Included</h3>
-      <ul class="space-y-3 opacity-80">
-        <li>• Personalized 1-on-1 instruction</li>
-        <li>• Flexible curriculum based on your goals</li>
-        <li>• Hands-on learning with professional tools</li>
-        <li>• Session recordings and notes provided</li>
-        <li>• Project feedback and guidance</li>
-      </ul>
-    </div>
-
-    <div class="mb-12 p-6 rounded-xl" style="background: var(--bg-soft); border: 1px solid var(--border-soft);">
-      <h3 class="text-xl font-bold mb-4">Pricing</h3>
-      <ul class="space-y-2 opacity-80">
-        <li class="flex justify-between"><span>Single Session (1hr)</span> <span>£40</span></li>
-        <li class="flex justify-between"><span>5-Session Package</span> <span>£180</span></li>
-        <li class="flex justify-between"><span>10-Session Package</span> <span>£340</span></li>
-      </ul>
-    </div>
-
-    <a href="/?service=lessons&source=service-page#booking"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book Production Lessons
-    </a>
-  </div>
-</section>
-
-<section id="portfolio" class="py-24 px-6"
-         style="background: var(--bg-section);">
+<!-- This section is locked. Any changes require explicit manual approval. -->
+<!-- LOCKED SECTION: PORTFOLIO — DO NOT MODIFY -->
+<!-- LOCKED: Legacy production component. Do not modify -->
+<section id="portfolio" class="py-32 px-6" style="background: var(--bg-main);">
   <div class="max-w-6xl mx-auto">
     <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Portfolio</h2>
-
-    <div class="grid md:grid-cols-2 gap-8" id="portfolio-grid"></div>
-
+    <div class="grid md:grid-cols-2 gap-12">
+      <!-- Left: Recent Mixes -->
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-8">Recent Mixes</h2>
+        <div class="space-y-8">
+          <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">City Lights</span>
+              <span class="text-xs opacity-70">Afro House</span>
+            </div>
+            <div class="badges mb-2">
+              <span class="badge">Produced</span>
+              <span class="badge">Mixed</span>
+              <span class="badge">Mastered</span>
+            </div>
+            <div class="waveform-player" data-after="https://studioxv-media.b-cdn.net/mixes/city-lights-after.mp3" data-before="https://studioxv-media.b-cdn.net/mixes/city-lights-before.mp3" data-current="after" data-index="0">
+              <div class="waveform"></div>
+              <div class="controls mt-2">
+                <button class="play-btn">Play</button>
+                <div class="ab-toggle ml-4">
+                  <button class="ab-btn" data-mode="before">Raw</button>
+                  <span class="separator">/</span>
+                  <button class="ab-btn active" data-mode="after">After</button>
+                </div>
+              </div>
+            </div>
+            <p class="text-xs opacity-60 mt-3">
+              Like this sound? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
+            </p>
+          </div>
+          <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">Midnight Drive</span>
+              <span class="text-xs opacity-70">Trap</span>
+            </div>
+            <div class="badges mb-2">
+              <span class="badge">Mastered</span>
+            </div>
+            <div class="waveform-player" data-after="https://studioxv-media.b-cdn.net/mixes/midnight-drive-after.mp3" data-before="https://studioxv-media.b-cdn.net/mixes/midnight-drive-before.mp3" data-current="after" data-index="1">
+              <div class="waveform"></div>
+              <div class="controls mt-2">
+                <button class="play-btn">Play</button>
+              </div>
+            </div>
+            <p class="text-xs opacity-60 mt-3">
+              Like this sound? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
+            </p>
+          </div>
+          <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">Elevation</span>
+              <span class="text-xs opacity-70">Afrobeats</span>
+            </div>
+            <div class="badges mb-2">
+              <span class="badge">Mixed</span>
+              <span class="badge">Mastered</span>
+            </div>
+            <div class="waveform-player" data-after="https://studioxv-media.b-cdn.net/mixes/Elevation-after.mp3" data-before="https://studioxv-media.b-cdn.net/mixes/Elevation-before.mp3" data-current="after" data-index="2">
+              <div class="waveform"></div>
+              <div class="controls mt-2">
+                <button class="play-btn">Play</button>
+              </div>
+            </div>
+            <p class="text-xs opacity-60 mt-3">
+              Like this sound? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- Right: Beat Catalogue -->
+      <div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-8">Beat Catalogue</h2>
+        <div class="space-y-8">
+          <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">Neon Dreams</span>
+              <span class="text-xs opacity-70">Trap / Melodic</span>
+            </div>
+            <div class="text-xs opacity-70 mb-2">D♯ minor · 140 BPM</div>
+            <div class="waveform-player" data-after="https://studioxv-media.b-cdn.net/beats/neon-dreams.mp3" data-current="after" data-index="3">
+              <div class="waveform"></div>
+              <div class="controls mt-2">
+                <button class="play-btn">Play</button>
+              </div>
+            </div>
+            <div class="text-xs opacity-80 mt-2">Available for lease or exclusive</div>
+            <p class="text-xs opacity-60 mt-3">
+              Want to record on this beat? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
+            </p>
+          </div>
+          <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">Street Gospel</span>
+              <span class="text-xs opacity-70">Afro pop</span>
+            </div>
+            <div class="text-xs opacity-70 mb-2">D major · 113 BPM</div>
+            <div class="waveform-player" data-after="https://studioxv-media.b-cdn.net/beats/street-gospel.mp3" data-current="after" data-index="4">
+              <div class="waveform"></div>
+              <div class="controls mt-2">
+                <button class="play-btn">Play</button>
+              </div>
+            </div>
+            <div class="text-xs opacity-80 mt-2">Available for lease or exclusive</div>
+            <p class="text-xs opacity-60 mt-3">
+              Want to record on this beat? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
+            </p>
+          </div>
+          <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">Summer Breeze</span>
+              <span class="text-xs opacity-70">Afrobeats</span>
+            </div>
+            <div class="text-xs opacity-70 mb-2">C minor · 100 BPM</div>
+            <div class="waveform-player" data-after="https://studioxv-media.b-cdn.net/beats/summer-breeze.mp3" data-current="after" data-index="5">
+              <div class="waveform"></div>
+              <div class="controls mt-2">
+                <button class="play-btn">Play</button>
+              </div>
+            </div>
+            <div class="text-xs opacity-80 mt-2">Available for lease or exclusive</div>
+            <p class="text-xs opacity-60 mt-3">
+              Want to record on this beat? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="text-center mt-16">
       <p class="text-lg opacity-80 mb-6">
         Want your track to sound like this?
       </p>
-      <a
-        href="#booking"
-        class="inline-block px-8 py-4 rounded-lg font-semibold text-white"
-        style="background: var(--accent);"
-      >
-        Book a Session
-      </a>
+      <a href="#booking" class="inline-block px-8 py-4 rounded-lg font-semibold text-white" style="background: var(--accent);">Book a Session</a>
     </div>
   </div>
 </section>
+<!-- END LOCKED SECTION -->
 
-<section id="booking" class="py-28 px-6" style="background: var(--bg-section);">
+<!-- LEARN SECTION -->
+<section id="learn" class="py-32 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Page header -->
+    <div class="mb-16 max-w-2xl">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Learn the process</h2>
+      <p class="text-base opacity-70">
+        Resources for producers who want to finish tracks with clarity and confidence.
+      </p>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- START HERE ROADMAP -->
+    <!-- ========================================== -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h3 class="text-xl font-semibold mb-6">Start here</h3>
+      
+      <ol class="space-y-3 text-base max-w-xl">
+        <li>1. Read the ebook</li>
+        <li>2. Take a mini course</li>
+        <li>3. Apply the process</li>
+        <li>4. Book a session when ready</li>
+      </ol>
+    </div>
+    <!-- ========================================== -->
+
+    <!-- Academy: Resource Links -->
+    <div class="space-y-6 max-w-xl">
+      
+      <!-- Courses Link -->
+      <div class="flex items-center justify-between pb-6 border-b" style="border-color: var(--border-soft);">
+        <div>
+          <a href="learn-courses.html" class="text-lg font-semibold hover:underline underline-offset-4">Courses</a>
+          <p class="text-sm opacity-60 mt-1">Practical PDF ebooks that guide your process</p>
+        </div>
+        <span class="text-sm opacity-50">→</span>
+      </div>
+      
+      <!-- Bundles Link -->
+      <div class="flex items-center justify-between pb-6 border-b" style="border-color: var(--border-soft);">
+        <div>
+          <a href="bundles.html" class="text-lg font-semibold hover:underline underline-offset-4">Bundles</a>
+          <p class="text-sm opacity-60 mt-1">Combined PDF ebook packages</p>
+        </div>
+        <span class="text-sm opacity-50">→</span>
+      </div>
+      
+      <!-- Ebooks Link -->
+      <div class="flex items-center justify-between pb-6 border-b" style="border-color: var(--border-soft);">
+        <div>
+          <a href="learn-ebooks.html" class="text-lg font-semibold hover:underline underline-offset-4">Ebooks</a>
+          <p class="text-sm opacity-60 mt-1">Standalone PDF guides</p>
+        </div>
+        <span class="text-sm opacity-50">→</span>
+      </div>
+      
+      <!-- Tools Link -->
+      <div class="flex items-center justify-between pb-6 border-b" style="border-color: var(--border-soft);">
+        <div>
+          <a href="tools.html" class="text-lg font-semibold hover:underline underline-offset-4">Tools</a>
+          <p class="text-sm opacity-60 mt-1">Reference checklists and templates</p>
+        </div>
+        <span class="text-sm opacity-50">→</span>
+      </div>
+      
+    </div>
+
+  </div>
+</section>
+<!-- ========================================== -->
+<!-- LEARN / ACADEMY SECTION END -->
+<!-- ========================================== -->
+
+<!-- ========================================== -->
+<!-- FEATURED COURSE TEASER -->
+<!-- Brief introduction linking to full course page -->
+<!-- ========================================== -->
+<section id="featured-course" class="py-24 px-6 border-t" style="background: var(--bg-main); border-color: var(--border-soft);">
   <div class="max-w-3xl mx-auto">
+    
+    <div class="space-y-6">
+      <div class="space-y-3">
+        <h2 class="text-3xl md:text-4xl font-bold">Featured course</h2>
+        <h3 class="text-2xl md:text-3xl font-bold">Finishing Tracks Without Overthinking</h3>
+        <p class="text-sm opacity-60">PDF Ebook · 18 pages · 45–60 min read · Beginner → Intermediate</p>
+      </div>
+      
+      <p class="text-base opacity-80 leading-relaxed">
+        Most producers don't struggle with technical skills—they struggle with knowing when to stop, what to prioritize, and how to trust their decisions. This ebook focuses on the decision-making frameworks that help you finish tracks without second-guessing every choice.
+      </p>
+      
+      <ul class="space-y-2 opacity-80">
+        <li>• Identify what matters most in your mix and eliminate unnecessary steps</li>
+        <li>• Make clear decisions when you're stuck or second-guessing</li>
+        <li>• Build a repeatable finishing process that works for you</li>
+        <li>• Know when your track is ready and release it with confidence</li>
+      </ul>
+      
+      <div class="pt-4">
+        <a href="course-finishing-tracks.html" 
+           class="inline-block px-8 py-3 rounded-lg text-base font-medium transition"
+           style="background: var(--accent); color: white;"
+           onmouseover="this.style.opacity='0.9'" 
+           onmouseout="this.style.opacity='1'">
+          Learn more →
+        </a>
+      </div>
+      
+      <p class="text-sm opacity-60 pt-2">
+        For producers with unfinished tracks who keep tweaking endlessly
+      </p>
+    </div>
+    
+  </div>
+</section>
+<!-- ========================================== -->
+<!-- FEATURED COURSE TEASER END -->
+<!-- ========================================== -->
+
+<!-- ========================================== -->
+<!-- BOOKING SECTION -->
+<!-- Main booking form - appears only once -->
+<!-- ========================================== -->
+<section id="booking" class="py-32 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    <!-- Booking reassurance (easily removable) -->
+    <p class="text-sm text-center opacity-60 mb-8" style="color: var(--text-muted);">
+      Most people explore the work or learning resources first.
+    </p>
+    
     <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
       Book Your Session
     </h2>
@@ -773,6 +920,7 @@
         </p>
 
         <!-- Service -->
+        <!-- BOOKING FORM LOGIC — DO NOT MODIFY WITHOUT EXPLICIT INSTRUCTION -->
         <div>
           <label class="block mb-2 font-semibold">Service</label>
           <select
@@ -783,8 +931,15 @@
             style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
           >
             <option value="">Select a service…</option>
+            <option value="recording">Recording</option>
+            <option value="mixing">Mixing</option>
+            <option value="mastering">Mastering</option>
+            <option value="production">Production</option>
+            <option value="lessons">Lessons</option>
           </select>
         </div>
+        <!-- Secondary input: shown contextually below -->
+        <div id="secondary-input-wrapper" class="mt-4"></div>
 
         <!-- Hours (shown for hourly services only) -->
         <div id="hours-wrapper" class="hidden space-y-2">
@@ -969,13 +1124,14 @@
   </div>
 </section>
 
-<section id="about" class="py-24 px-6"
-         style="background: var(--bg-section);">
+<!-- ========================================== -->
+<!-- ABOUT SECTION -->
+<!-- ========================================== -->
+<section id="about" class="py-24 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
   <div class="max-w-3xl mx-auto text-center">
     <h2 class="text-4xl md:text-5xl font-bold mb-10">About Studio XV</h2>
 
-    <p class="text-lg leading-relaxed"
-       style="color: var(--text-muted);">
+    <p class="text-lg leading-relaxed" style="color: var(--text-muted);">
       Studio XV is a professional recording and production space built for
       artists who value sound quality, creative freedom, and a stress-free
       environment. With over 15 years of experience, we specialise in recording,
@@ -988,1015 +1144,340 @@
   © 2026 Studio XV. All rights reserved.
 </footer>
 
-<script>
-  const toggle = document.getElementById('menu-toggle');
-  const closeBtn = document.getElementById('menu-close');
-  const menu = document.getElementById('mobile-menu');
+<!-- RESTORED FROM LIVE SITE — WaveSurfer.js CDN -->
+<script src="https://unpkg.com/wavesurfer.js@7"></script>
 
-  function openMenu() {
-    menu.classList.remove('translate-x-full');
+<!-- RESTORED FROM LIVE SITE — Portfolio player controls -->
+<script src="js/portfolio-player.js"></script>
+
+<!-- Service Modal & Mobile Menu JavaScript -->
+<script>
+  // Mobile Menu Toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileLinks = mobileMenu.querySelectorAll('a');
+
+  menuToggle.addEventListener('click', () => {
+    mobileMenu.style.transform = 'translateX(0)';
+  });
+
+  menuClose.addEventListener('click', () => {
+    mobileMenu.style.transform = 'translateX(100%)';
+  });
+
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.style.transform = 'translateX(100%)';
+    });
+  });
+
+  // Service Modal System
+  const serviceModal = document.getElementById('service-modal');
+  const modalOverlay = document.getElementById('service-modal-overlay');
+  const modalClose = document.getElementById('service-modal-close');
+  const modalBody = document.getElementById('service-modal-body');
+
+  // Service content data
+  const serviceContent = {
+    recording: {
+      title: 'Recording',
+      content: `
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Recording</h2>
+        <p class="text-lg opacity-80 leading-relaxed mb-8">
+          Professional recording services in a comfortable studio environment designed for capturing your best performance.
+        </p>
+
+        <div class="space-y-6 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-2">What's Included</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Professional recording equipment and acoustically treated space</li>
+              <li>• Engineer to handle technical setup and recording</li>
+              <li>• Session files delivered in high-quality WAV format</li>
+              <li>• Unlimited takes to get the perfect performance</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Pricing</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Hourly Session — £30/hr</li>
+              <li>• Half-Day (4hrs) — £140</li>
+              <li>• Full-Day (8hrs) — £260</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Turnaround</h3>
+            <p class="opacity-80">Session files delivered within 24 hours of recording.</p>
+          </div>
+        </div>
+
+        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+          Book Recording Session
+        </a>
+      `
+    },
+    mixing: {
+      title: 'Mixing',
+      content: `
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Mixing</h2>
+        <p class="text-lg opacity-80 leading-relaxed mb-8">
+          Transform your raw recordings into polished, professional tracks with expert mixing services.
+        </p>
+
+        <div class="space-y-6 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-2">What's Included</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Balance, EQ, compression, and effects processing</li>
+              <li>• Stereo enhancement and spatial placement</li>
+              <li>• Up to 3 revisions to ensure you're satisfied</li>
+              <li>• High-quality stereo mix delivered in WAV format</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Pricing</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Per Track — £50</li>
+              <li>• Mix + Master — £75</li>
+              <li>• EP (4–6 tracks) — £280</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Turnaround</h3>
+            <p class="opacity-80">3–5 days for single tracks. EP projects typically 7–10 days.</p>
+          </div>
+        </div>
+
+        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+          Book Mixing Service
+        </a>
+      `
+    },
+    mastering: {
+      title: 'Mastering',
+      content: `
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Mastering</h2>
+        <p class="text-lg opacity-80 leading-relaxed mb-8">
+          Final polish for your tracks, ensuring they sound consistent and professional across all playback systems.
+        </p>
+
+        <div class="space-y-6 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-2">What's Included</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Loudness optimization and dynamic control</li>
+              <li>• Tonal balance and frequency enhancement</li>
+              <li>• Multiple delivery formats (streaming, CD, vinyl-ready)</li>
+              <li>• 1 revision included per track</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Pricing</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Single — £35</li>
+              <li>• EP (4–6 tracks) — £120</li>
+              <li>• Album (10+ tracks) — £250</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Turnaround</h3>
+            <p class="opacity-80">2–3 days for singles. Albums typically 5–7 days.</p>
+          </div>
+        </div>
+
+        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+          Book Mastering Service
+        </a>
+      `
+    },
+    production: {
+      title: 'Production',
+      content: `
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Production</h2>
+        <p class="text-lg opacity-80 leading-relaxed mb-8">
+          Original beats and custom production tailored to your sound and creative vision.
+        </p>
+
+        <div class="space-y-6 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-2">What's Included</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• High-quality instrumental production</li>
+              <li>• Stems provided for mixing flexibility</li>
+              <li>• Tagged MP3 preview before purchase</li>
+              <li>• License agreement included</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Pricing</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Beat Lease — £40</li>
+              <li>• Exclusive Beat — £150</li>
+              <li>• Custom Production — POA (based on scope)</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Turnaround</h3>
+            <p class="opacity-80">Beat leases delivered instantly. Custom production 7–14 days depending on complexity.</p>
+          </div>
+        </div>
+
+        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+          Book Production Service
+        </a>
+      `
+    },
+    lessons: {
+      title: 'Lessons',
+      content: `
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Production Lessons</h2>
+        <p class="text-lg opacity-80 leading-relaxed mb-8">
+          One-to-one Zoom sessions focused on your specific production challenges and goals.
+        </p>
+
+        <div class="space-y-6 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-2">What's Included</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Live screen-sharing and real-time feedback</li>
+              <li>• Personalized guidance on your projects</li>
+              <li>• Focus on arrangement, mixing, sound design, or workflow</li>
+              <li>• Session recording provided for later review</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Pricing</h3>
+            <ul class="space-y-2 opacity-80">
+              <li>• Hourly Session — £40/hr</li>
+              <li>• 2-Hour Session — £80</li>
+              <li>• 4-Hour Session — £160</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Format</h3>
+            <p class="opacity-80">All lessons conducted via Zoom. Flexible scheduling available.</p>
+          </div>
+        </div>
+
+        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+          Book a Lesson
+        </a>
+      `
+    },
+    addons: {
+      title: 'Add-Ons',
+      content: `
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Add-Ons</h2>
+        <p class="text-lg opacity-80 leading-relaxed mb-8">
+          Enhance your session with additional services for a polished, professional result.
+        </p>
+
+        <div class="space-y-6 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-2">Vocal Tuning — £25</h3>
+            <p class="opacity-80">Professional pitch correction and timing adjustments to ensure your vocals sound natural and polished.</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Stems Export — £20</h3>
+            <p class="opacity-80">Individual track stems delivered for DJ use, remixes, or archival purposes.</p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold mb-2">Rush Delivery — +50%</h3>
+            <p class="opacity-80">Expedited turnaround for urgent projects. Your mix or master prioritized and delivered within 24–48 hours.</p>
+          </div>
+        </div>
+
+        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+          Book with Add-Ons
+        </a>
+      `
+    }
+  };
+
+  // Open service modal
+  function openServiceModal(serviceType) {
+    const service = serviceContent[serviceType];
+    if (service) {
+      modalBody.innerHTML = service.content;
+      serviceModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  // Open "How It Works" modal
+  function openHowItWorksModal() {
+    modalBody.innerHTML = `
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">How Sessions Work</h2>
+      <p class="text-lg opacity-80 leading-relaxed mb-8">
+        From booking to delivery, here's what to expect when working with Studio XV.
+      </p>
+
+      <div class="space-y-6 mb-8">
+        <div>
+          <h3 class="text-xl font-bold mb-2">1. Browse Services</h3>
+          <p class="opacity-80">Explore our services and pricing. Each service includes detailed information about what's included and expected turnaround times.</p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-bold mb-2">2. Book Your Session</h3>
+          <p class="opacity-80">Select your service, choose any add-ons, and pay a 50% deposit to secure your booking. We'll confirm your session date and time.</p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-bold mb-2">3. Session Day</h3>
+          <p class="opacity-80">Arrive on time (or send your files). We'll work together to capture or polish your sound with professional equipment and expertise.</p>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-bold mb-2">4. Review &amp; Delivery</h3>
+          <p class="opacity-80">Receive your files for review. We include revisions to ensure you're completely satisfied with the final result.</p>
+        </div>
+      </div>
+
+      <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+        Book a Session
+      </a>
+    `;
+    serviceModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
 
-  function closeMenu() {
-    menu.classList.add('translate-x-full');
+  // Close modal
+  function closeServiceModal() {
+    serviceModal.classList.remove('active');
     document.body.style.overflow = '';
   }
 
-  toggle.addEventListener('click', openMenu);
-  closeBtn.addEventListener('click', closeMenu);
+  // Close modal on overlay click
+  modalOverlay.addEventListener('click', closeServiceModal);
+  
+  // Close modal on close button click
+  modalClose.addEventListener('click', closeServiceModal);
 
-  menu.querySelectorAll('a').forEach(link =>
-    link.addEventListener('click', closeMenu)
-  );
-</script>
-
-<script>
-const PRICING = {
-  recording: {
-    label: "Recording",
-    type: "hourly",
-    rate: 30,
-    minHours: 1,
-    items: [
-      { label: "Hourly Session", price: "£30/hr" },
-      { label: "Half-Day (4hrs)", price: "£140" },
-      { label: "Full-Day (8hrs)", price: "£260" }
-    ],
-    packages: [
-      { label: "Per Track", price: 50 },
-      { label: "Mix + Master", price: 75 },
-      { label: "EP (4–6 tracks)", price: 280 }
-    ]
-  },
-
-  mixing: {
-    label: "Mixing",
-    type: "packages",
-    items: [
-      { label: "Per Track", price: "£50" },
-      { label: "Mix + Master", price: "£75" },
-      { label: "EP (4–6 tracks)", price: "£280" }
-    ],
-    packages: [
-      { label: "Per Track", price: 50 },
-      { label: "Mix + Master", price: 75 },
-      { label: "EP (4–6 tracks)", price: 280 }
-    ]
-  },
-
-  mastering: {
-    label: "Mastering",
-    type: "packages",
-    items: [
-      { label: "Single", price: "£35" },
-      { label: "EP (4–6 tracks)", price: "£120" },
-      { label: "Album (10+ tracks)", price: "£250" }
-    ],
-    packages: [
-      { label: "Single", price: 35 },
-      { label: "EP (4–6 tracks)", price: 120 },
-      { label: "Album (10+ tracks)", price: 250 }
-    ]
-  },
-
-  production: {
-    label: "Production",
-    type: "packages",
-    items: [
-      { label: "Beat Lease", price: "£40" },
-      { label: "Exclusive Beat", price: "£150" },
-      { label: "Custom Production", price: "POA" }
-    ],
-    packages: [
-      { label: "Beat Lease", price: 40 },
-      { label: "Exclusive Beat", price: 150 },
-      { label: "Custom Production", poa: true }
-    ]
-  },
-
-  lessons: {
-    label: "Lessons",
-    type: "hourly",
-    rate: 40,
-    minHours: 1,
-    maxHours: 4,
-    coachingCopy: "Guided sessions focused on skill-building and workflow.",
-    items: [
-      { label: "Hourly Session", price: "£40/hr" },
-      { label: "2-Hour Session", price: "£80" },
-      { label: "4-Hour Session", price: "£160" }
-    ],
-    packages: [
-      { label: "Per Track", price: 50 },
-      { label: "Mix + Master", price: 75 },
-      { label: "EP (4–6 tracks)", price: 280 }
-    ]
-  },
-
-  addons: {
-    label: "Add-Ons",
-    type: "addons",
-    items: [
-      { label: "Vocal Tuning", price: "£25" },
-      { label: "Stems Export", price: "£20" },
-      { label: "Rush Delivery", price: "+50%" }
-    ]
-  }
-};
-
-const ADDONS = {
-  vocalTuning: { label: "Vocal Tuning", price: 25 },
-  stems: { label: "Stems Export", price: 20 },
-  rush: { label: "Rush Delivery", multiplier: 1.5 }
-};
-</script>
-
-<script>
-const PORTFOLIO = {
-  mixes: [
-    {
-      id: "city-lights",
-      title: "City Lights",
-      genre: "Afro House",
-      credit: "Produced, Mixed & Mastered",
-      badges: ["Produced", "Mixed", "Mastered"],
-      before: "https://studioxv-media.b-cdn.net/mixes/city-lights-before.mp3",
-      after: "https://studioxv-media.b-cdn.net/mixes/city-lights-after.mp3"
-    },
-    {
-      id: "midnight-drive",
-      title: "Midnight Drive",
-      genre: "Trap",
-      credit: "Mastered",
-      badges: ["Mastered"],
-      before: "https://studioxv-media.b-cdn.net/mixes/midnight-drive-before.mp3",
-      after: "https://studioxv-media.b-cdn.net/mixes/midnight-drive-after.mp3"
-    },
-    {
-      id: "elevation",
-      title: "Elevation",
-      genre: "Afrobeats",
-      credit: "Mixed & Mastered",
-      badges: ["Mixed", "Mastered"],
-      before: "https://studioxv-media.b-cdn.net/mixes/Elevation-before.mp3",
-      after: "https://studioxv-media.b-cdn.net/mixes/Elevation-after.mp3"
-    }
-  ],
-
-  beats: [
-    {
-      title: "Neon Dreams",
-      genre: "Trap / Melodic",
-      badges: ["D♯ minor", "140 BPM"],
-      subtitle: "Available for lease or exclusive",
-      src: "https://studioxv-media.b-cdn.net/beats/neon-dreams.mp3"
-    },
-    {
-      title: "Street Gospel",
-      genre: "Afro pop",
-      badges: ["D major", "113 BPM"],
-      subtitle: "Available for lease or exclusive",
-      src: "https://studioxv-media.b-cdn.net/beats/street-gospel.mp3"
-    },
-    {
-      title: "Summer Breeze",
-      genre: "Afrobeats",
-      badges: ["C minor", "100 BPM"],
-      subtitle: "Available for lease or exclusive",
-      src: "https://studioxv-media.b-cdn.net/beats/summer-breeze.mp3"
-    }
-  ]
-};
-</script>
-
-<script>
-function renderPortfolio() {
-  const grid = document.getElementById("portfolio-grid");
-  if (!grid) return;
-
-  // MIXES CARD
-  const mixesCard = document.createElement("div");
-  mixesCard.className =
-    "rounded-2xl p-8 bg-[var(--bg-card)] border border-white/10";
-
-  mixesCard.innerHTML = `
-    <h3 class="text-2xl font-bold mb-2">Recent Mixes</h3>
-    <p class="text-sm opacity-70 mb-6">Selected projects mixed and mastered at Studio XV.</p>
-    <div id="recent-mixes" class="space-y-6"></div>
-    <p class="text-sm opacity-70 mt-6">
-      Like this sound?
-      <a href="/?service=mixing&source=portfolio#booking" class="text-orange-500 font-semibold">Book a mixing session →</a>
-    </p>
-  `;
-
-  // BEATS CARD
-  const beatsCard = document.createElement("div");
-  beatsCard.className =
-    "rounded-2xl p-8 bg-[var(--bg-card)] border border-white/10";
-
-  beatsCard.innerHTML = `
-    <h3 class="text-2xl font-bold mb-2">Beat Catalogue</h3>
-    <p class="text-sm opacity-70 mb-6">Original production available for lease or exclusive purchase.</p>
-    <div id="beat-catalogue" class="space-y-6"></div>
-    <p class="text-sm opacity-70 mt-6">
-      Want to build on this?
-      <a href="/?service=production&source=portfolio#booking" class="text-orange-500 font-semibold">Start a session →</a>
-    </p>
-  `;
-
-  grid.appendChild(mixesCard);
-  grid.appendChild(beatsCard);
-}
-
-document.addEventListener("DOMContentLoaded", renderPortfolio);
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const mixesContainer = document.getElementById("recent-mixes");
-  if (!mixesContainer) return;
-
-  PORTFOLIO.mixes.forEach((mix, index) => {
-    const card = document.createElement("div");
-    card.className = "p-5 rounded-xl";
-    card.style.background = 'var(--bg-card)';
-
-    card.innerHTML = `
-      <p class="font-semibold">🎵 ${mix.title} — ${mix.genre}</p>
-      ${mix.badges ? `
-        <div class="badges">
-          ${mix.badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
-        </div>
-      ` : ''}
-      <p class="text-sm opacity-70 mb-3">${mix.credit}</p>
-
-      <div class="waveform-player" 
-           data-before="${mix.before || ''}" 
-           data-after="${mix.after}" 
-           data-current="after" 
-           data-index="${index}">
-        <div class="waveform"></div>
-
-        <div class="controls">
-          <button class="play-btn">Play</button>
-          ${mix.before ? `
-            <div class="ab-toggle">
-              <button class="ab-btn" data-mode="before">Before</button>
-              <span class="separator">/</span>
-              <button class="ab-btn active" data-mode="after">After</button>
-            </div>
-          ` : ''}
-        </div>
-      </div>
-    `;
-
-    mixesContainer.appendChild(card);
-  });
-});
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const beatContainer = document.getElementById("beat-catalogue");
-  if (!beatContainer) return;
-
-  PORTFOLIO.beats.forEach((beat, index) => {
-    const card = document.createElement("div");
-    card.className = "p-5 rounded-xl";
-    card.style.background = 'var(--bg-card)';
-
-    card.innerHTML = `
-      <p class="font-semibold">🎹 ${beat.title} — ${beat.genre}</p>
-      ${beat.badges ? `
-        <div class="badges">
-          ${beat.badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
-        </div>
-      ` : ''}
-      <p class="text-sm opacity-70 mb-3">${beat.subtitle}</p>
-
-      <div class="waveform-player" 
-           data-after="${beat.src}" 
-           data-current="after" 
-           data-index="beat-${index}">
-        <div class="waveform"></div>
-
-        <div class="controls">
-          <button class="play-btn">Play</button>
-        </div>
-      </div>
-
-      <p class="text-xs opacity-60 mt-3">
-        Want to record on this beat? 
-        <a href="/?service=production&source=portfolio#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
-      </p>
-    `;
-
-    beatContainer.appendChild(card);
-  });
-});
-</script>
-
-<script>
-document.addEventListener("click", e => {
-  if (!e.target.classList.contains("mix-toggle")) return;
-
-  const index = e.target.dataset.index;
-  const mode = e.target.dataset.mode;
-  const mix = PORTFOLIO.mixes[index];
-
-  const player = document.querySelector(`[data-mix-player="${index}"]`);
-  const source = player.querySelector("source");
-
-  // 1. Capture state
-  const currentTime = player.currentTime;
-  const wasPlaying = !player.paused && !player.ended;
-
-  // 2. Swap source
-  source.src = mode === "before"
-    ? mix.before
-    : mix.after;
-
-  // 3. Reload
-  player.load();
-
-  // 4. Restore timestamp + playback state
-  player.addEventListener("loadedmetadata", function restore() {
-    player.currentTime = Math.min(currentTime, player.duration || currentTime);
-
-    if (wasPlaying) {
-      player.play().catch(() => {
-        /* autoplay restrictions safety */
-      });
-    }
-
-    player.removeEventListener("loadedmetadata", restore);
-  });
-
-  // 5. Visual state
-  const buttons = e.target.parentElement.querySelectorAll(".mix-toggle");
-  buttons.forEach(btn => {
-    btn.classList.toggle("text-orange-500", btn === e.target);
-    btn.classList.toggle("opacity-50", btn !== e.target);
-  });
-});
-
-// Enforce single audio playback across the entire page
-document.addEventListener("play", function(e) {
-  if (e.target.tagName === "AUDIO") {
-    const allAudio = document.querySelectorAll("audio");
-    allAudio.forEach(audio => {
-      if (audio !== e.target) {
-        audio.pause();
-      }
-    });
-  }
-}, true);
-</script>
-
-<script>
-// Service detail content
-const SERVICE_DETAILS = {
-  recording: {
-    description: "Professional studio recording sessions with high-end equipment and an experienced engineer. Whether you're tracking vocals, instruments, or full band sessions, we'll capture your sound with clarity and precision.",
-    includes: [
-      "Professional recording environment",
-      "High-end microphones and preamps",
-      "Experienced recording engineer",
-      "Session files provided"
-    ]
-  },
-  mixing: {
-    description: "Transform your recorded tracks into a polished, professional mix. We'll balance levels, add effects, and ensure every element sits perfectly in the stereo field. Mixing services include unlimited revisions until you're completely satisfied.",
-    includes: [
-      "Professional mixing with industry-standard plugins",
-      "Stereo balance and EQ optimization",
-      "Compression and dynamic control",
-      "Unlimited revisions",
-      "High-quality WAV file delivery"
-    ]
-  },
-  mastering: {
-    description: "Final polish for your mixes. Professional mastering ensures your tracks translate well across all playback systems, from earbuds to club sound systems. We'll optimize loudness, add final EQ touches, and prepare your music for distribution.",
-    includes: [
-      "Professional mastering chain",
-      "Loudness optimization for streaming platforms",
-      "Final EQ and compression",
-      "Stereo enhancement",
-      "Distribution-ready files (WAV & MP3)"
-    ]
-  },
-  production: {
-    description: "Custom beat production and exclusive licensing. Browse our catalogue of ready-made beats or commission a fully custom production tailored to your sound. All beats include stems and full commercial rights.",
-    includes: [
-      "High-quality beat production",
-      "Stems included (individual tracks)",
-      "Commercial rights and licensing",
-      "Custom revisions available",
-      "WAV file delivery"
-    ]
-  },
-  lessons: {
-    description: "One-on-one music production lessons tailored to your skill level and goals. Learn DAW fundamentals, mixing techniques, sound design, arrangement, or work on your own projects with expert guidance.",
-    includes: [
-      "Personalized 1-on-1 instruction",
-      "Flexible curriculum based on your goals",
-      "Hands-on learning with professional tools",
-      "Session recordings and notes provided",
-      "Project feedback and guidance"
-    ]
-  },
-  addons: {
-    description: "Enhance your session with professional add-ons. From vocal tuning to rush delivery, these optional extras ensure your project gets the attention and speed it deserves.",
-    includes: [
-      "Available with any service package",
-      "Professional tools and expertise",
-      "Quick turnaround options",
-      "Premium quality enhancements"
-    ]
-  }
-};
-
-// Modal functionality
-function openServiceModal(serviceKey) {
-  const modal = document.getElementById('service-modal');
-  const modalBody = document.getElementById('service-modal-body');
-  const service = PRICING[serviceKey];
-  const details = SERVICE_DETAILS[serviceKey];
-
-  if (!service || !details) return;
-
-  const isAddons = serviceKey === 'addons';
-
-  modalBody.innerHTML = `
-    <h2 class="text-3xl md:text-4xl font-bold mb-4">${service.label}</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-8">${details.description}</p>
-
-    <div class="mb-8">
-      <h3 class="text-xl font-bold mb-4">What's Included</h3>
-      <ul class="space-y-3 opacity-80">
-        ${details.includes.map(item => `<li>• ${item}</li>`).join('')}
-      </ul>
-    </div>
-
-    <div class="mb-8 p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
-      <h3 class="text-xl font-bold mb-4">Pricing</h3>
-      <ul class="space-y-2 opacity-80">
-        ${service.items.map(item => `
-          <li class="flex justify-between">
-            <span>${item.label}</span>
-            <span>${item.price}</span>
-          </li>
-        `).join('')}
-      </ul>
-    </div>
-
-    ${isAddons ? `
-      <p class="text-center text-sm opacity-70">
-        Add-ons can be selected when booking any service
-      </p>
-    ` : `
-      <a href="/?service=${serviceKey}&source=service-modal#booking"
-         class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-         style="background: var(--accent);">
-        Book ${service.label}
-      </a>
-    `}
-  `;
-
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeServiceModal() {
-  const modal = document.getElementById('service-modal');
-  modal.classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-function openHowItWorksModal() {
-  const modal = document.getElementById('service-modal');
-  const modalBody = document.getElementById('service-modal-body');
-
-  modalBody.innerHTML = `
-    <h2 class="text-3xl md:text-4xl font-bold mb-6">How Sessions Work</h2>
-    <p class="text-lg opacity-80 leading-relaxed mb-8">
-      From booking to delivery, here's what to expect when working with Studio XV.
-    </p>
-
-    <div class="space-y-6 mb-8">
-      <div>
-        <h3 class="text-xl font-bold mb-2">1. Browse Services</h3>
-        <p class="opacity-80">Explore our services and pricing. Each service includes detailed information about what's included and expected turnaround times.</p>
-      </div>
-
-      <div>
-        <h3 class="text-xl font-bold mb-2">2. Book Your Session</h3>
-        <p class="opacity-80">Select your service, choose any add-ons, and pay a 50% deposit to secure your booking. We'll confirm your session date and time.</p>
-      </div>
-
-      <div>
-        <h3 class="text-xl font-bold mb-2">3. Session Day</h3>
-        <p class="opacity-80">Arrive on time (or send your files). We'll work together to capture or polish your sound with professional equipment and expertise.</p>
-      </div>
-
-      <div>
-        <h3 class="text-xl font-bold mb-2">4. Review & Delivery</h3>
-        <p class="opacity-80">Receive your files for review. We include revisions to ensure you're completely satisfied with the final result.</p>
-      </div>
-    </div>
-
-    <a href="#booking"
-       onclick="closeServiceModal()"
-       class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90"
-       style="background: var(--accent);">
-      Book a Session
-    </a>
-  `;
-
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-// Close modal handlers
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('service-modal');
-  const overlay = document.getElementById('service-modal-overlay');
-  const closeBtn = document.getElementById('service-modal-close');
-
-  closeBtn?.addEventListener('click', closeServiceModal);
-  overlay?.addEventListener('click', closeServiceModal);
-
-  // Close on Escape key
+  // Close modal on Escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
+    if (e.key === 'Escape' && serviceModal.classList.contains('active')) {
       closeServiceModal();
     }
   });
-});
 
-function renderServices() {
-  const container = document.getElementById("services-grid");
-  if (!container) return;
-
-  container.innerHTML = "";
-
-  Object.entries(PRICING).forEach(([key, service]) => {
-    const isAddons = key === "addons";
-
-    const card = document.createElement("div");
-    card.className = `
-      ${isAddons ? "lg:col-span-3" : ""}
-      block group rounded-2xl p-8
-      border border-white/10
-      transition-all duration-300
-      hover:-translate-y-2
-      hover:border-orange-500
-      hover:shadow-xl
-      cursor-pointer
-    `;
-
-    card.style.background = 'var(--bg-card)';
-    card.onclick = () => openServiceModal(key);
-
-    card.innerHTML = `
-      <h3 class="text-2xl font-bold mb-6 group-hover:text-orange-500 transition">
-        ${service.label}
-      </h3>
-      <ul class="space-y-4 text-sm">
-        ${service.items.map(item => `
-          <li class="flex justify-between">
-            <span>${item.label}</span>
-            <span>${item.price}</span>
-          </li>
-        `).join("")}
-      </ul>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-document.addEventListener("DOMContentLoaded", renderServices);
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const serviceSelect = document.getElementById("service-select");
-  const packageSelect = document.getElementById("package-select");
-  const packageWrapper = document.getElementById("package-wrapper");
-  const hoursWrapper = document.getElementById("hours-wrapper");
-  const hoursInput = document.getElementById("hours-input");
-  const totalDisplay = document.getElementById("total-display");
-  const depositDisplay = document.getElementById("deposit-display");
-  const submitButton = document.getElementById("booking-submit");
-
-  // Populate service dropdown from PRICING
-  Object.entries(PRICING).forEach(([key, service]) => {
-    if (service.type === "addons") return;
-
-    const option = document.createElement("option");
-    option.value = key;
-    option.textContent = service.label;
-    serviceSelect.appendChild(option);
-  });
-
-serviceSelect.addEventListener("change", handleServiceChange);
-packageSelect.addEventListener("change", calculateTotal);
-document.addEventListener("input", calculateTotal);
-
-// Add-ons checkboxes trigger recalculation
-document.querySelectorAll(".addon-checkbox").forEach(checkbox => {
-  checkbox.addEventListener("change", calculateTotal);
-});
-
-// Pre-select service from query parameter
-const urlParams = new URLSearchParams(window.location.search);
-const serviceParam = urlParams.get('service');
-if (serviceParam) {
-  const matchingKey = Object.keys(PRICING).find(key => 
-    key.toLowerCase() === serviceParam.toLowerCase()
-  );
-  if (matchingKey && PRICING[matchingKey].type !== 'addons') {
-    serviceSelect.value = matchingKey;
-    handleServiceChange();
-  }
-}
-
-function handleServiceChange() {
-  const key = serviceSelect.value.toLowerCase();
-  const service = PRICING[key];
-
-  resetTotals();
-  packageSelect.innerHTML = `<option value="">Choose a package…</option>`;
-  packageWrapper.classList.add("hidden");
-  hoursWrapper.classList.add("hidden");
-  
-  const addonsWrapper = document.getElementById("addons-wrapper");
-  const hoursLabel = document.getElementById("hours-label");
-  const hoursHint = document.getElementById("hours-hint");
-  const bookingStatus = document.getElementById("booking-status");
-
-  if (!service) {
-    addonsWrapper.classList.remove("hidden");
-    bookingStatus.style.opacity = "0";
-    return;
-  }
-
-  // Update booking status text
-  bookingStatus.textContent = `You're booking a ${service.label} session`;
-  bookingStatus.style.opacity = "0.7";
-
-  // Update upload hint based on service
-  const uploadHint = document.getElementById("upload-hint");
-  const uploadHints = {
-    mixing: "Send your multi-track stems or full mix for reference. Please include session notes if available.",
-    mastering: "Send your mixed track as a stereo WAV file with -6dB headroom for best results.",
-    recording: "Reference tracks or demos are welcome but not required.",
-    production: "",
-    lessons: ""
-  };
-  
-  if (uploadHints[key]) {
-    uploadHint.textContent = uploadHints[key];
-    uploadHint.style.display = "block";
-  } else {
-    uploadHint.style.display = "none";
-  }
-
-  if (service.type === "hourly") {
-    hoursWrapper.classList.remove("hidden");
-    hoursInput.min = service.minHours;
-    hoursInput.value = service.minHours;
-    
-    // Lesson-specific UI
-    if (key === "lessons") {
-      hoursInput.max = service.maxHours || 4;
-      hoursLabel.textContent = "Session length";
-      hoursHint.textContent = service.coachingCopy || "Structured, guided sessions focused on your goals";
-      addonsWrapper.classList.add("hidden");
-    } else {
-      // Recording or other hourly services
-      hoursInput.removeAttribute("max");
-      hoursLabel.textContent = "Number of hours";
-      hoursHint.textContent = service.suggestions || "Most artists book 2–4 hours.";
-      addonsWrapper.classList.remove("hidden");
-    }
-  } else {
-    // Package-based services (mixing, mastering, production)
-    addonsWrapper.classList.remove("hidden");
-  }
-
-  if (service.type === "packages") {
-    packageWrapper.classList.remove("hidden");
-    service.packages.forEach((pkg, index) => {
-      const opt = document.createElement("option");
-      opt.value = index;
-
-      opt.textContent = pkg.poa
-        ? `${pkg.label} – POA`
-        : `${pkg.label} – £${pkg.price}`;
-
-      packageSelect.appendChild(opt);
-    });
-  }
-}
-
-function calculateTotal() {
-  const key = serviceSelect.value.toLowerCase();
-  const service = PRICING[key];
-  if (!service) return;
-
-  let total = 0;
-  let hours = null;
-  let packageName = null;
-
-  if (service.type === "hourly") {
-    hours = Number(hoursInput.value);
-    if (!hours || hours < service.minHours) return resetTotals();
-    total = hours * service.rate;
-    packageName = "Hourly";
-  }
-
-  if (service.type === "packages") {
-    const pkgIndex = Number(packageSelect.value);
-    const pkg = service.packages[pkgIndex];
-    if (pkg === undefined) return resetTotals();
-    
-    packageName = pkg.label;
-
-    // Handle POA (Price on Application)
-    if (pkg.poa) {
-      totalDisplay.textContent = "Quote required";
-      depositDisplay.textContent = "—";
-      submitButton.disabled = false;
-      submitButton.textContent = "Request Quote";
-      
-      window.bookingData = {
-        service: service.label,
-        package: pkg.label,
-        hours: null,
-        addons: [],
-        total: 0,
-        deposit: 0,
-        poa: true
-      };
-      localStorage.setItem("bookingData", JSON.stringify(window.bookingData));
-      return;
-    }
-
-    total = pkg.price;
-  }
-
-  // Process add-ons
-  const selectedAddons = [];
-  let addonsTotal = 0;
-
-  document.querySelectorAll(".addon-checkbox:checked").forEach(box => {
-    const addon = ADDONS[box.value];
-    
-    if (addon.multiplier) {
-      total *= addon.multiplier;
-      selectedAddons.push({ label: addon.label, price: `+${Math.round((addon.multiplier - 1) * 100)}%` });
-    } else {
-      total += addon.price;
-      addonsTotal += addon.price;
-      selectedAddons.push({ label: addon.label, price: addon.price });
-    }
-  });
-
-  const deposit = Math.round(total * 0.5);
-
-  totalDisplay.textContent = total.toFixed(2);
-  depositDisplay.textContent = deposit.toFixed(2);
-  submitButton.disabled = false;
-  submitButton.textContent = "Secure Your Session";
-
-  // Display add-ons summary
-  const summaryAddons = document.getElementById("summary-addons");
-  if (selectedAddons.length > 0) {
-    summaryAddons.innerHTML = selectedAddons.map(a =>
-      `<div class="flex justify-between text-sm opacity-80">
-         <span>${a.label}</span>
-         <span>${typeof a.price === 'number' ? '£' + a.price : a.price}</span>
-       </div>`
-    ).join("");
-  } else {
-    summaryAddons.innerHTML = "";
-  }
-
-  window.bookingData = {
-    service: service.label,
-    package: packageName,
-    hours: hours,
-    addons: selectedAddons,
-    total,
-    deposit
-  };
-
-  localStorage.setItem("bookingData", JSON.stringify(window.bookingData));
-}
-
-function resetTotals() {
-  totalDisplay.textContent = "0";
-  depositDisplay.textContent = "0";
-  submitButton.disabled = true;
-}
-
-// Handle form submission and Stripe checkout
-const bookingForm = document.querySelector('form[name="booking"]');
-bookingForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  // Check if we have booking data
-  if (!window.bookingData || window.bookingData.total === 0) {
-    alert('Please select a service and configure your booking.');
-    return;
-  }
-
-  // Safety check: prevent £0 deposits from being processed
-  if (!window.bookingData.deposit || window.bookingData.deposit <= 0) {
-    alert('Unable to process payment. Please try again.');
-    return;
-  }
-
-  // Populate metadata fields for Netlify Forms
-  const serviceSelect = document.getElementById('service-select');
-  const packageSelect = document.getElementById('package-select');
-  const hoursInput = document.getElementById('hours-input');
-  const fileInput = document.querySelector('input[name="audio"]');
-  const cloudLinkInput = document.querySelector('input[name="cloud-link"]');
-  
-  document.getElementById('metadata-service-type').value = serviceSelect.options[serviceSelect.selectedIndex]?.text || '';
-  
-  const packageHours = packageSelect.value ? 
-    packageSelect.options[packageSelect.selectedIndex]?.text : 
-    (hoursInput.value ? `${hoursInput.value} hour(s)` : '');
-  document.getElementById('metadata-package-hours').value = packageHours;
-  
-  document.getElementById('metadata-deposit-amount').value = window.bookingData.deposit || '0';
-  document.getElementById('metadata-has-files').value = (fileInput?.files?.length > 0) ? 'true' : 'false';
-  document.getElementById('metadata-has-cloud-link').value = (cloudLinkInput?.value?.trim()) ? 'true' : 'false';
-
-  // Store form data for success page
-  const formData = {
-    name: bookingForm.querySelector('input[name="name"]')?.value || '',
-    email: bookingForm.querySelector('input[name="email"]')?.value || '',
-    phone: bookingForm.querySelector('input[name="phone"]')?.value || '',
-    message: bookingForm.querySelector('textarea[name="message"]')?.value || '',
-    date: bookingForm.querySelector('input[name="date"]')?.value || ''
-  };
-  localStorage.setItem('formData', JSON.stringify(formData));
-
-  // Step 1: Submit to Netlify Forms for email notifications
-  try {
-    const netlifyFormData = new FormData(bookingForm);
-    const netlifyResponse = await fetch('/', {
-      method: 'POST',
-      body: netlifyFormData
-    });
-    
-    if (!netlifyResponse.ok) {
-      throw new Error('Form submission failed');
-    }
-  } catch (netlifyError) {
-    console.error('Form submission error:', netlifyError);
-    alert('There was an error submitting your booking. Please try again.');
-    return;
-  }
-
-  // Step 2: Disable submit button and show loading state
-  submitButton.disabled = true;
-  const originalText = submitButton.textContent;
-  submitButton.textContent = 'Processing...';
-
-  try {
-    // Step 3: Proceed to Stripe checkout (Netlify submission successful)
-    const response = await fetch('/.netlify/functions/create-checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...window.bookingData,
-        success_url: window.location.origin + '/booking-success'
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || 'Failed to create checkout session');
-    }
-
-    // Redirect to Stripe Checkout
-    window.location.href = data.url;
-
-  } catch (error) {
-    console.error('Checkout error:', error);
-    alert('Something went wrong. Please try again or contact us directly.');
-    submitButton.disabled = false;
-    submitButton.textContent = originalText;
-  }
-});
-});
-</script>
-
-<script src="https://unpkg.com/wavesurfer.js@7"></script>
-
-<script>
-  // Initialize waveforms after DOM elements are created
-  function initWaveforms() {
-    const players = [];
-
-    document.querySelectorAll(".waveform-player").forEach(player => {
-      const waveformEl = player.querySelector(".waveform");
-      const playBtn = player.querySelector(".play-btn");
-
-      const wavesurfer = WaveSurfer.create({
-        container: waveformEl,
-        waveColor: getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim() || "#666",
-        progressColor: "#f97316",
-        cursorColor: "#f97316",
-        height: 80,
-        barWidth: 2,
-        barGap: 2,
-        responsive: true,
-      });
-
-      // Load initial track (after version)
-      wavesurfer.load(player.dataset.after);
-
-      playBtn.addEventListener("click", () => {
-        // Stop all other waveforms and remove active state
-        players.forEach((p, idx) => {
-          if (p !== wavesurfer) {
-            p.pause();
-            document.querySelectorAll('.waveform-player')[idx]?.classList.remove('playing');
-          }
-        });
-
-        wavesurfer.playPause();
-      });
-
-      // Update button text and visual state based on playback
-      wavesurfer.on('play', () => {
-        playBtn.textContent = 'Pause';
-        player.classList.add('playing');
-      });
-
-      wavesurfer.on('pause', () => {
-        player.classList.remove('playing');
-        playBtn.textContent = 'Play';
-      });
-
-      wavesurfer.on('finish', () => {
-        playBtn.textContent = 'Play';
-      });
-
-      // Before/After toggle with seamless playback
-      const beforeBtn = player.querySelector('.ab-btn[data-mode="before"]');
-      const afterBtn = player.querySelector('.ab-btn[data-mode="after"]');
-
-      if (beforeBtn && afterBtn) {
-        const handleToggle = (targetMode) => {
-          const isPlaying = wavesurfer.isPlaying();
-          const time = wavesurfer.getCurrentTime();
-
-          const next = targetMode === "before" ? player.dataset.before : player.dataset.after;
-          
-          if (player.dataset.current === targetMode) return; // Already on this version
-
-          player.dataset.current = targetMode;
-
-          wavesurfer.load(next);
-
-          wavesurfer.once("ready", () => {
-            wavesurfer.setTime(time);
-            if (isPlaying) wavesurfer.play();
-          });
-
-          // Update active state
-          beforeBtn.classList.toggle('active', targetMode === 'before');
-          afterBtn.classList.toggle('active', targetMode === 'after');
-        };
-
-        beforeBtn.addEventListener("click", () => handleToggle("before"));
-        afterBtn.addEventListener("click", () => handleToggle("after"));
-      }
-
-      players.push(wavesurfer);
-    });
-  }
-
-  // Wait for WaveSurfer library and DOM elements to be ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(initWaveforms, 100);
-    });
-  } else {
-    setTimeout(initWaveforms, 100);
-  }
+  // Make functions globally accessible
+  window.openServiceModal = openServiceModal;
+  window.openHowItWorksModal = openHowItWorksModal;
+  window.closeServiceModal = closeServiceModal;
 </script>
 
 </body>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membership — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- MEMBERSHIP PAGE -->
+<!-- Studio XV Membership — Ongoing access to all learning materials -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    
+    <!-- Page Header -->
+    <div class="mb-12 max-w-2xl">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Studio XV Membership</h1>
+      <p class="text-base opacity-70 leading-relaxed">
+        Ongoing access to all courses, ebooks, and tools. For producers who want to learn at their own pace without purchasing individual products.
+      </p>
+      <a href="index.html#learn" class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline mt-4 inline-block">
+        ← Back to Learn
+      </a>
+    </div>
+    
+    <!-- What's Included -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">What's included</h2>
+      
+      <div class="space-y-4 text-base opacity-70">
+        <div class="flex items-start gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Access to all current and future ebooks</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Access to all current and future video courses</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Access to tools & planners (when available)</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>New content added regularly</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Cancel anytime</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Who This Is For -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">Who this is for</h2>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- For -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--accent);">This is for you if:</h3>
+          <ul class="space-y-2 text-base opacity-70">
+            <li>• You want ongoing learning resources</li>
+            <li>• You prefer access over ownership</li>
+            <li>• You're building a practice</li>
+            <li>• You value flexibility</li>
+          </ul>
+        </div>
+        
+        <!-- Not For -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4 opacity-60">This is not for you if:</h3>
+          <ul class="space-y-2 text-base opacity-50">
+            <li>• You prefer one-time purchases</li>
+            <li>• You want permanent ownership</li>
+            <li>• You need only one resource</li>
+            <li>• You rarely revisit learning materials</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pricing Options -->
+    <div class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6">Choose your plan</h2>
+      
+      <div class="space-y-6">
+        <!-- Monthly Plan -->
+        <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">Monthly</h3>
+              <p class="text-sm opacity-60">Billed monthly · Cancel anytime</p>
+            </div>
+            <div class="text-2xl font-bold">£15<span class="text-base opacity-50">/mo</span></div>
+          </div>
+          <a href="#" 
+             id="monthly-membership-btn"
+             class="inline-block px-6 py-3 rounded-lg text-base font-medium transition mt-2"
+             style="background: var(--accent); color: white;"
+             onmouseover="this.style.opacity='0.9'" 
+             onmouseout="this.style.opacity='1'">
+            Join the membership
+          </a>
+        </div>
+        
+        <!-- Annual Plan (Coming Soon) -->
+        <div class="p-6 rounded-xl border opacity-50" style="background: var(--bg-soft); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">Annual</h3>
+              <p class="text-sm opacity-60">Billed yearly · Save £30</p>
+            </div>
+            <div class="text-2xl font-bold">£150<span class="text-base opacity-50">/yr</span></div>
+          </div>
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded border mt-2" 
+                style="border-color: var(--border-soft);">
+            Coming soon
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Note -->
+    <div class="rounded-xl p-6 border" style="background: var(--bg-soft); border-color: var(--border-soft);">
+      <p class="text-sm opacity-60 leading-relaxed">
+        Membership gives you access to learning materials. Studio services (mixing, feedback, lessons) are separate and can be booked independently.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<script>
+  // MEMBERSHIP CHECKOUT
+  // Placeholder for Stripe Payment Link (monthly membership)
+  // Replace with actual membership subscription link
+  const MEMBERSHIP_MONTHLY_URL = 'https://buy.stripe.com/test_REPLACE_WITH_MEMBERSHIP_SUBSCRIPTION_LINK';
+  
+  document.getElementById('monthly-membership-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    // Redirect to Stripe membership checkout
+    window.location.href = MEMBERSHIP_MONTHLY_URL;
+  });
+</script>
+
+</body>
+</html>

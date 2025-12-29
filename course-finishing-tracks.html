@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finishing Tracks Without Overthinking — Studio XV</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Academy: Course Detail -->
+<!-- Finishing Tracks Without Overthinking -->
+<!-- Pre-purchase information page -->
+
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Product Header -->
+    <div class="mb-12 max-w-2xl">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Finishing Tracks Without Overthinking</h1>
+      <div class="flex flex-wrap gap-3 text-sm opacity-60 mb-6">
+        <span>PDF Ebook</span>
+        <span>·</span>
+        <span>18 pages</span>
+        <span>·</span>
+        <span>45–60 min read</span>
+        <span>·</span>
+        <span>Beginner → Intermediate</span>
+      </div>
+      <p class="text-base opacity-70 leading-relaxed">
+        A practical PDF ebook guiding you through the decision-making process for finishing tracks. Learn to recognize what's blocking progress and move forward with clarity.
+      </p>
+    </div>
+    
+    <!-- Course Overview -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">Why this exists</h2>
+      <div class="space-y-4 text-base opacity-70 leading-relaxed max-w-2xl">
+        <p>Most producers don't struggle with technical skills. They struggle with knowing when to stop, what to prioritize, and how to trust their decisions.</p>
+        <p>This ebook focuses on the decision-making frameworks that help you finish tracks without second-guessing every choice.</p>
+      </div>
+    </div>
+    
+    <!-- What You'll Learn -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">What you'll learn</h2>
+      
+      <ul class="space-y-3 text-base opacity-70 max-w-2xl">
+        <li>• Understanding the mental blocks that prevent you from finishing tracks</li>
+        <li>• Identifying what matters most in your mix and eliminating unnecessary steps</li>
+        <li>• Making clear decisions when you're stuck or second-guessing</li>
+        <li>• Building a repeatable finishing process that works for you</li>
+        <li>• Knowing when your track is ready and releasing it with confidence</li>
+      </ul>
+    </div>
+    
+    <!-- Who This Is For -->
+    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-2xl font-semibold mb-6">Who this is for</h2>
+      
+      <div class="grid md:grid-cols-2 gap-8 max-w-3xl">
+        <!-- For -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--accent);">This is for you if:</h3>
+          <ul class="space-y-2 text-base opacity-70">
+            <li>• You have unfinished tracks</li>
+            <li>• You keep tweaking endlessly</li>
+            <li>• You struggle with "good enough"</li>
+            <li>• You want a clear process</li>
+          </ul>
+        </div>
+        
+        <!-- Not For -->
+        <div>
+          <h3 class="text-lg font-semibold mb-4 opacity-60">This is not for you if:</h3>
+          <ul class="space-y-2 text-base opacity-50">
+            <li>• You need DAW tutorials</li>
+            <li>• You want plugin presets</li>
+            <li>• You're looking for shortcuts</li>
+            <li>• You prefer theory over practice</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pricing Section -->
+    <div class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6">Get the ebook</h2>
+      
+      <div class="space-y-6 max-w-2xl">
+        <!-- Ebook Option -->
+        <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <div>
+              <h3 class="text-lg font-semibold mb-1">PDF Ebook</h3>
+              <p class="text-sm opacity-60">18 pages · 45–60 min read · Lifetime access</p>
+            </div>
+            <div class="text-2xl font-bold">£19</div>
+          </div>
+          <a href="ebook-order-summary.html" 
+             class="inline-block px-6 py-3 rounded-lg text-base font-medium transition mt-4"
+             style="background: var(--accent); color: white;"
+             onmouseover="this.style.opacity='0.9'" 
+             onmouseout="this.style.opacity='1'">
+            Continue to order summary
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Back Link -->
+    <div class="text-center">
+      <a href="index.html#learn" 
+         class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline">
+        ← Back to Learn
+      </a>
+    </div>
+    
+  </div>
+</section>
+
+</body>
+</html>
