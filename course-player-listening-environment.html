@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER
+  Course: Listening Environment
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Listening Environment</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Listening Environment',
+      backLink: 'learn-courses.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~50 minutes',
+      moduleCount: 3
+    };
+    
+    /* ============================================
+       LESSON DATA
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Room Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Room Fundamentals',
+        lesson: 1,
+        title: 'Why your room matters more than your monitors',
+        duration: '5:20',
+        description: 'Understanding how room acoustics affect everything you hear and mix.',
+        inThisLesson: [
+          'The biggest mixing mistake: trusting untreated rooms',
+          'How reflections distort frequency response',
+          'Why expensive monitors sound bad in bad rooms',
+          'Room modes and frequency buildup'
+        ],
+        keyTakeaways: [
+          'Your room shapes everything you hear. Even $5,000 monitors will lie to you in an untreated room. Reflections, room modes, and standing waves color your perception and lead to poor mix decisions.',
+          'Monitors are the last thing to upgrade. Fix your room first, then your monitoring position, then acoustic treatment. Only after all of that should you consider better speakers.',
+          'An untreated room creates frequency buildups and dips that make you over-compensate in your mix. You add bass because your room eats it, or cut highs because your room reflects them.'
+        ],
+        resources: [
+          { name: 'Room acoustics fundamentals', type: 'PDF' },
+          { name: 'Frequency response problems', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Room Fundamentals',
+        lesson: 2,
+        title: 'Understanding room modes',
+        duration: '6:10',
+        description: 'How standing waves create false bass response and ruin low-end decisions.',
+        inThisLesson: [
+          'What room modes are and why they happen',
+          'Axial, tangential, and oblique modes',
+          'Finding your room\'s problem frequencies',
+          'How modes affect mixing decisions'
+        ],
+        keyTakeaways: [
+          'Room modes are standing waves that occur at specific frequencies based on your room\'s dimensions. These frequencies either build up (too loud) or cancel out (too quiet), making it impossible to judge bass accurately.',
+          'Small rooms have more severe mode issues. The smaller your space, the higher the problem frequencies, and the harder it is to fix with positioning alone.',
+          'You can calculate your room modes using simple formulas (speed of sound ÷ room dimension), but you\'ll feel them more than measure them: certain bass notes will boom, others will disappear.'
+        ],
+        resources: [
+          { name: 'Room mode calculator', type: 'PDF' },
+          { name: 'Modal frequency chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Room Fundamentals',
+        lesson: 3,
+        title: 'First reflections and phantom imaging',
+        duration: '4:50',
+        description: 'How early reflections blur stereo image and ruin clarity.',
+        inThisLesson: [
+          'What first reflections are',
+          'How reflections affect stereo imaging',
+          'The mirror test for identifying reflection points',
+          'Priority reflection zones to treat'
+        ],
+        keyTakeaways: [
+          'First reflections are the sound bouncing off your walls, ceiling, and desk before reaching your ears. These reflections arrive milliseconds after the direct sound, blurring stereo image and clarity.',
+          'Treating first reflections is the single most effective acoustic improvement. Absorbing reflections from your side walls, ceiling, and desk dramatically improves imaging and detail.',
+          'Use the mirror test: sit in your mixing position and have someone move a mirror along your walls. Wherever you see your monitor\'s reflection is a critical reflection point to treat.'
+        ],
+        resources: [
+          { name: 'First reflection guide', type: 'PDF' },
+          { name: 'Mirror test instructions', type: 'PDF' }
+        ]
+      },
+      // Module 2: Monitor Setup
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Monitor Setup',
+        lesson: 1,
+        title: 'The equilateral triangle rule',
+        duration: '4:40',
+        description: 'Proper speaker placement for accurate stereo imaging and balance.',
+        inThisLesson: [
+          'Why the equilateral triangle matters',
+          'Measuring and setting up the triangle',
+          'Tweeter height and ear level',
+          'Angling monitors correctly'
+        ],
+        keyTakeaways: [
+          'Your listening position and monitors should form an equilateral triangle (all three sides equal). This ensures balanced stereo imaging and a centered phantom center image.',
+          'Tweeters should be at ear height when seated. If your monitors are too high or too low, the frequency response and imaging suffer.',
+          'Angle your monitors so they point directly at your head (or slightly behind). This focuses the sweet spot on your listening position and reduces room reflections.'
+        ],
+        resources: [
+          { name: 'Monitor placement guide', type: 'PDF' },
+          { name: 'Setup measurement worksheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Monitor Setup',
+        lesson: 2,
+        title: 'Distance from walls and corners',
+        duration: '5:30',
+        description: 'How monitor placement relative to walls affects bass response.',
+        inThisLesson: [
+          'Why corners and walls boost bass',
+          'The 38% rule for monitor distance',
+          'Symmetry and room balance',
+          'When to break the rules'
+        ],
+        keyTakeaways: [
+          'Placing monitors close to walls or in corners artificially boosts bass. This makes you think your mix has enough low-end, so you undercompensate and your mix sounds thin everywhere else.',
+          'The 38% rule: place monitors at 38% of the room\'s length from the front wall. This minimizes the worst room mode buildups and creates the most balanced frequency response.',
+          'Keep your setup symmetrical. If one monitor is closer to a wall than the other, your stereo image and frequency response will be unbalanced.'
+        ],
+        resources: [
+          { name: 'Wall distance calculator', type: 'PDF' },
+          { name: 'Room positioning diagrams', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Monitor Setup',
+        lesson: 3,
+        title: 'Monitor isolation and decoupling',
+        duration: '4:20',
+        description: 'Preventing desk vibrations from coloring your low-end.',
+        inThisLesson: [
+          'Why desk coupling creates false bass',
+          'Isolation pads vs. monitor stands',
+          'How vibrations affect frequency response',
+          'Budget vs. premium solutions'
+        ],
+        keyTakeaways: [
+          'When monitors sit directly on your desk, vibrations transfer into the desk surface, creating resonances that boost or color bass frequencies. You\'re hearing your desk as much as your monitors.',
+          'Isolation pads (foam or isolation stands) decouple monitors from the desk, reducing vibration transfer and cleaning up bass response. Even cheap pads make a noticeable difference.',
+          'Monitor stands are the best solution if you can afford them. They eliminate desk coupling entirely and allow for better positioning (height, angle, distance).'
+        ],
+        resources: [
+          { name: 'Monitor isolation guide', type: 'PDF' },
+          { name: 'Decoupling solutions comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Monitor Setup',
+        lesson: 4,
+        title: 'Listening position and sweet spot',
+        duration: '3:50',
+        description: 'Where to sit for the most accurate monitoring.',
+        inThisLesson: [
+          'Finding the optimal listening position',
+          'Avoiding room nulls and peaks',
+          'How far back to sit',
+          'Checking your setup with measurement'
+        ],
+        keyTakeaways: [
+          'Don\'t sit too close to the back wall. This creates comb filtering and bass buildup. Aim for at least 3 feet (1 meter) of space behind you.',
+          'Your listening position should be centered in the room (side-to-side) to maintain stereo balance. Off-center listening creates uneven frequency response and imaging.',
+          'The sweet spot is small. Moving your head even a few inches changes what you hear. Once you find the right position, stay there when making critical mix decisions.'
+        ],
+        resources: [
+          { name: 'Listening position guide', type: 'PDF' },
+          { name: 'Sweet spot testing method', type: 'PDF' }
+        ]
+      },
+      // Module 3: Acoustic Treatment
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Acoustic Treatment',
+        lesson: 1,
+        title: 'Absorption vs. diffusion',
+        duration: '4:40',
+        description: 'Understanding the two main types of acoustic treatment.',
+        inThisLesson: [
+          'What absorption does and when to use it',
+          'What diffusion does and when to use it',
+          'Balancing a dead vs. live room',
+          'Common treatment mistakes'
+        ],
+        keyTakeaways: [
+          'Absorption soaks up sound energy, reducing reflections and flutter echoes. Use it for first reflections, corners, and controlling mid/high frequencies.',
+          'Diffusion scatters sound in multiple directions, preserving energy while reducing focused reflections. Use it sparingly to keep the room from sounding too dead.',
+          'Most home studios need more absorption than diffusion. A too-live room creates more problems than a slightly dead room. Start with absorption, add diffusion if needed.'
+        ],
+        resources: [
+          { name: 'Absorption vs. diffusion guide', type: 'PDF' },
+          { name: 'Treatment placement strategies', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Acoustic Treatment',
+        lesson: 2,
+        title: 'Bass traps and low-frequency control',
+        duration: '5:50',
+        description: 'Taming room modes and bass buildup with corner treatment.',
+        inThisLesson: [
+          'Why low frequencies need thick traps',
+          'Corner placement for maximum effect',
+          'DIY vs. commercial bass traps',
+          'How much treatment is enough'
+        ],
+        keyTakeaways: [
+          'Bass traps absorb low frequencies, which build up in room corners due to boundary reinforcement. Placing thick absorbers (at least 4 inches) in corners is the most effective way to control bass.',
+          'Low frequencies have long wavelengths and need thick, dense material to absorb. Thin foam does nothing for bass—only mid and high frequencies.',
+          'Treat all four vertical corners if possible, prioritizing the corners behind your monitors and behind your listening position. More bass trapping is almost always better.'
+        ],
+        resources: [
+          { name: 'Bass trap placement guide', type: 'PDF' },
+          { name: 'DIY bass trap instructions', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Acoustic Treatment',
+        lesson: 3,
+        title: 'Treating first reflection points',
+        duration: '4:30',
+        description: 'Placing acoustic panels for clarity and imaging.',
+        inThisLesson: [
+          'Identifying reflection points (mirror test)',
+          'Side wall treatment',
+          'Ceiling reflection treatment',
+          'How many panels you need'
+        ],
+        keyTakeaways: [
+          'First reflections from your side walls and ceiling are the biggest killers of stereo imaging. Treating these points with 2–4 inch panels dramatically improves clarity and detail.',
+          'Start with side walls: place one panel on each side where you see your monitor in a mirror. This is the highest-priority treatment after bass traps.',
+          'Ceiling reflections matter too. If you can, place a panel (or cloud) above your listening position to absorb ceiling bounce. This is especially important in rooms with low ceilings.'
+        ],
+        resources: [
+          { name: 'First reflection panel placement', type: 'PDF' },
+          { name: 'Panel sizing and quantity guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    /* ============================================
+       STATE & FUNCTIONS
+       ============================================ */
+    
+    let currentLessonIndex = 0;
+    const completedLessons = new Set();
+    
+    function renderLesson(index) {
+      currentLessonIndex = index;
+      const lesson = lessons[index];
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Render "In this lesson" list
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Render key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(item => `<p>${item}</p>`).join('');
+      
+      // Render resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update active state in sidebar
+      document.querySelectorAll('.lesson-item').forEach((el, i) => {
+        el.classList.toggle('active', i === index);
+      });
+      
+      // Update navigation buttons
+      const prevBtn = document.getElementById('prev-lesson');
+      const nextBtn = document.getElementById('next-lesson');
+      
+      if (index === 0) {
+        prevBtn.style.opacity = '0.3';
+        prevBtn.style.pointerEvents = 'none';
+      } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.pointerEvents = 'auto';
+      }
+      
+      if (index === lessons.length - 1) {
+        nextBtn.textContent = 'Complete course →';
+      } else {
+        nextBtn.textContent = 'Next lesson →';
+      }
+      
+      // Scroll to top
+      document.querySelector('main').scrollTop = 0;
+    }
+    
+    function nextLesson() {
+      // Mark current lesson as completed
+      completedLessons.add(currentLessonIndex);
+      document.querySelectorAll('.lesson-item')[currentLessonIndex]?.classList.add('completed');
+      
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // All lessons completed - show modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Render first lesson
+      renderLesson(0);
+      
+      // Setup navigation buttons
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      // Setup lesson clicks in sidebar
+      document.querySelectorAll('.lesson-item').forEach((el, index) => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="border-b" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <a href="index.html" class="text-xl font-bold">STUDIO XV</a>
+      <span class="text-sm" style="color: var(--text-muted);">·</span>
+      <a href="learn-courses.html" class="text-sm hover:opacity-70 transition" style="color: var(--text-muted);">Back to Courses</a>
+    </div>
+    <div class="text-right">
+      <p class="text-sm font-medium">Listening Environment</p>
+      <p class="text-xs" style="color: var(--text-muted);">~50 minutes · 10 lessons</p>
+    </div>
+  </div>
+</header>
+
+<div class="flex h-[calc(100vh-73px)]">
+  
+  <!-- SIDEBAR - Lesson List -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <h2 class="text-lg font-bold mb-1">Course outline</h2>
+      <p class="text-sm" style="color: var(--text-muted);">10 lessons · 3 modules</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4 bg-opacity-50" style="background: var(--bg-soft);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Room Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Why your room matters more than your monitors</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding room modes</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">First reflections and phantom imaging</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4 bg-opacity-50" style="background: var(--bg-soft);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Monitor Setup</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The equilateral triangle rule</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Distance from walls and corners</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Monitor isolation and decoupling</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Listening position and sweet spot</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4 bg-opacity-50" style="background: var(--bg-soft);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Acoustic Treatment</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Absorption vs. diffusion</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Bass traps and low-frequency control</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Treating first reflection points</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Why your room matters more than your monitors</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding how room acoustics affect everything you hear and mix.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The biggest mixing mistake: trusting untreated rooms</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How reflections distort frequency response</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why expensive monitors sound bad in bad rooms</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Room modes and frequency buildup</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Your room shapes everything you hear. Even $5,000 monitors will lie to you in an untreated room. Reflections, room modes, and standing waves color your perception and lead to poor mix decisions.
+          </p>
+          <p>
+            Monitors are the last thing to upgrade. Fix your room first, then your monitoring position, then acoustic treatment. Only after all of that should you consider better speakers.
+          </p>
+          <p>
+            An untreated room creates frequency buildups and dips that make you over-compensate in your mix. You add bass because your room eats it, or cut highs because your room reflects them.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Room acoustics fundamentals (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Frequency response problems (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Listening Environment</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~50 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How room acoustics affect your mixing decisions</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Optimal monitor placement and listening position</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Strategic acoustic treatment for clarity and accuracy</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to control bass traps and room modes</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock course for £35
+        </a>
+        <a href="learn-courses.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

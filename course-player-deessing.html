@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — De-Essing</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'De-Essing',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~30 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Sibilance Basics
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Sibilance Basics',
+        lesson: 1,
+        title: 'What is sibilance?',
+        duration: '3:20',
+        description: 'Understanding the harsh "s" sounds in vocals and why they become problematic in recordings.',
+        inThisLesson: [
+          'The physics of sibilance in human speech',
+          'Why sibilance becomes more pronounced in recordings',
+          'The difference between natural and problematic sibilance',
+          'When sibilance needs control vs when to leave it alone'
+        ],
+        keyTakeaways: [
+          'Sibilance is the harsh, high-frequency energy created by "s," "sh," "ch," and "t" sounds. It\'s a natural part of speech but can become harsh and distracting in recordings.',
+          'Microphones, especially condenser mics, emphasize sibilance because they\'re sensitive to high frequencies. What sounds normal in the room can sound piercing through a mic.',
+          'Not all sibilance is bad. The goal is control, not elimination. You need some sibilance for clarity and intelligibility—you\'re just taming the excessive peaks.'
+        ],
+        resources: [
+          { name: 'Sibilance frequency guide', type: 'PDF' },
+          { name: 'Problem sibilance examples', type: 'Audio' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Sibilance Basics',
+        lesson: 2,
+        title: 'The sibilance frequency range',
+        duration: '3:40',
+        description: 'Learning where sibilance lives in the frequency spectrum and how to identify it.',
+        inThisLesson: [
+          'The 4-10kHz sibilance zone',
+          'How sibilance varies by voice and gender',
+          'Using spectrum analyzers to spot sibilance',
+          'The difference between sibilance and presence'
+        ],
+        keyTakeaways: [
+          'Most sibilance lives between 5-8kHz, but it can extend from 4kHz to 10kHz depending on the voice. Female voices tend to have sibilance in the 6-9kHz range, male voices in the 5-7kHz range.',
+          'Use a spectrum analyzer while the vocalist sings "s" sounds to see exactly where the sibilance peaks. This tells you where to focus your de-essing.',
+          'Don\'t confuse sibilance with vocal presence (2-5kHz). Sibilance is higher and more piercing. Cutting presence will dull the vocal—you only want to control the harsh sibilance above 5kHz.'
+        ],
+        resources: [
+          { name: 'Frequency range reference chart', type: 'PDF' },
+          { name: 'Vocal presence vs sibilance guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Sibilance Basics',
+        lesson: 3,
+        title: 'When vocals need de-essing',
+        duration: '2:50',
+        description: 'Recognizing the signs that a vocal needs de-essing treatment.',
+        inThisLesson: [
+          'Harsh, piercing "s" sounds as a warning sign',
+          'How compression and saturation amplify sibilance',
+          'Testing for sibilance issues in context',
+          'Prevention during recording vs fixing in mixing'
+        ],
+        keyTakeaways: [
+          'If the "s" sounds make you wince or distract from the vocal performance, you need de-essing. Trust your immediate reaction—if it sounds harsh, it is harsh.',
+          'Compression makes sibilance worse by bringing up the loud high frequencies. Always check for sibilance after adding compression, not before.',
+          'The best de-essing is prevention: proper mic placement (slightly off-axis), pop filters, and gain staging during recording reduce sibilance problems before they start.'
+        ],
+        resources: [
+          { name: 'Sibilance checklist', type: 'PDF' },
+          { name: 'Recording techniques to reduce sibilance', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: De-Essing Techniques
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'De-Essing Techniques',
+        lesson: 1,
+        title: 'How de-essers work',
+        duration: '3:30',
+        description: 'Understanding the mechanics of de-essing and what the plugin is actually doing.',
+        inThisLesson: [
+          'De-essers as frequency-specific compressors',
+          'Split-band vs wideband de-essing',
+          'The sidechain listening method',
+          'How threshold and range interact'
+        ],
+        keyTakeaways: [
+          'A de-esser is a compressor that only triggers on specific frequencies. When it detects sibilance (usually 5-8kHz), it quickly turns down just that frequency range.',
+          'Split-band de-essers only reduce the sibilant frequencies. Wideband de-essers duck the entire signal when sibilance is detected. Split-band is usually more transparent.',
+          'Most de-essers have a "listen" or "sidechain" mode that lets you hear what frequencies are triggering the processing. Use this to find the exact sibilance range for your vocal.'
+        ],
+        resources: [
+          { name: 'De-esser types comparison', type: 'PDF' },
+          { name: 'Sidechain listening guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'De-Essing Techniques',
+        lesson: 2,
+        title: 'Basic de-esser parameters',
+        duration: '4:10',
+        description: 'Learning the core controls of a de-esser and how to set them properly.',
+        inThisLesson: [
+          'Threshold: when de-essing starts',
+          'Frequency/range: where to target sibilance',
+          'Reduction/range: how much to de-ess',
+          'Attack and release in de-essers'
+        ],
+        keyTakeaways: [
+          'Start with frequency around 6-7kHz, then use sidechain mode to sweep until you hear the harsh "s" sounds isolated. That\'s your target frequency.',
+          'Set threshold so the de-esser only works on the loud sibilance, not constantly. Aim for 3-6dB of reduction on the harshest "s" sounds.',
+          'Fast attack (0.1-1ms) catches sibilance immediately. Medium release (50-150ms) lets it recover naturally. Most de-essers have automatic or fixed attack/release that works well.'
+        ],
+        resources: [
+          { name: 'De-esser parameter starting points', type: 'PDF' },
+          { name: 'Threshold setting procedure', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'De-Essing Techniques',
+        lesson: 3,
+        title: 'Setting up your first de-esser',
+        duration: '3:45',
+        description: 'Step-by-step process for dialing in effective de-essing from scratch.',
+        inThisLesson: [
+          'The five-step de-essing workflow',
+          'Finding the problem frequency first',
+          'How much reduction is enough',
+          'A/B testing to avoid over-processing'
+        ],
+        keyTakeaways: [
+          'Workflow: 1) Enable sidechain/listen mode, 2) Sweep frequency until you hear harsh sibilance, 3) Set that as your target, 4) Adjust threshold until only loud "s" sounds trigger reduction, 5) Aim for 4-6dB reduction.',
+          'If you reduce more than 8-10dB, something\'s wrong—either your frequency is off or your threshold is too low. Back off and retarget.',
+          'Always compare with bypass on/off. If the vocal sounds dull or lisps are gone, you\'ve over-processed. You want to reduce harshness while maintaining clarity.'
+        ],
+        resources: [
+          { name: 'Step-by-step de-essing guide', type: 'PDF' },
+          { name: 'De-essing checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'De-Essing Techniques',
+        lesson: 4,
+        title: 'Common de-essing mistakes',
+        duration: '3:25',
+        description: 'Avoiding the pitfalls that make de-essing worse or create new problems.',
+        inThisLesson: [
+          'Over-de-essing and the "lisp effect"',
+          'Wrong frequency targeting',
+          'De-essing at the wrong point in the chain',
+          'Using de-essing when EQ would work better'
+        ],
+        keyTakeaways: [
+          'The biggest mistake is over-processing. If the vocal starts to lisp or sounds like someone sucking air through their teeth, you\'ve gone too far. Back off the threshold or reduction.',
+          'De-essing the wrong frequency dulls the vocal without fixing sibilance. Use sidechain mode to verify you\'re targeting the actual harsh frequencies, not just guessing at 7kHz.',
+          'Place your de-esser after compression but before heavy saturation or distortion. Compression makes sibilance worse, so fix it afterward. Saturation on sibilance creates painful digital harshness.'
+        ],
+        resources: [
+          { name: 'De-essing mistakes reference', type: 'PDF' },
+          { name: 'Signal chain placement guide', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Advanced Control
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Advanced Control',
+        lesson: 1,
+        title: 'Multiband de-essing',
+        duration: '3:10',
+        description: 'Using multiband compression for more precise sibilance control.',
+        inThisLesson: [
+          'Why multiband gives you more control',
+          'Setting up a multiband compressor as a de-esser',
+          'Targeting multiple sibilance zones',
+          'When multiband is overkill'
+        ],
+        keyTakeaways: [
+          'A multiband compressor gives you more flexibility than a basic de-esser—you can target multiple frequency ranges and shape the compression curve exactly how you want.',
+          'Set up the high band to compress only the sibilance range (5-8kHz) with a moderate ratio (3:1 to 5:1) and fast attack. Leave the other bands bypassed or with gentle settings.',
+          'Multiband is best for problem vocals where a standard de-esser isn\'t enough. For most vocals, a dedicated de-esser is faster and easier to use.'
+        ],
+        resources: [
+          { name: 'Multiband de-essing setup guide', type: 'PDF' },
+          { name: 'Multiband vs standard de-esser comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Advanced Control',
+        lesson: 2,
+        title: 'Manual de-essing with EQ',
+        duration: '2:40',
+        description: 'Surgical frequency reduction for stubborn sibilance problems.',
+        inThisLesson: [
+          'When to manually EQ sibilance',
+          'Using dynamic EQ for surgical control',
+          'Automating EQ cuts on specific words',
+          'Combining manual and automatic de-essing'
+        ],
+        keyTakeaways: [
+          'For occasional harsh "s" sounds that a de-esser misses, use manual volume or EQ automation. Isolate the problem word, add a narrow cut in the sibilance range during that moment only.',
+          'Dynamic EQ is the middle ground—it works like a de-esser but gives you more precise control over the frequency range, threshold, and amount.',
+          'Manual control is time-consuming but gives perfect results. Use it for lead vocals where every detail matters, or when automatic de-essing creates artifacts.'
+        ],
+        resources: [
+          { name: 'Manual de-essing techniques', type: 'PDF' },
+          { name: 'Dynamic EQ for sibilance control', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Advanced Control',
+        lesson: 3,
+        title: 'De-essing in the mastering stage',
+        duration: '2:30',
+        description: 'Handling sibilance issues that appear during mastering.',
+        inThisLesson: [
+          'Why mastering can reveal sibilance problems',
+          'Gentle mastering de-essing techniques',
+          'Full-mix vs vocal-only de-essing',
+          'When to send back to mixing'
+        ],
+        keyTakeaways: [
+          'Mastering compression and limiting can bring out sibilance that wasn\'t obvious in the mix. If the vocal sounds harsh after mastering processing, you may need light de-essing on the master.',
+          'Use very gentle settings in mastering: higher threshold, less reduction (2-3dB max), and careful frequency targeting. You don\'t want to affect the entire mix, just control vocal harshness.',
+          'If sibilance is severe, send the track back to mixing for proper vocal de-essing. Mastering de-essing is for minor corrections, not fixing major problems.'
+        ],
+        resources: [
+          { name: 'Mastering de-essing guide', type: 'PDF' },
+          { name: 'When to send back to mixing', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        showContinuePrompt(savedProgress);
+        renderLesson(0);
+      } else {
+        renderLesson(0);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">De-Essing</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~30 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Sibilance Basics</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What is sibilance?</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The sibilance frequency range</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">When vocals need de-essing</p>
+              <p class="text-xs" style="color: var(--text-muted);">2:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">De-Essing Techniques</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">How de-essers work</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Basic de-esser parameters</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Setting up your first de-esser</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Common de-essing mistakes</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Advanced Control</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Multiband de-essing</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Manual de-essing with EQ</p>
+              <p class="text-xs" style="color: var(--text-muted);">2:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">De-essing in the mastering stage</p>
+              <p class="text-xs" style="color: var(--text-muted);">2:30</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What is sibilance?</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the harsh "s" sounds in vocals and why they become problematic in recordings.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">De-Essing</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~30 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding sibilance and identifying problem frequencies</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Setting up and dialing in de-esser parameters effectively</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Advanced techniques including multiband and manual control</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Avoiding common de-essing mistakes that dull vocals</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

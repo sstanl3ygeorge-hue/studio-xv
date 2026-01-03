@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  ================================================================
+  
+  HOW TO CREATE A NEW COURSE:
+  
+  1. Duplicate this file and rename it:
+     Example: course-player-finishing-tracks.html
+              course-player-mixing-basics.html
+              course-player-arrangement.html
+  
+  2. Update the <title> tag below (line 11)
+  
+  3. Update the courseConfig object (around line 120):
+     - title: Your course name
+     - backLink: Link to your course landing page
+     - backLinkText: Text for back button
+     - totalDuration: Total course length
+     - moduleCount: Number of modules
+  
+  4. Replace the lessons array (starting around line 130):
+     - Each lesson needs: id, module, moduleTitle, lesson, title,
+       duration, description, inThisLesson, keyTakeaways, resources
+  
+  5. Update the sidebar HTML (starting around line 650):
+     - Module titles and lesson titles must match your lessons array
+     - IMPORTANT: Keep this exact structure for each lesson:
+       <a href="#" class="lesson-item ...">
+         <div class="flex items-center flex-1">
+           <span class="lesson-check">✓</span>
+           <div class="flex-1">
+             <p class="text-sm font-medium">LESSON TITLE</p>
+             <p class="text-xs" ...>DURATION</p>
+           </div>
+         </div>
+       </a>
+     - The checkmark span is hidden by default and shows when completed
+  
+  6. Update completion modal "What you've learned" section (line 850)
+  
+  That's it! All navigation, progress tracking, checkmarks, and 
+  interactions will work automatically.
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Saturation: Adding Color and Character</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       Change these values for each new course
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Saturation: Adding Color and Character',
+      backLink: 'course-saturation.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~40 minutes',
+      moduleCount: 3
+    };
+    
+    /* ============================================
+       LESSON DATA
+       Replace this array with your course content
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Saturation Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Saturation Fundamentals',
+        lesson: 1,
+        title: 'What saturation actually does',
+        duration: '4:15',
+        description: 'Understanding saturation beyond "making things sound warmer" and why it matters in modern production.',
+        inThisLesson: [
+          'The technical definition of saturation',
+          'How saturation adds harmonic content',
+          'Digital vs. analog saturation',
+          'Why saturation makes things feel fuller'
+        ],
+        keyTakeaways: [
+          'Saturation is controlled distortion. It adds harmonics—additional frequencies that weren\'t in the original signal—which makes sounds feel richer, fuller, and more present.',
+          'Unlike EQ, which boosts existing frequencies, saturation creates new ones. This is why saturated sounds cut through a mix better than simply turning them up.',
+          'Digital saturation models analog hardware behavior, but it\'s not about "warm vs. cold"—it\'s about adding musical complexity to otherwise sterile digital signals.'
+        ],
+        resources: [
+          { name: 'Saturation basics guide', type: 'PDF' },
+          { name: 'Harmonic content examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Saturation Fundamentals',
+        lesson: 2,
+        title: 'Harmonic content explained',
+        duration: '5:20',
+        description: 'How saturation creates harmonics, what they sound like, and why some harmonics work better than others.',
+        inThisLesson: [
+          'Odd vs. even harmonics',
+          'How harmonics affect tone',
+          'Listening for harmonic changes',
+          'When harmonics become distortion'
+        ],
+        keyTakeaways: [
+          'Even harmonics (2nd, 4th, 6th) add warmth and body. Odd harmonics (3rd, 5th, 7th) add edge and aggression. Different saturation types generate different harmonic profiles.',
+          'The right harmonics complement the source material. Smooth sounds benefit from edge. Harsh sounds benefit from warmth. Mismatched saturation makes things worse.',
+          'Too much saturation creates distortion—when the harmonics overpower the original signal. The sweet spot is where you feel the effect without hearing it explicitly.'
+        ],
+        resources: [
+          { name: 'Harmonic analyzer reference', type: 'PDF' },
+          { name: 'Even vs. odd harmonics audio', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Saturation Fundamentals',
+        lesson: 3,
+        title: 'Why saturation helps mixes',
+        duration: '3:45',
+        description: 'The practical role of saturation in mixing and why producers reach for it constantly.',
+        inThisLesson: [
+          'Saturation as glue',
+          'Making elements sit in the mix',
+          'Adding presence without volume',
+          'Controlling dynamics naturally'
+        ],
+        keyTakeaways: [
+          'Saturation makes elements feel like they belong together. It smooths digital harshness and adds cohesion, acting like analog "glue" between separate tracks.',
+          'Saturated sounds occupy more sonic space without being louder. This is why saturation helps elements sit in the mix better than simply increasing their level.',
+          'Saturation naturally compresses peaks. Loud transients trigger more distortion, evening out dynamics without a compressor. This is why saturation makes things feel more controlled.'
+        ],
+        resources: [
+          { name: 'Mix cohesion examples', type: 'PDF' },
+          { name: 'Before/after saturation mixes', type: 'ZIP' }
+        ]
+      },
+      // Module 2: Types of Saturation
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Types of Saturation',
+        lesson: 1,
+        title: 'Tape saturation',
+        duration: '4:50',
+        description: 'Understanding tape saturation: what it sounds like, when to use it, and why it\'s everywhere.',
+        inThisLesson: [
+          'What tape saturation emulates',
+          'The character of tape compression',
+          'Tape saturation on drums and bass',
+          'When tape saturation doesn\'t work'
+        ],
+        keyTakeaways: [
+          'Tape saturation emulates magnetic tape recording. It adds subtle compression, soft clipping on peaks, and gentle high-frequency roll-off. The result is warm, controlled, and slightly vintage.',
+          'Tape saturation works best on drums and bass—elements that benefit from natural compression and warmth. It tames harsh transients without killing impact.',
+          'Avoid tape saturation on bright, airy elements like vocals or pads where you need clarity and openness. Tape darkens the tone, which isn\'t always what you want.'
+        ],
+        resources: [
+          { name: 'Tape saturation settings guide', type: 'PDF' },
+          { name: 'Tape saturation examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Types of Saturation',
+        lesson: 2,
+        title: 'Tube saturation',
+        duration: '4:30',
+        description: 'How tube saturation differs from tape, when to use it, and what makes it musical.',
+        inThisLesson: [
+          'Tube harmonics and character',
+          'Smooth vs. aggressive tube saturation',
+          'Best sources for tube saturation',
+          'Mixing tube saturation with other types'
+        ],
+        keyTakeaways: [
+          'Tube saturation adds even harmonics—warmth, body, and richness. It\'s smoother and more musical than tape or transistor saturation, making it great for vocals, keys, and melodic elements.',
+          'Tube saturation responds dynamically. Louder signals generate more harmonics, creating natural musical compression. This is why tube saturation feels "alive" compared to static EQ.',
+          'Tube works well stacked with other saturation types. Use tape for control, tube for warmth. Layering different saturation types creates complex, analog-like tones.'
+        ],
+        resources: [
+          { name: 'Tube saturation placement guide', type: 'PDF' },
+          { name: 'Tube saturation audio examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Types of Saturation',
+        lesson: 3,
+        title: 'Transistor saturation',
+        duration: '3:55',
+        description: 'Understanding transistor saturation: edge, grit, and controlled aggression.',
+        inThisLesson: [
+          'Transistor saturation characteristics',
+          'Odd harmonics and aggression',
+          'When you need edge over warmth',
+          'Avoiding harshness'
+        ],
+        keyTakeaways: [
+          'Transistor saturation generates odd harmonics—edge, grit, and aggression. It\'s sharper than tape or tube, making it perfect for elements that need to cut through dense mixes.',
+          'Use transistor saturation on drums, guitars, synths, and anything that needs presence and attitude. It adds bite without making things louder.',
+          'Be careful with transistor saturation on already bright sources. It emphasizes harshness. Use it where you need edge, not where you already have it.'
+        ],
+        resources: [
+          { name: 'Transistor saturation guide', type: 'PDF' },
+          { name: 'Transistor vs. tube comparison', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Types of Saturation',
+        lesson: 4,
+        title: 'Subtle saturation techniques',
+        duration: '3:40',
+        description: 'How to use saturation transparently—adding character without obvious distortion.',
+        inThisLesson: [
+          'The "feel it, don\'t hear it" approach',
+          'Low-level saturation settings',
+          'Saturation for mix glue',
+          'A/B testing saturation properly'
+        ],
+        keyTakeaways: [
+          'Subtle saturation is about adding cohesion and presence without audible distortion. If you can hear the saturation clearly, it\'s too much—unless that\'s the creative intent.',
+          'Low drive, high output. Keep the saturation amount low but compensate with gain so you\'re comparing equal loudness. This prevents the "louder is better" bias.',
+          'A/B test by bypassing the plugin and matching levels. If the saturated version sounds better at the same volume, the saturation is working. If not, it\'s just louder.'
+        ],
+        resources: [
+          { name: 'Subtle saturation workflow', type: 'PDF' },
+          { name: 'Saturation A/B test examples', type: 'ZIP' }
+        ]
+      },
+      // Module 3: Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 1,
+        title: 'Saturation on drums',
+        duration: '3:50',
+        description: 'Making drums punch harder, glue better, and cut through the mix using saturation.',
+        inThisLesson: [
+          'Saturation on individual drum hits',
+          'Drum bus saturation',
+          'Controlling transients with saturation',
+          'Kick and snare saturation tricks'
+        ],
+        keyTakeaways: [
+          'Individual drum saturation adds body and character. Use tube for warmth on snares, tape for control on kicks, transistor for edge on hi-hats.',
+          'Drum bus saturation glues the kit together. Even a small amount of tape or tube saturation makes separate drum tracks feel like one cohesive instrument.',
+          'Saturation controls transients naturally. Instead of compressing drums heavily, add saturation to smooth peaks and add harmonic excitement simultaneously.'
+        ],
+        resources: [
+          { name: 'Drum saturation presets', type: 'PDF' },
+          { name: 'Drum saturation examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 2,
+        title: 'Saturation on vocals',
+        duration: '4:10',
+        description: 'Adding presence, warmth, and character to vocals without making them distorted or harsh.',
+        inThisLesson: [
+          'Tube saturation for vocal warmth',
+          'Saturation vs. compression on vocals',
+          'Fixing thin or digital-sounding vocals',
+          'Avoiding vocal harshness'
+        ],
+        keyTakeaways: [
+          'Tube saturation adds body and richness to vocals without compression artifacts. It makes thin vocals feel fuller and digital vocals feel more analog and natural.',
+          'Saturation before compression. Saturate first to add harmonics, then compress to control dynamics. This prevents over-compression and keeps vocals feeling alive.',
+          'Be subtle on vocals. Too much saturation creates distortion and sibilance issues. Use low drive settings and listen closely for harshness before committing.'
+        ],
+        resources: [
+          { name: 'Vocal saturation chain guide', type: 'PDF' },
+          { name: 'Vocal saturation examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 3,
+        title: 'Mix bus saturation',
+        duration: '3:45',
+        description: 'Using saturation on the master bus to glue the entire mix and add final polish.',
+        inThisLesson: [
+          'Why mix bus saturation works',
+          'Choosing the right saturation type for the mix',
+          'How much saturation is too much',
+          'Saturation vs. mastering'
+        ],
+        keyTakeaways: [
+          'Mix bus saturation glues all elements together, creating cohesion and adding subtle harmonic excitement across the entire track. It\'s the final "analog" touch on digital mixes.',
+          'Use tape for controlled warmth, tube for smooth richness, transistor for edge and energy. The saturation type depends on what the mix needs—more weight or more presence.',
+          'Go extremely subtle on the mix bus. Even 1-2% saturation is enough. Too much creates cumulative distortion and makes the mix feel muddy or harsh. Less is more here.'
+        ],
+        resources: [
+          { name: 'Mix bus saturation settings', type: 'PDF' },
+          { name: 'Mix bus before/after examples', type: 'ZIP' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course-saturation.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Saturation: Adding Color and Character</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~40 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Saturation Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What saturation actually does</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Harmonic content explained</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Why saturation helps mixes</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Types of Saturation</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Tape saturation</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Tube saturation</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Transistor saturation</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Subtle saturation techniques</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Saturation on drums</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Saturation on vocals</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Mix bus saturation</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What saturation actually does</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding saturation beyond "making things sound warmer" and why it matters in modern production.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The technical definition of saturation</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How saturation adds harmonic content</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Digital vs. analog saturation</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why saturation makes things feel fuller</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Saturation is controlled distortion. It adds harmonics—additional frequencies that weren't in the original signal—which makes sounds feel richer, fuller, and more present.
+          </p>
+          <p>
+            Unlike EQ, which boosts existing frequencies, saturation creates new ones. This is why saturated sounds cut through a mix better than simply turning them up.
+          </p>
+          <p>
+            Digital saturation models analog hardware behavior, but it's not about "warm vs. cold"—it's about adding musical complexity to otherwise sterile digital signals.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Saturation basics guide (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Harmonic content examples (ZIP)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Saturation: Adding Color and Character</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~40 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How saturation creates harmonics and adds character</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>The differences between tape, tube, and transistor saturation</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical saturation techniques for drums, vocals, and mix bus</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to use saturation subtly for mix glue and cohesion</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="tools.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Download all course tools
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+        <a href="learn-courses.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

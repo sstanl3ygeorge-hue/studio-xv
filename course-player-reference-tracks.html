@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER
+  Course 10: Reference Tracks That Help
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Reference Tracks That Help</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Reference Tracks That Help',
+      backLink: 'learn-courses.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~35 minutes',
+      moduleCount: 3
+    };
+    
+    /* ============================================
+       LESSON DATA
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Choosing References
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Choosing References',
+        lesson: 1,
+        title: 'Why most references fail',
+        duration: '4:10',
+        description: 'Understanding why picking the wrong reference wastes time instead of helping.',
+        inThisLesson: [
+          'The two types of reference tracks',
+          'Why aspirational references backfire',
+          'Matching genre vs. matching sound',
+          'Common reference mistakes'
+        ],
+        keyTakeaways: [
+          'Most producers pick reference tracks they want to sound like, not tracks they can actually learn from. Aspirational references create frustration, not progress.',
+          'A good reference isn\'t the best-sounding track in your genre—it\'s the track that shares your arrangement, vibe, and production decisions.',
+          'If your reference is too polished or too different from your track, you\'ll spend time chasing things that don\'t matter instead of fixing what does.'
+        ],
+        resources: [
+          { name: 'Reference selection criteria', type: 'PDF' },
+          { name: 'Aspirational vs. functional references', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Choosing References',
+        lesson: 2,
+        title: 'Finding the right references',
+        duration: '4:50',
+        description: 'A step-by-step system for choosing references that actually help.',
+        inThisLesson: [
+          'The 3-question reference filter',
+          'Matching energy and arrangement',
+          'Using multiple references',
+          'Building a reference library'
+        ],
+        keyTakeaways: [
+          'Ask three questions: Does it match my vibe? Does it match my arrangement? Can I hear what they did? If any answer is no, it\'s the wrong reference.',
+          'Match energy and structure first, sound second. A track with similar pacing and contrast will teach you more than a track with better drums.',
+          'Use 2–3 references per project. One for overall vibe, one for specific elements (drums, vocals), and one for arrangement structure.'
+        ],
+        resources: [
+          { name: 'Reference selection worksheet', type: 'PDF' },
+          { name: 'Building your reference library', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Choosing References',
+        lesson: 3,
+        title: 'Genre-specific reference strategies',
+        duration: '3:40',
+        description: 'How different genres require different reference approaches.',
+        inThisLesson: [
+          'Electronic music: loops vs. progression',
+          'Hip-hop and R&B: vocal clarity',
+          'Rock and indie: space and dynamics',
+          'Ambient and cinematic: atmosphere'
+        ],
+        keyTakeaways: [
+          'Electronic music references should share your loop structure and sound palette. Don\'t compare a progressive house track to a minimal techno reference.',
+          'Hip-hop and R&B references need vocal-focused mixes. If your reference buries the vocal, it won\'t help you fix vocal clarity in your mix.',
+          'Genre expectations matter. Ambient tracks prioritize space and texture; hip-hop prioritizes punch and clarity. Match your reference to your genre\'s priorities.'
+        ],
+        resources: [
+          { name: 'Genre reference guide', type: 'PDF' },
+          { name: 'Genre-specific A/B examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Choosing References',
+        lesson: 4,
+        title: 'When to use vs. ignore references',
+        duration: '3:25',
+        description: 'Knowing when references help and when they get in the way.',
+        inThisLesson: [
+          'Early stages: ignore references',
+          'Mixing stage: use references actively',
+          'When your track is unique',
+          'Avoiding clone syndrome'
+        ],
+        keyTakeaways: [
+          'Don\'t use references during writing or early arrangement. References kill creativity when you\'re still figuring out what your track is.',
+          'Use references during mixing and balancing. This is when you need objective feedback on loudness, frequency balance, and space.',
+          'If your track is genuinely unique or experimental, traditional references won\'t help. Trust your instincts and compare to similar energy/mood instead.'
+        ],
+        resources: [
+          { name: 'When to reference checklist', type: 'PDF' },
+          { name: 'Creative vs. technical phases', type: 'PDF' }
+        ]
+      },
+      // Module 2: A/B Workflow
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'A/B Workflow',
+        lesson: 1,
+        title: 'Setting up A/B comparison',
+        duration: '4:15',
+        description: 'Technical setup for fast, accurate reference switching.',
+        inThisLesson: [
+          'Loading references in your DAW',
+          'Matching loudness (critical)',
+          'Using reference plugins',
+          'Quick-switch techniques'
+        ],
+        keyTakeaways: [
+          'Loudness bias is real. If your reference is louder, it will always sound better. Match levels before comparing, or your comparisons are meaningless.',
+          'Use a reference plugin (MeldaProduction, Magic AB, Reference) or set up a dedicated reference track in your DAW. Make switching instant.',
+          'Listen at the same volume every time. If you keep adjusting volume, you\'re comparing volume changes, not actual mix differences.'
+        ],
+        resources: [
+          { name: 'DAW reference setup guide', type: 'PDF' },
+          { name: 'Loudness matching tutorial', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'A/B Workflow',
+        lesson: 2,
+        title: 'What to listen for',
+        duration: '5:30',
+        description: 'Specific things to compare instead of vague "does it sound good?" listening.',
+        inThisLesson: [
+          'Frequency balance check',
+          'Listening for space and depth',
+          'Dynamic range comparison',
+          'Focus element comparison (vocal, drums, bass)'
+        ],
+        keyTakeaways: [
+          'Compare frequency balance first: Is your low-end heavier or lighter? Are your highs brighter or duller? Frequency balance is the easiest thing to fix.',
+          'Listen for space: Does your reference have more or less reverb? Is it wider or narrower? Does it feel closer or farther away?',
+          'Don\'t compare everything at once. Pick one element (vocal clarity, snare punch, bass weight) and compare only that. Then move to the next.'
+        ],
+        resources: [
+          { name: 'A/B listening checklist', type: 'PDF' },
+          { name: 'Frequency comparison guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'A/B Workflow',
+        lesson: 3,
+        title: 'Making adjustments based on A/B',
+        duration: '4:40',
+        description: 'Turning what you hear into actionable changes.',
+        inThisLesson: [
+          'Translating listening into moves',
+          'Prioritizing changes',
+          'Avoiding over-correction',
+          'Re-testing after changes'
+        ],
+        keyTakeaways: [
+          'After A/B comparison, make one change at a time. If you notice your bass is too loud and your vocal is too quiet, fix one first, then re-compare.',
+          'Avoid over-correcting. If your reference has more low-end, don\'t just boost bass—figure out if it\'s more sub, more mid-bass, or just better kick/bass balance.',
+          'Re-test after every change. Don\'t assume your adjustment fixed the problem. Switch back to your reference and confirm.'
+        ],
+        resources: [
+          { name: 'A/B adjustment workflow', type: 'PDF' },
+          { name: 'Over-correction examples', type: 'ZIP' }
+        ]
+      },
+      // Module 3: Learning from References
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Learning from References',
+        lesson: 1,
+        title: 'Analyzing arrangement',
+        duration: '4:50',
+        description: 'Studying how professional tracks are structured.',
+        inThisLesson: [
+          'Mapping out song structure',
+          'Counting elements per section',
+          'Noticing transitions and builds',
+          'Learning from simplicity'
+        ],
+        keyTakeaways: [
+          'Load your reference into your DAW and map the structure: intro, verse, chorus, breakdown. Notice how many elements are in each section.',
+          'Professional tracks often use fewer elements than you think. Count them. If your reference has 8 elements in the verse and you have 15, that\'s your problem.',
+          'Study transitions. What happens in the 4 bars before the drop? What gets added or removed? This is where amateur tracks fail and pro tracks shine.'
+        ],
+        resources: [
+          { name: 'Arrangement analysis template', type: 'PDF' },
+          { name: 'Transition techniques guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Learning from References',
+        lesson: 2,
+        title: 'Studying frequency balance',
+        duration: '4:25',
+        description: 'Using references to train your ears on EQ and balance.',
+        inThisLesson: [
+          'Using spectrum analyzers effectively',
+          'Visual vs. listening-based learning',
+          'Identifying frequency focus areas',
+          'Learning genre-specific balance'
+        ],
+        keyTakeaways: [
+          'Use a spectrum analyzer to see where your reference\'s energy lives, but don\'t copy it exactly. Frequency balance is context-dependent.',
+          'Notice where your reference is brightest, warmest, or thinnest. Is the low-mid (200–500 Hz) area clean or full? This tells you genre expectations.',
+          'Don\'t trust visuals alone. If your analyzer says your track matches but it sounds different, trust your ears. Analyzers lie; ears don\'t.'
+        ],
+        resources: [
+          { name: 'Frequency analysis guide', type: 'PDF' },
+          { name: 'Spectrum analyzer tutorial', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Learning from References',
+        lesson: 3,
+        title: 'Building your own mixing instincts',
+        duration: '4:10',
+        description: 'Using references to develop taste and confidence.',
+        inThisLesson: [
+          'Training your ears over time',
+          'Internalizing what good sounds like',
+          'Reducing reference dependency',
+          'Trusting yourself more'
+        ],
+        keyTakeaways: [
+          'The goal of using references is to eventually not need them. You\'re training your ears to recognize good balance, space, and clarity instinctively.',
+          'After A/B-ing the same genre for months, you\'ll start to know what "right" sounds like without checking. That\'s when references have done their job.',
+          'Trust your instincts more as you gain experience. If something feels wrong but your reference says it\'s fine, trust yourself. Your ears are learning.'
+        ],
+        resources: [
+          { name: 'Ear training progression guide', type: 'PDF' },
+          { name: 'Building mixing confidence', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="learn-courses.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Reference Tracks That Help</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~35 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Choosing References</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Why most references fail</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Finding the right references</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Genre-specific reference strategies</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">When to use vs. ignore references</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">A/B Workflow</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Setting up A/B comparison</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What to listen for</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Making adjustments based on A/B</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Learning from References</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Analyzing arrangement</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Studying frequency balance</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:25</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Building your own mixing instincts</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Why most references fail</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding why picking the wrong reference wastes time instead of helping.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The two types of reference tracks</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why aspirational references backfire</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Matching genre vs. matching sound</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Common reference mistakes</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Most producers pick reference tracks they want to sound like, not tracks they can actually learn from. Aspirational references create frustration, not progress.
+          </p>
+          <p>
+            A good reference isn't the best-sounding track in your genre—it's the track that shares your arrangement, vibe, and production decisions.
+          </p>
+          <p>
+            If your reference is too polished or too different from your track, you'll spend time chasing things that don't matter instead of fixing what does.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Reference selection criteria (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Aspirational vs. functional references (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Reference Tracks That Help</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~35 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to choose references that actually help</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Effective A/B comparison workflow</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Analyzing arrangement and frequency balance</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Building mixing instincts and confidence</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock course for £35
+        </a>
+        <a href="learn-courses.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

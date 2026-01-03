@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finishing Tracks Without Overthinking — Ebook — Studio XV</title>
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finishing Tracks Without Overthinking — Studio XV</title>
+
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <style>
     :root {
       /* DARK MODE (DEFAULT) */
@@ -49,135 +49,381 @@
     html {
       scroll-behavior: smooth;
     }
+
+    .mobile-link {
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 0;
+      transition: color 0.25s ease;
+    }
+
+    section {
+      scroll-margin-top: 96px;
+    }
   </style>
 </head>
+
 <body>
 
-<!-- EBOOK DETAIL PAGE -->
-<!-- Finishing Tracks Without Overthinking — Ebook Edition -->
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur border-b"
+     style="background: var(--bg-main); color: var(--text-main); border-color: var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="text-xl font-bold">Studio XV</a>
 
-<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+    <!-- Desktop -->
+    <div class="hidden md:flex space-x-8">
+      <a href="index.html#home" class="transition hover:text-[var(--accent)]">Home</a>
+      <a href="index.html#services" class="transition hover:text-[var(--accent)]">Services</a>
+      <a href="index.html#portfolio" class="transition hover:text-[var(--accent)]">Listen</a>
+      <a href="index.html#learn" class="transition hover:text-[var(--accent)]">Learn</a>
+      <a href="index.html#booking" class="transition hover:text-[var(--accent)]">Book</a>
+    </div>
+
+    <!-- Mobile toggle -->
+    <button id="menu-toggle" class="md:hidden text-3xl">☰</button>
+  </div>
+</nav>
+
+<div id="mobile-menu"
+  class="fixed top-0 right-0 h-full w-4/5 max-w-sm
+         transform translate-x-full transition-transform duration-300 z-[9999] shadow-2xl"
+  style="background: var(--bg-main); color: var(--text-main);">
+
+  <div class="flex justify-end p-6">
+    <button id="menu-close" class="text-3xl">✕</button>
+  </div>
+
+  <nav class="flex flex-col gap-8 text-center mt-10 text-xl">
+    <a href="index.html#home" class="mobile-link hover:text-[var(--accent)]">Home</a>
+    <a href="index.html#services" class="mobile-link hover:text-[var(--accent)]">Services</a>
+    <a href="index.html#portfolio" class="mobile-link hover:text-[var(--accent)]">Listen</a>
+    <a href="index.html#learn" class="mobile-link hover:text-[var(--accent)]">Learn</a>
+    <a href="index.html#booking" class="mobile-link hover:text-[var(--accent)]">Book</a>
+  </nav>
+</div>
+
+<!-- EBOOK HERO -->
+<section class="pt-40 pb-16 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
+    
+    <p class="text-xs uppercase tracking-widest mb-6" style="color: var(--text-muted);">Ebook</p>
+    
+    <h1 class="text-5xl md:text-6xl font-bold mb-8 leading-tight">
+      Finishing Tracks Without Overthinking
+    </h1>
+    
+    <p class="text-lg md:text-xl mb-12 leading-relaxed" style="color: var(--text-muted);">
+      A reference guide for making decisions when you're stuck. No hype, no sales pitch—just frameworks that help you finish what you started.
+    </p>
+    
+    <div class="flex flex-wrap gap-3 items-center text-sm mb-12" style="color: var(--text-muted);">
+      <span>18 pages</span>
+      <span>·</span>
+      <span>PDF format</span>
+      <span>·</span>
+      <span>45 min read</span>
+    </div>
+    
+    <a href="#pricing" 
+       class="inline-block px-8 py-3 rounded text-base font-medium transition hover:opacity-80"
+       style="background: var(--bg-card); border: 1px solid var(--border-soft); color: var(--text-main);">
+      Available for £15
+    </a>
+    
+  </div>
+</section>
+
+<!-- BACK BUTTON -->
+<section class="py-8 px-6" style="background: var(--bg-main);">
   <div class="max-w-3xl mx-auto">
+    <a href="learn-ebooks.html" class="inline-flex items-center gap-2 text-sm opacity-70 hover:opacity-100 hover:text-[var(--accent)] transition">
+      ← Back to all ebooks
+    </a>
+  </div>
+</section>
+
+<!-- WHY THIS EXISTS -->
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
     
-    <!-- Ebook Header -->
-    <div class="mb-12 max-w-2xl">
-      <h1 class="text-3xl md:text-4xl font-bold mb-4">Finishing Tracks Without Overthinking</h1>
-      <div class="flex flex-wrap gap-3 text-sm opacity-60 mb-6">
-        <span>Ebook edition</span>
-        <span>·</span>
-        <span>PDF format</span>
-        <span>·</span>
-        <span>18 pages</span>
-        <span>·</span>
-        <span>45–60 min read</span>
-      </div>
-      <p class="text-base opacity-70 leading-relaxed">
-        A practical guide for producers who want to stop overthinking and start finishing their music. Written clearly, without jargon.
+    <h2 class="text-2xl md:text-3xl font-bold mb-8">Why this exists</h2>
+    
+    <div class="space-y-6 text-base leading-relaxed" style="color: var(--text-muted);">
+      <p>
+        Most producers understand their tools but struggle with knowing when something is finished. They tweak endlessly, not because they lack skill, but because they lack a decision-making framework.
       </p>
-    </div>
-    
-    <!-- Why This Exists -->
-    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
-      <h2 class="text-2xl font-semibold mb-6">Why this exists</h2>
-      <div class="space-y-4 text-base opacity-70 leading-relaxed max-w-2xl">
-        <p>Most producers don't struggle with technical skills. They struggle with knowing when to stop, what to prioritize, and how to trust their decisions.</p>
-        <p>This ebook focuses on the decision-making process that helps you finish tracks without second-guessing every choice.</p>
-      </div>
-    </div>
-    
-    <!-- What's Inside -->
-    <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
-      <h2 class="text-2xl font-semibold mb-6">What's inside</h2>
-      
-      <div class="space-y-4 text-base opacity-70 max-w-2xl">
-        <div>
-          <h3 class="font-semibold mb-1" style="color: var(--text-main);">The finishing mindset</h3>
-          <p class="opacity-70">Understanding what prevents you from finishing tracks</p>
-        </div>
-        
-        <div>
-          <h3 class="font-semibold mb-1" style="color: var(--text-main);">Simplifying your workflow</h3>
-          <p class="opacity-70">Identifying what matters and removing what doesn't</p>
-        </div>
-        
-        <div>
-          <h3 class="font-semibold mb-1" style="color: var(--text-main);">Making final decisions</h3>
-          <p class="opacity-70">Practical techniques for committing to creative choices</p>
-        </div>
-        
-        <div>
-          <h3 class="font-semibold mb-1" style="color: var(--text-main);">Publishing with confidence</h3>
-          <p class="opacity-70">Knowing when your track is ready</p>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Purchase Options -->
-    <div class="mb-12">
-      <h2 class="text-2xl font-semibold mb-6">Get access</h2>
-      
-      <div class="space-y-6">
-        <!-- Ebook Option -->
-        <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
-          <div class="flex items-start justify-between gap-4 mb-3">
-            <div>
-              <h3 class="text-lg font-semibold mb-1">Ebook</h3>
-              <p class="text-sm opacity-60">PDF · 18 pages · Instant download</p>
-            </div>
-            <div class="text-2xl font-bold">£19</div>
-          </div>
-          <a href="ebook-order-summary.html" 
-             class="inline-block px-6 py-3 rounded-lg text-base font-medium transition mt-4"
-             style="background: var(--accent); color: white;"
-             onmouseover="this.style.opacity='0.9'" 
-             onmouseout="this.style.opacity='1'">
-            Continue to order summary
-          </a>
-        </div>
-        
-        <!-- Video Course Option -->
-        <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
-          <div class="flex items-start justify-between gap-4 mb-3">
-            <div>
-              <h3 class="text-lg font-semibold mb-1">Video course</h3>
-              <p class="text-sm opacity-60">Includes ebook · ~75 minutes · Lifetime access</p>
-            </div>
-            <div class="text-2xl font-bold">£35</div>
-          </div>
-          <a href="course-finishing-tracks.html" 
-             class="text-sm underline-offset-4 hover:underline mt-2 inline-block">
-            View course details
-          </a>
-        </div>
-        
-        <!-- Bundle Option (Coming Soon) -->
-        <div class="p-6 rounded-xl border opacity-50" style="background: var(--bg-soft); border-color: var(--border-soft);">
-          <div class="flex items-start justify-between gap-4 mb-3">
-            <div>
-              <h3 class="text-lg font-semibold mb-1">Bundle</h3>
-              <p class="text-sm opacity-60">All learning materials · Lifetime access</p>
-            </div>
-            <div>
-              <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                    style="border-color: var(--border-soft);">
-                Available soon
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Back Link -->
-    <div class="text-center">
-      <a href="index.html#learn" 
-         class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline">
-        ← Back to Learn
-      </a>
+      <p>
+        This ebook isn't about plugins or production techniques. It's about the mental process of finishing—how to identify what matters, make clear choices, and move forward without second-guessing.
+      </p>
+      <p>
+        It's a reference you return to when you're stuck, not a course you take once and forget.
+      </p>
     </div>
     
   </div>
 </section>
+
+<!-- WHAT'S INSIDE -->
+<section class="py-20 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-2xl mx-auto">
+    
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">What's inside</h2>
+    
+    <div class="space-y-5">
+      <div class="flex gap-4 items-start">
+        <span class="text-sm mt-1" style="color: var(--text-muted);">—</span>
+        <p class="text-base leading-relaxed" style="color: var(--text-muted);">How to identify what actually matters in your mix and let go of the rest</p>
+      </div>
+      <div class="flex gap-4 items-start">
+        <span class="text-sm mt-1" style="color: var(--text-muted);">—</span>
+        <p class="text-base leading-relaxed" style="color: var(--text-muted);">Decision-making frameworks for when you're stuck between options</p>
+      </div>
+      <div class="flex gap-4 items-start">
+        <span class="text-sm mt-1" style="color: var(--text-muted);">—</span>
+        <p class="text-base leading-relaxed" style="color: var(--text-muted);">Building a personal finishing process that matches your workflow</p>
+      </div>
+      <div class="flex gap-4 items-start">
+        <span class="text-sm mt-1" style="color: var(--text-muted);">—</span>
+        <p class="text-base leading-relaxed" style="color: var(--text-muted);">Recognizing when a track is ready and trusting that decision</p>
+      </div>
+      <div class="flex gap-4 items-start">
+        <span class="text-sm mt-1" style="color: var(--text-muted);">—</span>
+        <p class="text-base leading-relaxed" style="color: var(--text-muted);">Quick-reference checklists for arrangement, mixing, and final review</p>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- HOW TO USE IT -->
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
+    
+    <h2 class="text-2xl md:text-3xl font-bold mb-8">How to use it</h2>
+    
+    <div class="space-y-6 text-base leading-relaxed" style="color: var(--text-muted);">
+      <p>
+        This isn't a book you read once and shelve. It's designed to be referenced repeatedly—during sessions when you're stuck, before starting a new project, or when you're questioning if something is ready.
+      </p>
+      <p>
+        Read through it once to understand the frameworks. Then keep it nearby as a decision-making tool. The chapter structure matches the typical stages of finishing a track, so you can jump to the section you need.
+      </p>
+      <p>
+        The reference checklists at the end are meant to be printed or kept open on a second monitor—practical tools, not theory.
+      </p>
+    </div>
+    
+  </div>
+</section>
+
+<!-- CHAPTER OUTLINE -->
+<section class="py-20 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-2xl mx-auto">
+    
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">Chapter outline</h2>
+    
+    <div class="space-y-8">
+      
+      <div>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-xs tracking-widest" style="color: var(--text-muted);">01</span>
+          <h3 class="text-lg font-semibold">Why You're Stuck</h3>
+        </div>
+        <p class="text-sm pl-8 leading-relaxed" style="color: var(--text-muted);">The mental patterns that lead to endless tweaking</p>
+      </div>
+      
+      <div>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-xs tracking-widest" style="color: var(--text-muted);">02</span>
+          <h3 class="text-lg font-semibold">What Actually Matters</h3>
+        </div>
+        <p class="text-sm pl-8 leading-relaxed" style="color: var(--text-muted);">Identifying priorities and letting go of the rest</p>
+      </div>
+      
+      <div>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-xs tracking-widest" style="color: var(--text-muted);">03</span>
+          <h3 class="text-lg font-semibold">Building Your Process</h3>
+        </div>
+        <p class="text-sm pl-8 leading-relaxed" style="color: var(--text-muted);">A repeatable framework for finishing tracks</p>
+      </div>
+      
+      <div>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-xs tracking-widest" style="color: var(--text-muted);">04</span>
+          <h3 class="text-lg font-semibold">Making Decisions Quickly</h3>
+        </div>
+        <p class="text-sm pl-8 leading-relaxed" style="color: var(--text-muted);">Tools for evaluating your track without second-guessing</p>
+      </div>
+      
+      <div>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-xs tracking-widest" style="color: var(--text-muted);">05</span>
+          <h3 class="text-lg font-semibold">Knowing When to Stop</h3>
+        </div>
+        <p class="text-sm pl-8 leading-relaxed" style="color: var(--text-muted);">Recognizing readiness and trusting the decision</p>
+      </div>
+      
+      <div class="pt-4 border-t" style="border-color: var(--border-soft);">
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-xs tracking-widest" style="color: var(--text-muted);">+</span>
+          <h3 class="text-lg font-semibold">Reference Checklists</h3>
+        </div>
+        <p class="text-sm pl-8 leading-relaxed" style="color: var(--text-muted);">Quick guides for arrangement, mixing, and final review</p>
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!-- WHO THIS IS FOR / NOT FOR -->
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
+    
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">Who this is for</h2>
+    
+    <div class="space-y-10">
+      
+      <div>
+        <h3 class="text-base font-semibold mb-4" style="color: var(--text-muted);">This is for you if:</h3>
+        <div class="space-y-3 text-sm" style="color: var(--text-muted);">
+          <p>• You have unfinished tracks you keep revisiting but never releasing</p>
+          <p>• You understand your tools but struggle with knowing when to stop</p>
+          <p>• You spend more time second-guessing than actually producing</p>
+          <p>• You want a decision-making framework, not another tutorial</p>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-base font-semibold mb-4" style="color: var(--text-muted);">This is not for you if:</h3>
+        <div class="space-y-3 text-sm" style="color: var(--text-muted);">
+          <p>• You're looking for technical plugin walkthroughs</p>
+          <p>• You want genre-specific mixing templates or presets</p>
+          <p>• You need step-by-step DAW instructions</p>
+          <p>• You're completely new to music production</p>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!-- FORMAT & ACCESS -->
+<section class="py-20 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-2xl mx-auto">
+    
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">Format & access</h2>
+    
+    <div class="space-y-6">
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="text-sm font-semibold mb-3 tracking-wider" style="color: var(--text-muted);">WHAT YOU GET</h3>
+          <div class="space-y-2 text-sm" style="color: var(--text-muted);">
+            <p>18-page PDF ebook</p>
+            <p>45-minute read</p>
+            <p>Desktop & mobile optimized</p>
+            <p>Reference checklists included</p>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-sm font-semibold mb-3 tracking-wider" style="color: var(--text-muted);">HOW IT WORKS</h3>
+          <div class="space-y-2 text-sm" style="color: var(--text-muted);">
+            <p>Instant download after purchase</p>
+            <p>No account or login required</p>
+            <p>Keep forever, read anytime</p>
+            <p>Free updates if expanded</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pt-6 border-t" style="border-color: var(--border-soft);">
+        <p class="text-xs" style="color: var(--text-muted);">
+          Level: Assumes basic DAW knowledge and some experience with mixing or production.
+        </p>
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="py-24 px-6" style="background: var(--bg-main);">
+  <div class="max-w-2xl mx-auto">
+    
+    <div class="text-center py-16 px-8 rounded" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      
+      <p class="text-6xl font-bold mb-4">£15</p>
+      
+      <p class="text-sm mb-10" style="color: var(--text-muted);">
+        One-time purchase. Instant download. No subscription.
+      </p>
+      
+      <a href="https://buy.stripe.com/test_14A5kD9j92rva9M7LS8g000" 
+         class="inline-block px-10 py-4 rounded text-base font-medium transition hover:opacity-80 mb-8"
+         style="background: var(--accent); color: white;">
+        Purchase Ebook
+      </a>
+      
+      <div class="text-xs space-y-1" style="color: var(--text-muted);">
+        <p>PDF delivered via email</p>
+        <p>No account required</p>
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!-- RELATED COURSE LINK -->
+<section class="py-16 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-2xl mx-auto text-center">
+    
+    <p class="text-sm mb-3" style="color: var(--text-muted);">
+      Also available as an interactive course
+    </p>
+    
+    <a href="course-finishing-tracks.html" 
+       class="inline-flex items-center gap-2 text-sm transition hover:opacity-70"
+       style="color: var(--text-main);">
+      <span>View course version</span>
+      <span>→</span>
+    </a>
+    
+  </div>
+</section>
+
+<footer class="py-12 text-center border-t" style="border-color: var(--border-soft); color: var(--text-muted);">
+  <p class="text-xs">© 2025 Studio XV</p>
+</footer>
+
+<!-- Mobile Menu JavaScript -->
+<script>
+  // Mobile Menu Toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileLinks = mobileMenu.querySelectorAll('a');
+
+  menuToggle.addEventListener('click', () => {
+    mobileMenu.style.transform = 'translateX(0)';
+  });
+
+  menuClose.addEventListener('click', () => {
+    mobileMenu.style.transform = 'translateX(100%)';
+  });
+
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.style.transform = 'translateX(100%)';
+    });
+  });
+</script>
 
 </body>
 </html>

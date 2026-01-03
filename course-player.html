@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  ================================================================
+  
+  HOW TO CREATE A NEW COURSE:
+  
+  1. Duplicate this file and rename it:
+     Example: course-player-finishing-tracks.html
+              course-player-mixing-basics.html
+              course-player-arrangement.html
+  
+  2. Update the <title> tag below (line 11)
+  
+  3. Update the courseConfig object (around line 120):
+     - title: Your course name
+     - backLink: Link to your course landing page
+     - backLinkText: Text for back button
+     - totalDuration: Total course length
+     - moduleCount: Number of modules
+  
+  4. Replace the lessons array (starting around line 130):
+     - Each lesson needs: id, module, moduleTitle, lesson, title,
+       duration, description, inThisLesson, keyTakeaways, resources
+  
+  5. Update the sidebar HTML (starting around line 650):
+     - Module titles and lesson titles must match your lessons array
+     - IMPORTANT: Keep this exact structure for each lesson:
+       <a href="#" class="lesson-item ...">
+         <div class="flex items-center flex-1">
+           <span class="lesson-check">✓</span>
+           <div class="flex-1">
+             <p class="text-sm font-medium">LESSON TITLE</p>
+             <p class="text-xs" ...>DURATION</p>
+           </div>
+         </div>
+       </a>
+     - The checkmark span is hidden by default and shows when completed
+  
+  6. Update completion modal "What you've learned" section (line 850)
+  
+  That's it! All navigation, progress tracking, checkmarks, and 
+  interactions will work automatically.
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Finishing Tracks Without Overthinking</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       Change these values for each new course
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Finishing Tracks Without Overthinking',
+      backLink: 'course-finishing-tracks.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~75 minutes',
+      moduleCount: 4
+    };
+    
+    /* ============================================
+       LESSON DATA
+       Replace this array with your course content
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Why tracks stall
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Why tracks stall',
+        lesson: 1,
+        title: 'Introduction',
+        duration: '5:32',
+        description: 'Welcome to the course. Understanding the framework and how to use it effectively.',
+        inThisLesson: [
+          'What this course is (and isn\'t)',
+          'The finishing framework overview',
+          'How to work through the modules',
+          'Setting expectations for progress'
+        ],
+        keyTakeaways: [
+          'Finishing isn\'t about having better tools or more time—it\'s about making better decisions with what you already have.',
+          'This course focuses on decision-making frameworks, not technical skills. You already know how to use your DAW; what you need is clarity on what to do next.',
+          'Each module builds on the last. Watch them in order, and revisit lessons when you\'re stuck on a specific project.'
+        ],
+        resources: [
+          { name: 'Course overview PDF', type: 'PDF' },
+          { name: 'Module checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Why tracks stall',
+        lesson: 2,
+        title: 'Decision fatigue explained',
+        duration: '8:14',
+        description: 'Understanding why unlimited options create paralysis and how to structure decisions that lead to finished tracks.',
+        inThisLesson: [
+          'Why every option creates a new decision point',
+          'How decision fatigue shows up in your sessions',
+          'The 3-move rule for reducing overwhelm',
+          'When to limit options vs. when to explore'
+        ],
+        keyTakeaways: [
+          'Every plugin you audition, every preset you cycle through, and every tweak you consider creates a new decision point. The problem isn\'t the tools—it\'s the unlimited options without a framework for choosing.',
+          'Decision fatigue happens when you spend more time deciding what to do than actually doing it. The solution isn\'t faster decisions—it\'s fewer decisions that matter more.',
+          'The 3-move rule: Allow yourself three intentional changes per session. If none of those moves improve the track, the problem isn\'t what you\'re changing—it\'s what you\'re listening for.'
+        ],
+        resources: [
+          { name: '3-Move Rule worksheet', type: 'PDF' },
+          { name: 'Decision fatigue checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Why tracks stall',
+        lesson: 3,
+        title: 'Perfectionism vs. progress',
+        duration: '6:48',
+        description: 'How perfectionism disguises itself as quality control and what to do about it.',
+        inThisLesson: [
+          'The difference between refinement and avoidance',
+          'Recognizing perfectionism patterns in your workflow',
+          'Setting "good enough" standards that actually work',
+          'How to know when you\'re making it worse'
+        ],
+        keyTakeaways: [
+          'Perfectionism feels like you\'re protecting quality, but it\'s actually protecting you from finishing. The track doesn\'t need to be perfect—it needs to be done.',
+          'If you\'ve listened to the same 8-bar loop more than 10 times without making a change, you\'re not refining—you\'re avoiding the next decision.',
+          '"Good enough" isn\'t about lowering standards. It\'s about defining what success looks like before you start tweaking.'
+        ],
+        resources: [
+          { name: 'Perfectionism patterns checklist', type: 'PDF' },
+          { name: 'Good enough criteria worksheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Why tracks stall',
+        lesson: 4,
+        title: 'False problems',
+        duration: '7:22',
+        description: 'Why you keep fixing things that don\'t need fixing and missing what actually matters.',
+        inThisLesson: [
+          'What false problems are and why they feel so urgent',
+          'The distraction loop: fixing symptoms, not causes',
+          'How to identify the actual problem in 30 seconds',
+          'Stopping yourself before you waste an hour'
+        ],
+        keyTakeaways: [
+          'False problems are things you fix because you don\'t know what else to do. They feel productive but don\'t move the track forward.',
+          'If you can\'t explain what you\'re fixing in one sentence, you\'re probably fixing a false problem. Real problems are clear.',
+          'Most tracks have one or two real problems. Everything else is noise. Find those first.'
+        ],
+        resources: [
+          { name: 'False problem identifier', type: 'PDF' },
+          { name: '30-second problem test', type: 'PDF' }
+        ]
+      },
+      // Module 2: Structural clarity
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Structural clarity',
+        lesson: 1,
+        title: 'What your track is saying',
+        duration: '9:15',
+        description: 'Learning to hear what your track is actually communicating vs. what you want it to say.',
+        inThisLesson: [
+          'The difference between intention and execution',
+          'Listening objectively to your own work',
+          'Identifying the track\'s strongest element',
+          'When your idea doesn\'t match your arrangement'
+        ],
+        keyTakeaways: [
+          'Your track is always saying something. The question is whether it\'s saying what you want it to say, or something else entirely.',
+          'Most tracks fail because the arrangement contradicts the idea. A chill track with aggressive drums. A high-energy track with no momentum.',
+          'Find the strongest element in your track—the one thing that works—and build everything else around it. Don\'t try to save everything.'
+        ],
+        resources: [
+          { name: 'Track intention worksheet', type: 'PDF' },
+          { name: 'Strongest element identifier', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Structural clarity',
+        lesson: 2,
+        title: 'Arrangement before detail',
+        duration: '10:43',
+        description: 'Why fixing the arrangement solves 80% of problems that feel like mix issues.',
+        inThisLesson: [
+          'Structure vs. sound: what to fix first',
+          'The arrangement hierarchy',
+          'Common arrangement problems that sound like mix problems',
+          'How to test if arrangement is the real issue'
+        ],
+        keyTakeaways: [
+          'If your track feels "off" but you can\'t figure out why, it\'s usually arrangement, not mix. EQ and compression can\'t fix a boring structure.',
+          'Arrangement hierarchy: energy flow → section contrast → element placement → sound design. Fix problems in that order.',
+          'Test: If you can\'t explain what each section is supposed to do, your arrangement isn\'t clear. Mixing won\'t help.'
+        ],
+        resources: [
+          { name: 'Arrangement hierarchy guide', type: 'PDF' },
+          { name: 'Structure vs. sound checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Structural clarity',
+        lesson: 3,
+        title: 'Energy mapping',
+        duration: '8:06',
+        description: 'How to visualize and control the energy arc of your entire track.',
+        inThisLesson: [
+          'What energy mapping is and why it matters',
+          'Drawing your track\'s energy curve',
+          'Identifying energy dead zones',
+          'Fixing pacing without changing sounds'
+        ],
+        keyTakeaways: [
+          'Energy mapping is drawing a simple curve showing how intense your track feels from start to finish. If the curve is flat, your track is boring.',
+          'Most unfinished tracks have great individual sections but no energy arc across the whole track. Listeners need contrast and momentum.',
+          'Fix energy before you fix anything else. A track with good pacing can survive weak sounds. A track with flat energy can\'t.'
+        ],
+        resources: [
+          { name: 'Energy mapping template', type: 'PDF' },
+          { name: 'Pacing reference examples', type: 'PDF' }
+        ]
+      },
+      // Module 3: What to fix first
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'What to fix first',
+        lesson: 1,
+        title: 'The one move that matters',
+        duration: '11:20',
+        description: 'How to identify the single most important change your track needs right now.',
+        inThisLesson: [
+          'Why most producers fix 10 small things instead of 1 big thing',
+          'The "if I could only change one thing" test',
+          'How to find the bottleneck in your track',
+          'Trusting your first instinct'
+        ],
+        keyTakeaways: [
+          'Most sessions fail because you try to fix everything at once. The antidote: identify the one move that would make the biggest difference, do that, then stop.',
+          'Ask yourself: "If I could only change one thing in this track, what would it be?" That\'s your move. Everything else is secondary.',
+          'The bottleneck is the weakest link holding everything else back. Fix that first. The rest will either solve itself or become obvious.'
+        ],
+        resources: [
+          { name: 'One move decision tree', type: 'PDF' },
+          { name: 'Bottleneck identifier', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'What to fix first',
+        lesson: 2,
+        title: 'Prioritization framework',
+        duration: '9:38',
+        description: 'A simple system for deciding what to work on when everything feels important.',
+        inThisLesson: [
+          'The impact vs. effort matrix',
+          'High-impact changes that take 5 minutes',
+          'Why you avoid the obvious fixes',
+          'Saying no to "nice to have" changes'
+        ],
+        keyTakeaways: [
+          'Prioritization is simple: do high-impact, low-effort changes first. The problem is you don\'t want to believe it\'s that simple.',
+          'Most tracks improve more from moving one element than from adding five new ones. Subtraction beats addition.',
+          'If a change won\'t make the track noticeably better in 5 minutes, it\'s not a priority. Save it for after the track is finished.'
+        ],
+        resources: [
+          { name: 'Impact vs. effort matrix', type: 'PDF' },
+          { name: 'Prioritization worksheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'What to fix first',
+        lesson: 3,
+        title: 'Walkthrough: Real project',
+        duration: '12:45',
+        description: 'Watch me apply the entire framework to an unfinished track in real-time.',
+        inThisLesson: [
+          'Initial listen: what\'s the track saying?',
+          'Finding the one move that matters',
+          'Prioritizing fixes without getting distracted',
+          'Knowing when to stop'
+        ],
+        keyTakeaways: [
+          'This is what the framework looks like in practice: no magic, no complex moves, just clear decisions based on what the track actually needs.',
+          'Notice how few changes actually happened. Most of the work was listening and deciding, not tweaking.',
+          'The track improved not because every problem was fixed, but because the right problem was fixed first.'
+        ],
+        resources: [
+          { name: 'Session notes from walkthrough', type: 'PDF' },
+          { name: 'Before/after reference audio', type: 'ZIP' }
+        ]
+      },
+      // Module 4: Knowing when to stop
+      {
+        id: 'm4-l1',
+        module: 4,
+        moduleTitle: 'Knowing when to stop',
+        lesson: 1,
+        title: 'Clear finishing points',
+        duration: '8:50',
+        description: 'How to define "done" before you start so you actually know when you\'re finished.',
+        inThisLesson: [
+          'Why "I\'ll know when it\'s done" doesn\'t work',
+          'Setting finishing criteria before you start',
+          'The three types of "done"',
+          'How to stop before you ruin it'
+        ],
+        keyTakeaways: [
+          'If you don\'t define "done" before you start, you\'ll never know when you\'re finished. You\'ll just keep working until you hate it.',
+          'Three types of done: good enough to release, good enough to show someone, good enough to move on. Pick one before your session.',
+          'Most tracks get worse after they\'re "done" because you don\'t trust yourself to stop. Define your finish line, then respect it.'
+        ],
+        resources: [
+          { name: 'Finishing criteria template', type: 'PDF' },
+          { name: 'Three types of done worksheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l2',
+        module: 4,
+        moduleTitle: 'Knowing when to stop',
+        lesson: 2,
+        title: 'Confident exports',
+        duration: '7:15',
+        description: 'Exporting without second-guessing yourself or opening the project "one more time."',
+        inThisLesson: [
+          'The export anxiety loop and how to break it',
+          'Pre-export checklist that actually helps',
+          'How to listen to your export without spiraling',
+          'When to reopen vs. when to move on'
+        ],
+        keyTakeaways: [
+          'Export anxiety is real. You\'re not crazy for opening the project 3 times after you export. But you can stop doing it.',
+          'Use a pre-export checklist so you know everything is handled. Then trust it. The checklist is smarter than your anxiety.',
+          'Listen to your export once, on your worst speakers, within 10 minutes of finishing. If it works there, it works. Move on.'
+        ],
+        resources: [
+          { name: 'Pre-export checklist', type: 'PDF' },
+          { name: 'Export confidence worksheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l3',
+        module: 4,
+        moduleTitle: 'Knowing when to stop',
+        lesson: 3,
+        title: 'Final walkthrough',
+        duration: '10:28',
+        description: 'Bringing it all together: the complete framework in action from start to finish.',
+        inThisLesson: [
+          'Recap: the entire finishing framework',
+          'How the modules connect',
+          'Using the framework on your next track',
+          'What to do when you get stuck'
+        ],
+        keyTakeaways: [
+          'The framework is simple: listen to what the track is saying, fix structure before detail, prioritize the one move that matters, then stop.',
+          'You don\'t need to master every lesson. You need to internalize the core idea: finishing is about making better decisions, not doing more work.',
+          'Start with one track. Apply the framework. Finish it. Then do it again. The framework gets faster every time you use it.'
+        ],
+        resources: [
+          { name: 'Complete framework reference', type: 'PDF' },
+          { name: 'Next steps guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 1; // Start with lesson 2 (Decision fatigue)
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course-finishing-tracks.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Finishing Tracks Without Overthinking</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">4 modules · ~75 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Why tracks stall</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item completed flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Introduction</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:32</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Decision fatigue explained</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:14</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Perfectionism vs. progress</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:48</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">False problems</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:22</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Structural clarity</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What your track is saying</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Arrangement before detail</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:43</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Energy mapping</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:06</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">What to fix first</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The one move that matters</p>
+              <p class="text-xs" style="color: var(--text-muted);">11:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Prioritization framework</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:38</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Walkthrough: Real project</p>
+              <p class="text-xs" style="color: var(--text-muted);">12:45</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 4 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 4</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Knowing when to stop</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Clear finishing points</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Confident exports</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final walkthrough</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:28</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 2</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Decision fatigue explained</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding why unlimited options create paralysis and how to structure decisions that lead to finished tracks.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why every option creates a new decision point</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How decision fatigue shows up in your sessions</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The 3-move rule for reducing overwhelm</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>When to limit options vs. when to explore</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Every plugin you audition, every preset you cycle through, and every tweak you consider creates a new decision point. The problem isn't the tools—it's the unlimited options without a framework for choosing.
+          </p>
+          <p>
+            Decision fatigue happens when you spend more time deciding what to do than actually doing it. The solution isn't faster decisions—it's fewer decisions that matter more.
+          </p>
+          <p>
+            The 3-move rule: Allow yourself three intentional changes per session. If none of those moves improve the track, the problem isn't what you're changing—it's what you're listening for.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: 3-Move Rule worksheet (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Decision fatigue checklist (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Finishing Tracks Without Overthinking</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        13 lessons · ~75 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to identify and break decision fatigue loops</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Structural clarity before detail work</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Prioritization frameworks for real projects</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Knowing exactly when to stop and export</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="tools.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Download all course tools
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+        <a href="index.html#learn" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — From Loop to Arrangement</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'From Loop to Arrangement',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~75 minutes',
+      moduleCount: 4
+    };
+    
+    const lessons = [
+      // Module 1: Breaking the Loop
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Breaking the Loop',
+        lesson: 1,
+        title: 'Why 8 bars feel complete',
+        duration: '6:15',
+        description: 'Understanding why loops sound finished even though they\'re not, and what to do about it.',
+        inThisLesson: [
+          'The psychology of looping music',
+          'Why your brain hears resolution in 8 bars',
+          'Breaking the loop mindset from day one',
+          'Setting arrangement intentions early'
+        ],
+        keyTakeaways: [
+          'Loops feel complete because they repeat enough times for your brain to memorize them. This creates false confidence that the track is "done."',
+          'The best arrangements start with intention, not accidents. Before you build your loop, decide where the track needs to go.',
+          'If you build in loop mode, you\'ll stay in loop mode. Start thinking about the full arrangement from bar one.'
+        ],
+        resources: [
+          { name: 'Arrangement intention worksheet', type: 'PDF' },
+          { name: 'Loop to arrangement checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Breaking the Loop',
+        lesson: 2,
+        title: 'First extensions',
+        duration: '7:30',
+        description: 'Simple techniques for extending your loop to 16 bars without losing momentum.',
+        inThisLesson: [
+          'The 8-bar extension formula',
+          'Adding variation without changing everything',
+          'Automation for movement',
+          'Knowing which elements to change first'
+        ],
+        keyTakeaways: [
+          'To extend 8 bars to 16, keep 80% the same and change 20%. This maintains familiarity while adding progression.',
+          'Automation is your best friend for early extensions. Filter sweeps, volume rides, and effect sends create motion without rewriting parts.',
+          'Start with drums or bass. If those stay strong through 16 bars, everything else will follow.'
+        ],
+        resources: [
+          { name: '8-to-16 bar formula guide', type: 'PDF' },
+          { name: 'Automation ideas reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Breaking the Loop',
+        lesson: 3,
+        title: 'Creating contrast',
+        duration: '8:45',
+        description: 'How to make sections feel different without starting from scratch.',
+        inThisLesson: [
+          'Contrast through subtraction',
+          'Adding one new element per section',
+          'Frequency space shifts',
+          'Rhythmic variation techniques'
+        ],
+        keyTakeaways: [
+          'The easiest way to create contrast is to remove elements, not add them. A verse with fewer layers will make the chorus feel bigger.',
+          'One new element per section is often enough. Don\'t overthink it—a new synth line or percussion layer can define an entire section.',
+          'Contrast doesn\'t always mean different sounds. Changing rhythm or register can be just as effective.'
+        ],
+        resources: [
+          { name: 'Contrast checklist', type: 'PDF' },
+          { name: 'Subtraction before addition guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Building Structure
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Building Structure',
+        lesson: 1,
+        title: 'Verse-chorus basics',
+        duration: '9:00',
+        description: 'Understanding the fundamental building blocks of song structure.',
+        inThisLesson: [
+          'What makes a verse work',
+          'What makes a chorus memorable',
+          'Energy differences between sections',
+          'How many times to repeat each section'
+        ],
+        keyTakeaways: [
+          'A verse sets up the story or mood. It should be interesting but not overwhelming—save your biggest ideas for the chorus.',
+          'A chorus is the payoff. It should have more energy, more layers, or more memorable melodic content than the verse.',
+          'Most tracks need 2 verses and 2 choruses minimum. Less than that and listeners don\'t have time to connect with the track.'
+        ],
+        resources: [
+          { name: 'Verse-chorus structure template', type: 'PDF' },
+          { name: 'Section energy comparison chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Building Structure',
+        lesson: 2,
+        title: 'Intro design',
+        duration: '6:20',
+        description: 'Creating intros that hook listeners without giving everything away.',
+        inThisLesson: [
+          'How long should an intro be',
+          'Building anticipation through withholding',
+          'The first sound listeners hear',
+          'When to drop the beat'
+        ],
+        keyTakeaways: [
+          'Intros should be 8-16 bars. Shorter and it\'s too abrupt, longer and listeners lose interest before the track starts.',
+          'Don\'t show your best cards in the intro. Reveal one or two key elements, save the rest for later.',
+          'The first sound matters. Choose something that represents the mood of the track, not just what sounds cool.'
+        ],
+        resources: [
+          { name: 'Intro design framework', type: 'PDF' },
+          { name: 'Intro reference examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Building Structure',
+        lesson: 3,
+        title: 'Outro without awkwardness',
+        duration: '5:50',
+        description: 'Ending your tracks naturally instead of just fading or stopping abruptly.',
+        inThisLesson: [
+          'Natural vs forced endings',
+          'The mirror outro technique',
+          'Fade outs that don\'t feel lazy',
+          'Knowing when you\'re done'
+        ],
+        keyTakeaways: [
+          'A good outro feels like a natural conclusion, not a sudden stop. It should resolve the energy you\'ve built up.',
+          'Mirror outros (similar to your intro) work because they create symmetry. Start and end with related ideas.',
+          'Fade outs are fine if the track calls for it. Don\'t force an ending just to avoid fading.'
+        ],
+        resources: [
+          { name: 'Outro techniques guide', type: 'PDF' },
+          { name: 'Ending options checklist', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Transitions & Flow
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Transitions & Flow',
+        lesson: 1,
+        title: 'Smooth transitions',
+        duration: '7:40',
+        description: 'Making section changes feel intentional instead of jarring.',
+        inThisLesson: [
+          'Why transitions feel awkward',
+          'The 4-bar transition setup',
+          'Risers, fills, and impacts',
+          'Subtle vs obvious transitions'
+        ],
+        keyTakeaways: [
+          'Awkward transitions happen because you don\'t prepare the listener. Give them 2-4 bars of warning that something is about to change.',
+          'Risers and fills signal change. Use them intentionally—not on every transition, but where the energy shift is biggest.',
+          'Not every transition needs a big moment. Sometimes removing an element is all you need to mark a section change.'
+        ],
+        resources: [
+          { name: 'Transition techniques library', type: 'PDF' },
+          { name: 'Fill and riser examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Transitions & Flow',
+        lesson: 2,
+        title: 'Maintaining momentum',
+        duration: '8:10',
+        description: 'Keeping energy consistent across the full arrangement.',
+        inThisLesson: [
+          'Identifying energy dips',
+          'Forward motion through rhythm',
+          'Harmonic progression that drives',
+          'Avoiding the sagging middle'
+        ],
+        keyTakeaways: [
+          'Energy dips happen in the middle of tracks when you run out of ideas. Plan your middle sections with as much care as your intro and chorus.',
+          'Momentum comes from rhythm more than melody. Keep some rhythmic element consistent across sections to maintain drive.',
+          'If your track feels like it\'s dragging, the problem is usually the middle 30 seconds. Fix that first.'
+        ],
+        resources: [
+          { name: 'Momentum maintenance checklist', type: 'PDF' },
+          { name: 'Energy dip solutions', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Transitions & Flow',
+        lesson: 3,
+        title: 'Breakdowns that work',
+        duration: '6:35',
+        description: 'Using breakdowns to create tension and release without killing momentum.',
+        inThisLesson: [
+          'When to use a breakdown',
+          'What to keep vs what to remove',
+          'Building back from minimal',
+          'Avoiding the momentum killer'
+        ],
+        keyTakeaways: [
+          'Breakdowns work when you need a reset before the biggest moment. Use them strategically, not randomly.',
+          'Keep at least one rhythmic or harmonic element in your breakdown. Total silence kills momentum.',
+          'The build back from a breakdown should be faster than your intro. You\'ve already established everything, now deliver.'
+        ],
+        resources: [
+          { name: 'Breakdown structure guide', type: 'PDF' },
+          { name: 'Build vs breakdown balance', type: 'PDF' }
+        ]
+      },
+      
+      // Module 4: Complete Arrangement
+      {
+        id: 'm4-l1',
+        module: 4,
+        moduleTitle: 'Complete Arrangement',
+        lesson: 1,
+        title: 'Full arrangement walkthrough',
+        duration: '11:30',
+        description: 'Watch a complete loop-to-arrangement process from start to finish.',
+        inThisLesson: [
+          'Starting with the loop',
+          'Planning the full structure',
+          'Building sections in order',
+          'Final adjustments and checks'
+        ],
+        keyTakeaways: [
+          'Arrangements are built in stages, not all at once. Get the structure down first, refine later.',
+          'Work chronologically through your track. Jumping around creates inconsistency.',
+          'Once the arrangement is done, resist the urge to add more. You\'re likely finished.'
+        ],
+        resources: [
+          { name: 'Walkthrough session notes', type: 'PDF' },
+          { name: 'Before/after project files', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm4-l2',
+        module: 4,
+        moduleTitle: 'Complete Arrangement',
+        lesson: 2,
+        title: 'Common arrangement mistakes',
+        duration: '7:15',
+        description: 'Recognizing and fixing the patterns that derail arrangements.',
+        inThisLesson: [
+          'Too many ideas competing for attention',
+          'Sections that are too long',
+          'Lack of dynamic range',
+          'Fixing without starting over'
+        ],
+        keyTakeaways: [
+          'Most failed arrangements have too many ideas, not too few. Cut aggressively.',
+          'If a section feels too long, it is. Shorten everything by 10-20% and listen again.',
+          'Dynamic range happens through arrangement, not just mixing. Quiet sections make loud sections feel louder.'
+        ],
+        resources: [
+          { name: 'Arrangement mistakes checklist', type: 'PDF' },
+          { name: 'Quick fix solutions guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l3',
+        module: 4,
+        moduleTitle: 'Complete Arrangement',
+        lesson: 3,
+        title: 'Final thoughts',
+        duration: '5:20',
+        description: 'Wrapping up and applying what you\'ve learned to your next track.',
+        inThisLesson: [
+          'Recap: loop to arrangement process',
+          'Your first full arrangement project',
+          'When to revisit these lessons',
+          'Next steps in your workflow'
+        ],
+        keyTakeaways: [
+          'Arrangement is a skill you build through repetition. Do this process 10 times and it becomes second nature.',
+          'Don\'t expect perfection on your first attempt. The goal is finishing, not flawlessness.',
+          'Come back to these lessons whenever you\'re stuck. The framework works every time.'
+        ],
+        resources: [
+          { name: 'Complete framework summary', type: 'PDF' },
+          { name: 'Next track checklist', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">From Loop to Arrangement</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">4 modules · ~75 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Breaking the Loop</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Why 8 bars feel complete</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">First extensions</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Creating contrast</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:45</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Building Structure</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Verse-chorus basics</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:00</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Intro design</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Outro without awkwardness</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Transitions & Flow</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Smooth transitions</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Maintaining momentum</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Breakdowns that work</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 4 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 4</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Complete Arrangement</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Full arrangement walkthrough</p>
+              <p class="text-xs" style="color: var(--text-muted);">11:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Common arrangement mistakes</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final thoughts</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Why 8 bars feel complete</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding why loops sound finished even though they're not, and what to do about it.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">From Loop to Arrangement</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        12 lessons · ~75 minutes
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to extend 8-bar loops into full tracks</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Building verse-chorus structures that work</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating smooth transitions and maintaining flow</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Complete arrangement workflow from loop to finish</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">Ready to enroll?</h3>
+      <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="inline-block px-8 py-3 rounded-lg text-white transition hover:opacity-90 font-semibold" style="background: var(--accent);">
+        Enroll for £35
+      </a>
+      <p class="text-xs mt-3" style="color: var(--text-muted);">Instant access · All lessons · Lifetime updates</p>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

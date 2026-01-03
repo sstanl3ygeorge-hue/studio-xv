@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Delay & Echo</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Delay & Echo',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~40 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Delay Types
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Delay Types',
+        lesson: 1,
+        title: 'What delay does to your mix',
+        duration: '4:15',
+        description: 'Understanding delay as a space and rhythm tool—what it actually does beyond just repeating sound.',
+        inThisLesson: [
+          'The fundamental concept of delay and echo',
+          'How delay creates space and depth',
+          'Delay vs reverb for depth creation',
+          'When to use delay instead of other effects'
+        ],
+        keyTakeaways: [
+          'Delay is repeated copies of your signal that happen after the original. This creates depth, rhythm, and movement in your mix.',
+          'Unlike reverb which creates diffused space, delay gives you discrete repetitions you can hear individually. This makes it more musical and rhythmic.',
+          'Delay is your best tool for adding width and depth without muddying the mix. A single delay repeat creates more clarity than heavy reverb.'
+        ],
+        resources: [
+          { name: 'Delay fundamentals guide', type: 'PDF' },
+          { name: 'Delay vs reverb comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Delay Types',
+        lesson: 2,
+        title: 'Slap delay: Short and punchy',
+        duration: '4:30',
+        description: 'Using short delays (40-120ms) to create thickness and space without obvious echoes.',
+        inThisLesson: [
+          'What slap delay is and when to use it',
+          'Timing ranges for slap delay (40-120ms)',
+          'Creating vocal thickness with slap delay',
+          'Avoiding obvious echo while adding depth'
+        ],
+        keyTakeaways: [
+          'Slap delay is a single repeat in the 40-120ms range. It\'s short enough that you don\'t hear it as an echo, but long enough to create noticeable depth and width.',
+          'This is perfect for vocals, snares, and any element that needs to feel bigger without sounding wet. It adds presence without taking up much space.',
+          'Set your delay time between 80-110ms for most vocals. Any shorter and it starts to sound like a filter, any longer and it becomes an obvious echo.'
+        ],
+        resources: [
+          { name: 'Slap delay timing guide', type: 'PDF' },
+          { name: 'Vocal slap delay examples', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Delay Types',
+        lesson: 3,
+        title: 'Tape delay character',
+        duration: '4:20',
+        description: 'Understanding tape delay simulation and how analog-style delays add warmth and movement.',
+        inThisLesson: [
+          'What tape delay emulations actually emulate',
+          'Wow and flutter for organic movement',
+          'High-frequency rolloff and warmth',
+          'When tape delay sounds better than digital'
+        ],
+        keyTakeaways: [
+          'Tape delays simulate the sound of old tape echo machines. Each repeat degrades slightly—losing highs, adding saturation, and introducing subtle pitch wobble.',
+          'This degradation makes tape delay sound musical and organic. The repeats sit in the background naturally instead of competing with your dry signal.',
+          'Use tape delay when you want warmth and vintage character. Use clean digital delay when you want precision and clarity.'
+        ],
+        resources: [
+          { name: 'Tape delay characteristics guide', type: 'PDF' },
+          { name: 'Digital vs tape delay comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Delay Types',
+        lesson: 4,
+        title: 'Ping-pong delay for width',
+        duration: '3:45',
+        description: 'Using stereo ping-pong delays to create movement and width in your mix.',
+        inThisLesson: [
+          'How ping-pong delay bounces between speakers',
+          'Creating stereo width with delays',
+          'Avoiding ping-pong overuse',
+          'Combining ping-pong with mono delays'
+        ],
+        keyTakeaways: [
+          'Ping-pong delay alternates each repeat between left and right speakers. This creates obvious stereo movement and makes delays feel bigger.',
+          'It\'s great for special effects and moments where you want attention. Use it sparingly—constant ping-pong gets distracting fast.',
+          'For most mixing, a subtle stereo spread (not full ping-pong) works better. Save full left-right bouncing for intros, transitions, or ear candy.'
+        ],
+        resources: [
+          { name: 'Ping-pong delay guide', type: 'PDF' },
+          { name: 'Stereo delay techniques', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Creative Delay
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Creative Delay',
+        lesson: 1,
+        title: 'Delay time and feedback',
+        duration: '4:40',
+        description: 'Understanding the two core parameters that shape your delay sound.',
+        inThisLesson: [
+          'What delay time controls (milliseconds)',
+          'How feedback creates multiple repeats',
+          'Single repeat vs cascading echoes',
+          'Finding the right feedback amount'
+        ],
+        keyTakeaways: [
+          'Delay time is the gap between the original signal and the first repeat. This can be anything from 1ms to several seconds, completely changing the effect.',
+          'Feedback is how much of the delay feeds back into itself, creating additional repeats. Low feedback (10-30%) gives you one or two repeats. High feedback (50-70%) creates a long tail.',
+          'For most mixing, keep feedback under 40%. Higher feedback is great for creative effects but can clutter your mix if you\'re not careful.'
+        ],
+        resources: [
+          { name: 'Delay time reference chart', type: 'PDF' },
+          { name: 'Feedback amount guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Creative Delay',
+        lesson: 2,
+        title: 'Syncing delay to your tempo',
+        duration: '4:50',
+        description: 'Using tempo-synced delays to create musical rhythms that fit your track.',
+        inThisLesson: [
+          'Note value delay (1/4, 1/8, 1/16, dotted)',
+          'Why synced delays sound more musical',
+          'Quarter note vs eighth note delays',
+          'Dotted and triplet timing for variation'
+        ],
+        keyTakeaways: [
+          'Tempo-synced delay locks the repeats to your track\'s BPM. A 1/4 note delay repeats on every quarter note, 1/8 on every eighth note, etc.',
+          'This makes your delays feel rhythmic and intentional instead of random. The repeats land on musical beats, creating groove rather than clutter.',
+          '1/4 note delays are spacious and slow. 1/8 note delays are more active. Dotted 1/8 (or 3/16) is the sweet spot for most vocals—active but not too busy.'
+        ],
+        resources: [
+          { name: 'Note value timing guide', type: 'PDF' },
+          { name: 'Tempo sync calculator', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Creative Delay',
+        lesson: 3,
+        title: 'Using delay to create depth',
+        duration: '4:25',
+        description: 'How delay pushes sounds forward or backward in your mix space.',
+        inThisLesson: [
+          'Short delays for upfront sounds',
+          'Long delays for distance and space',
+          'Combining delay with volume for depth',
+          'Creating 3D space with delay choices'
+        ],
+        keyTakeaways: [
+          'Shorter delay times (under 100ms) make sounds feel closer and more present. Longer times (300ms+) create distance and space, pushing sounds back.',
+          'The mix between your dry signal and delay also affects depth. More dry signal = more upfront. More delay = more distant and spacious.',
+          'Use this intentionally: leads and main vocals should be dry or have short delays. Background elements can have longer, wetter delays to sit back.'
+        ],
+        resources: [
+          { name: 'Delay depth creation guide', type: 'PDF' },
+          { name: 'Front-to-back mixing reference', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Rhythmic Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Rhythmic Applications',
+        lesson: 1,
+        title: 'Vocal delay techniques',
+        duration: '4:35',
+        description: 'Practical delay approaches for making vocals sit perfectly in your mix.',
+        inThisLesson: [
+          'Subtle vocal slap delay (80-110ms)',
+          'Eighth note delays for active parts',
+          'Delay on the last word for space',
+          'Filtering delays to avoid frequency buildup'
+        ],
+        keyTakeaways: [
+          'The most common vocal delay is a slap delay around 100ms with low feedback. This adds thickness without being obvious.',
+          'For more obvious delay effects, use dotted 1/8 note timing synced to tempo. This creates a rhythmic echo that supports the vocal performance.',
+          'Don\'t put delay on every word. Use it on the ends of phrases, or automate it to appear only where you want ear candy. Constant delay gets muddy.'
+        ],
+        resources: [
+          { name: 'Vocal delay cookbook', type: 'PDF' },
+          { name: 'Delay automation guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Rhythmic Applications',
+        lesson: 2,
+        title: 'Delay throw effects',
+        duration: '3:50',
+        description: 'Creating delay throws on specific words or phrases for impact and interest.',
+        inThisLesson: [
+          'What a delay throw is and when to use it',
+          'Setting up a send for throw delays',
+          'Automating delay sends for specific words',
+          'Choosing throw delay timing and feedback'
+        ],
+        keyTakeaways: [
+          'A delay throw is when you send a single word or phrase into a long delay, creating a cascading echo effect that fills space between sections.',
+          'Set up a dedicated delay send with higher feedback (50-70%) and tempo-synced timing. Only send to it when you want the throw effect.',
+          'Throws work best at the end of phrases, before drops, or during transitions. They add excitement and fill empty space musically.'
+        ],
+        resources: [
+          { name: 'Delay throw setup guide', type: 'PDF' },
+          { name: 'Throw timing examples', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Rhythmic Applications',
+        lesson: 3,
+        title: 'Delay on instruments',
+        duration: '4:15',
+        description: 'Using delay creatively on guitars, synths, keys, and other melodic elements.',
+        inThisLesson: [
+          'Guitar delay timing for genre',
+          'Creating synth movement with delay',
+          'Delay on percussion for groove',
+          'Keeping instrumental delays out of the way'
+        ],
+        keyTakeaways: [
+          'Electric guitars love delay. Use quarter note delays for spacious parts, eighth note for rhythmic energy. Keep feedback moderate (30-50%).',
+          'Synths and keys can use longer delay times or ping-pong delays to create movement. This adds interest to sustained sounds and fills in gaps.',
+          'When adding delay to instruments, be careful about frequency buildup. High-pass your delay returns to keep them out of the low end where vocals and bass live.'
+        ],
+        resources: [
+          { name: 'Instrument delay guide', type: 'PDF' },
+          { name: 'Delay filtering techniques', type: 'PDF' }
+        ]
+      }
+    ];
+  </script>
+  
+  <script>
+    let currentLessonIndex = 0;
+    const completedLessons = new Set();
+    
+    function init() {
+      renderSidebar();
+      loadLesson(0);
+      updateProgressStats();
+    }
+    
+    function renderSidebar() {
+      const modules = {};
+      lessons.forEach(lesson => {
+        if (!modules[lesson.module]) {
+          modules[lesson.module] = {
+            title: lesson.moduleTitle,
+            lessons: []
+          };
+        }
+        modules[lesson.module].lessons.push(lesson);
+      });
+      
+      let sidebarHTML = '';
+      Object.keys(modules).forEach(moduleNum => {
+        const module = modules[moduleNum];
+        sidebarHTML += `
+          <div>
+            <div class="p-4" style="background: var(--bg-card);">
+              <h3 class="text-sm font-semibold mb-1">Module ${moduleNum}</h3>
+              <p class="text-xs" style="color: var(--text-muted);">${module.title}</p>
+            </div>
+            <div>
+              ${module.lessons.map((lesson, idx) => {
+                const globalIndex = lessons.indexOf(lesson);
+                return `
+                  <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" 
+                     style="background: var(--bg-section);" 
+                     onclick="loadLesson(${globalIndex}); return false;" 
+                     data-lesson-id="${lesson.id}">
+                    <div class="flex items-center flex-1">
+                      <span class="lesson-check">✓</span>
+                      <div class="flex-1">
+                        <p class="text-sm font-medium">${lesson.title}</p>
+                        <p class="text-xs" style="color: var(--text-muted);">${lesson.duration}</p>
+                      </div>
+                    </div>
+                  </a>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      document.getElementById('sidebar-modules').innerHTML = sidebarHTML;
+    }
+    
+    function loadLesson(index) {
+      if (index < 0 || index >= lessons.length) return;
+      
+      currentLessonIndex = index;
+      const lesson = lessons[index];
+      
+      // Mark as completed
+      completedLessons.add(lesson.id);
+      
+      // Update active state in sidebar
+      document.querySelectorAll('.lesson-item').forEach(item => {
+        item.classList.remove('active');
+        if (completedLessons.has(item.dataset.lessonId)) {
+          item.classList.add('completed');
+        }
+      });
+      const activeItem = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
+      if (activeItem) activeItem.classList.add('active');
+      
+      // Update content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // In this lesson
+      const inThisLessonHTML = lesson.inThisLesson.map(item => 
+        `<li class="flex gap-3">
+          <span style="color: var(--accent);">•</span>
+          <span>${item}</span>
+        </li>`
+      ).join('');
+      document.getElementById('in-this-lesson-list').innerHTML = inThisLessonHTML;
+      
+      // Key takeaways
+      const takeawaysHTML = lesson.keyTakeaways.map(item => 
+        `<p>${item}</p>`
+      ).join('');
+      document.getElementById('key-takeaways-content').innerHTML = takeawaysHTML;
+      
+      // Resources
+      const resourcesHTML = lesson.resources.map(resource => 
+        `<div class="flex items-center justify-between p-3 rounded border" style="border-color: var(--border-soft);">
+          <div class="flex items-center gap-3">
+            <span class="text-xs px-2 py-1 rounded" style="background: var(--accent); color: white;">${resource.type}</span>
+            <span class="text-sm">${resource.name}</span>
+          </div>
+          <a href="#" class="text-xs hover:opacity-70" style="color: var(--accent);">Download</a>
+        </div>`
+      ).join('');
+      document.getElementById('resources-list').innerHTML = resourcesHTML;
+      
+      // Navigation buttons
+      const prevBtn = document.getElementById('prev-lesson');
+      const nextBtn = document.getElementById('next-lesson');
+      
+      if (index === 0) {
+        prevBtn.style.opacity = '0.3';
+        prevBtn.style.pointerEvents = 'none';
+      } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.pointerEvents = 'auto';
+        prevBtn.onclick = () => { loadLesson(index - 1); return false; };
+      }
+      
+      if (index === lessons.length - 1) {
+        nextBtn.textContent = 'Complete course →';
+        nextBtn.onclick = () => { showCompletionModal(); return false; };
+      } else {
+        nextBtn.textContent = 'Next lesson →';
+        nextBtn.onclick = () => { loadLesson(index + 1); return false; };
+      }
+      
+      updateProgressStats();
+      window.scrollTo(0, 0);
+    }
+    
+    function updateProgressStats() {
+      const progress = Math.round((completedLessons.size / lessons.length) * 100);
+      document.getElementById('progress-text').textContent = `${completedLessons.size} of ${lessons.length} lessons`;
+      document.getElementById('progress-bar').style.width = `${progress}%`;
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+  
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 flex-shrink-0 overflow-y-auto border-r" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a href="course.html" class="text-xs mb-4 inline-block hover:opacity-70" style="color: var(--text-muted);">← Back to Courses</a>
+      <h2 class="text-xl font-bold mb-2">Delay & Echo</h2>
+      <p class="text-xs mb-4" style="color: var(--text-muted);">Beginner · ~40 minutes · 10 lessons</p>
+      
+      <div class="mb-3">
+        <div class="flex justify-between text-xs mb-2" style="color: var(--text-muted);">
+          <span>Progress</span>
+          <span id="progress-text">0 of 10 lessons</span>
+        </div>
+        <div class="w-full h-1.5 rounded-full overflow-hidden" style="background: var(--bg-soft);">
+          <div id="progress-bar" class="h-full transition-all duration-300" style="background: var(--accent); width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="sidebar-modules" class="space-y-4 pb-6">
+      <!-- Modules will be dynamically inserted here -->
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What delay does to your mix</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding delay as a space and rhythm tool—what it actually does beyond just repeating sound.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Delay & Echo</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~40 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding different delay types: slap, tape, and ping-pong delays</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Mastering delay time, feedback, and tempo sync for musical delays</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Using delay to create depth and space without muddying your mix</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical vocal delay techniques and creative delay throws</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

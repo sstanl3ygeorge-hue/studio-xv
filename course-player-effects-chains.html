@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Effects Chains</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Effects Chains',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~50 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Effects Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Effects Fundamentals',
+        lesson: 1,
+        title: 'Understanding signal flow',
+        duration: '5:20',
+        description: 'How audio flows through effects and why order matters more than you think.',
+        inThisLesson: [
+          'The basics of serial signal flow',
+          'How each effect affects the next',
+          'Why changing order changes the sound',
+          'Common signal flow mistakes'
+        ],
+        keyTakeaways: [
+          'Signal flow is the path audio takes through your effects chain. Each effect processes the output of the previous effect, so order fundamentally changes the result.',
+          'EQ before compression sounds different than compression before EQ. EQ before distortion sounds different than distortion before EQ. There\'s no universal "correct" order—only what works for your sound.',
+          'Understanding signal flow gives you creative control. When a chain doesn\'t sound right, reordering effects often fixes it faster than tweaking parameters.'
+        ],
+        resources: [
+          { name: 'Signal flow diagrams', type: 'PDF' },
+          { name: 'Effect order examples', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Effects Fundamentals',
+        lesson: 2,
+        title: 'The standard order and why',
+        duration: '5:35',
+        description: 'Learning the conventional effects order and the logic behind it.',
+        inThisLesson: [
+          'The classic chain: EQ → compression → saturation → time-based',
+          'Why this order became standard',
+          'When to follow the rules',
+          'When to break them intentionally'
+        ],
+        keyTakeaways: [
+          'The standard order (EQ → compression → saturation → modulation → delay → reverb) exists because it usually works. Clean up first, control dynamics, add color, then add space.',
+          'This order prioritizes clean, professional results. EQ cleans the signal before compression reacts to it. Time-based effects go last so they don\'t get processed and sound weird.',
+          'But standards are starting points, not laws. Once you understand why the order exists, you can break it for creative reasons.'
+        ],
+        resources: [
+          { name: 'Standard chain templates', type: 'PDF' },
+          { name: 'Order variations guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Effects Fundamentals',
+        lesson: 3,
+        title: 'Serial vs parallel processing',
+        duration: '5:45',
+        description: 'The difference between series and parallel chains and when to use each.',
+        inThisLesson: [
+          'What serial processing means',
+          'What parallel processing means',
+          'Blending wet and dry signals',
+          'Choosing between serial and parallel'
+        ],
+        keyTakeaways: [
+          'Serial means one effect after another—the output of each feeds the input of the next. Parallel means splitting the signal so effects process a copy while the original remains intact.',
+          'Parallel processing lets you blend extreme processing with the dry signal for more control. Heavy compression, distortion, or reverb often works better in parallel.',
+          'Most chains are serial for simplicity. Use parallel when you want intense effects without losing the character of the original sound.'
+        ],
+        resources: [
+          { name: 'Serial vs parallel examples', type: 'PDF' },
+          { name: 'Parallel blend guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Effects Fundamentals',
+        lesson: 4,
+        title: 'Gain staging in chains',
+        duration: '4:50',
+        description: 'Managing levels between effects to avoid distortion and maintain clarity.',
+        inThisLesson: [
+          'Why gain staging matters in chains',
+          'Balancing levels between effects',
+          'Avoiding unintended clipping',
+          'Using utility/trim plugins'
+        ],
+        keyTakeaways: [
+          'Each effect can add or reduce gain. If you don\'t manage levels between effects, signals can clip or get too quiet, causing problems downstream.',
+          'Check your levels after each effect. If an EQ boost or saturation adds 3dB, compensate before the next effect so it receives a consistent level.',
+          'Use utility or trim plugins between effects to control gain. Consistent levels mean each effect behaves predictably.'
+        ],
+        resources: [
+          { name: 'Gain staging checklist', type: 'PDF' },
+          { name: 'Level management guide', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Chain Building
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Chain Building',
+        lesson: 1,
+        title: 'Building a vocal chain',
+        duration: '5:30',
+        description: 'Creating a professional vocal effects chain from scratch.',
+        inThisLesson: [
+          'The vocal chain structure',
+          'Subtractive EQ first for cleanup',
+          'Compression for consistency',
+          'Saturation for presence, reverb for space'
+        ],
+        keyTakeaways: [
+          'A typical vocal chain: High-pass EQ → de-esser → compressor → additive EQ → saturation → delay/reverb. Each step serves a purpose—clean, control, enhance, add space.',
+          'Start with subtractive moves. Remove mud, harshness, and sibilance before adding anything. This gives compression and saturation clean material to work with.',
+          'Keep it simple. A great vocal often needs only 3-4 effects. Don\'t add plugins because you think you should—add them when the vocal needs it.'
+        ],
+        resources: [
+          { name: 'Vocal chain templates', type: 'PDF' },
+          { name: 'Vocal processing checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Chain Building',
+        lesson: 2,
+        title: 'Drum processing chains',
+        duration: '5:10',
+        description: 'Creating chains for kick, snare, and drum groups.',
+        inThisLesson: [
+          'Individual drum chains vs group chains',
+          'Parallel compression for impact',
+          'Transient shaping placement',
+          'Keeping drums punchy'
+        ],
+        keyTakeaways: [
+          'Drums benefit from both individual and group processing. Process kicks and snares individually for tone, then use bus compression for glue.',
+          'Parallel compression is powerful on drums. Blend heavily compressed drums with the dry signal to add density without losing transients.',
+          'Transient shapers usually go early. Shape the attack and sustain before compression reacts to it, or after compression to restore punch.'
+        ],
+        resources: [
+          { name: 'Drum chain examples', type: 'PDF' },
+          { name: 'Parallel drum guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Chain Building',
+        lesson: 3,
+        title: 'Creative texture chains',
+        duration: '5:00',
+        description: 'Building chains that transform sounds into unique textures.',
+        inThisLesson: [
+          'Stacking distortion and modulation',
+          'Using reverb before other effects',
+          'Creating movement with automation',
+          'Experimenting with unconventional orders'
+        ],
+        keyTakeaways: [
+          'Texture chains break the rules intentionally. Reverb before distortion, heavy modulation before delay—unusual orders create unique results.',
+          'Stack multiple layers of processing for complex textures. Saturation → chorus → reverb → distortion can turn a synth into something unrecognizable.',
+          'Use these chains on send tracks or parallel paths. Extreme processing often works best blended with a dry signal so you keep some clarity.'
+        ],
+        resources: [
+          { name: 'Texture chain ideas', type: 'PDF' },
+          { name: 'Creative routing examples', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Creative Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Creative Applications',
+        lesson: 1,
+        title: 'Adding movement with modulation',
+        duration: '4:45',
+        description: 'Using chorus, flanger, and phaser in your chains for width and motion.',
+        inThisLesson: [
+          'Placement of modulation effects',
+          'Subtle modulation for width',
+          'Obvious modulation for effect',
+          'Modulation on different sources'
+        ],
+        keyTakeaways: [
+          'Modulation effects (chorus, flanger, phaser) add width and movement. They work by duplicating the signal and slightly detuning or phase-shifting it.',
+          'Place modulation after core processing (EQ, compression) but before time-based effects (delay, reverb). This keeps the movement clear without it getting washed out.',
+          'Use subtle settings for width (slow rate, low depth), obvious settings for character (fast rate, high depth, feedback). Context determines the approach.'
+        ],
+        resources: [
+          { name: 'Modulation placement guide', type: 'PDF' },
+          { name: 'Width enhancement techniques', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Creative Applications',
+        lesson: 2,
+        title: 'Automation in effects chains',
+        duration: '5:15',
+        description: 'Using automation to create dynamic, evolving effects throughout your track.',
+        inThisLesson: [
+          'Automating effect parameters',
+          'Creating build-ups with filters',
+          'Delay throws and reverb swells',
+          'Mix automation vs clip automation'
+        ],
+        keyTakeaways: [
+          'Automation brings chains to life. Automate reverb size during a chorus, filter cutoff in a build, or distortion amount for intensity changes.',
+          'Effect on/off automation is powerful. Turn reverb off during verses, on for choruses. Activate delay throws at the end of phrases for emphasis.',
+          'Automate one or two key parameters, not everything. Too much automation becomes distracting. Focus on moments that need dynamics.'
+        ],
+        resources: [
+          { name: 'Automation ideas', type: 'PDF' },
+          { name: 'Dynamic effects guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Creative Applications',
+        lesson: 3,
+        title: 'Troubleshooting chains',
+        duration: '4:40',
+        description: 'Diagnosing and fixing common problems in effects chains.',
+        inThisLesson: [
+          'When chains sound muddy or harsh',
+          'Fixing phase issues from effects',
+          'Managing excessive processing',
+          'Simplifying overcomplicated chains'
+        ],
+        keyTakeaways: [
+          'Most chain problems come from too much processing or poor gain staging. If it sounds bad, bypass effects one by one to find the culprit.',
+          'Muddiness usually means too much low-mid buildup from multiple effects. Harshness means excessive high frequencies or distortion stacking. Use corrective EQ.',
+          'When in doubt, simplify. Remove effects until the sound improves, then add back only what\'s necessary. Less is often better.'
+        ],
+        resources: [
+          { name: 'Chain troubleshooting guide', type: 'PDF' },
+          { name: 'Common problems solutions', type: 'PDF' }
+        ]
+      }
+    ];
+  </script>
+  
+  <script>
+    let currentLessonIndex = 0;
+    let completedLessons = new Set();
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      renderSidebar();
+      loadLesson(0);
+      updateProgress();
+    });
+    
+    function renderSidebar() {
+      const modules = {};
+      
+      lessons.forEach((lesson, index) => {
+        if (!modules[lesson.module]) {
+          modules[lesson.module] = {
+            title: lesson.moduleTitle,
+            lessons: []
+          };
+        }
+        modules[lesson.module].lessons.push({ ...lesson, index });
+      });
+      
+      // Sidebar already has manual structure; optionally update dynamically if needed
+    }
+    
+    function loadLesson(index) {
+      if (index < 0 || index >= lessons.length) return;
+      
+      currentLessonIndex = index;
+      const lesson = lessons[index];
+      
+      // Update active lesson in sidebar
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        if (i === index) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson" list
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = '';
+      lesson.inThisLesson.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'flex gap-3';
+        li.innerHTML = `<span style="color: var(--accent);">•</span><span>${item}</span>`;
+        inThisLessonList.appendChild(li);
+      });
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = '';
+      lesson.keyTakeaways.forEach((takeaway, i) => {
+        const p = document.createElement('p');
+        p.innerHTML = `<strong style="color: var(--text-main);">${i + 1}.</strong> ${takeaway}`;
+        keyTakeawaysContent.appendChild(p);
+      });
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = '';
+      lesson.resources.forEach(resource => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-3 rounded border';
+        div.style.cssText = 'background: var(--bg-card); border-color: var(--border-soft);';
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" style="color: var(--accent);" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+            </svg>
+            <span class="text-sm">${resource.name}</span>
+          </div>
+          <span class="text-xs px-2 py-1 rounded" style="background: var(--bg-soft); color: var(--text-muted);">${resource.type}</span>
+        `;
+        resourcesList.appendChild(div);
+      });
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (index === 0) {
+        prevButton.style.visibility = 'hidden';
+      } else {
+        prevButton.style.visibility = 'visible';
+        prevButton.onclick = (e) => {
+          e.preventDefault();
+          loadLesson(index - 1);
+        };
+      }
+      
+      if (index === lessons.length - 1) {
+        nextButton.textContent = 'Complete course';
+        nextButton.onclick = (e) => {
+          e.preventDefault();
+          completeLesson(index);
+          showCompletionModal();
+        };
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.onclick = (e) => {
+          e.preventDefault();
+          completeLesson(index);
+          loadLesson(index + 1);
+        };
+      }
+      
+      // Scroll to top
+      document.querySelector('main').scrollTop = 0;
+    }
+    
+    function completeLesson(index) {
+      completedLessons.add(index);
+      const lessonItems = document.querySelectorAll('.lesson-item');
+      if (lessonItems[index]) {
+        lessonItems[index].classList.add('completed');
+      }
+      updateProgress();
+    }
+    
+    function updateProgress() {
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const percentage = Math.round((completedLessons.size / lessons.length) * 100);
+      
+      progressBar.style.width = `${percentage}%`;
+      progressText.textContent = `${completedLessons.size} of ${lessons.length} lessons`;
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    // Setup lesson item clicks
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadLesson(index);
+        });
+      });
+    });
+  </script>
+  
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a href="academy.html" class="text-xs uppercase tracking-wider mb-4 inline-block hover:opacity-70 transition" style="color: var(--text-muted);">
+        ← Back to Courses
+      </a>
+      <h2 class="text-xl font-bold mb-1">Effects Chains</h2>
+      <p class="text-sm mb-4" style="color: var(--text-muted);">Intermediate · ~50 minutes</p>
+      
+      <div class="mb-2">
+        <div class="h-2 rounded-full overflow-hidden" style="background: var(--bg-soft);">
+          <div id="progress-bar" class="h-full transition-all duration-300" style="background: var(--accent); width: 0%;"></div>
+        </div>
+      </div>
+      <p id="progress-text" class="text-xs" style="color: var(--text-muted);">0 of 10 lessons</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Effects Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding signal flow</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The standard order and why</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:35</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Serial vs parallel processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Gain staging in chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Chain Building</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Building a vocal chain</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Drum processing chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Creative texture chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:00</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Creative Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Adding movement with modulation</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Automation in effects chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Troubleshooting chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Understanding signal flow</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          How audio flows through effects and why order matters more than you think.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Effects Chains</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~50 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding signal flow and why effects order fundamentally changes your sound</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Building professional chains for vocals, drums, and creative textures</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Using serial and parallel processing to control dynamics and add character</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating movement and evolution with modulation and automation</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

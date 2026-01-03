@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Transient Shaping</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Transient Shaping',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~35 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Transient Basics
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Transient Basics',
+        lesson: 1,
+        title: 'What transients are',
+        duration: '3:45',
+        description: 'Understanding the initial attack portion of a sound and why it matters so much.',
+        inThisLesson: [
+          'The anatomy of a sound: transient, body, and tail',
+          'How our ears perceive impact and punch',
+          'Why transients define the character of drums and percussion',
+          'How transients affect groove and feel'
+        ],
+        keyTakeaways: [
+          'A transient is the initial burst of energy at the beginning of a sound—the "hit" of a drum, the "pluck" of a string, the "attack" of any percussive element.',
+          'Our brains interpret transients as punch, impact, and presence. Even a tiny transient makes a huge difference in how we perceive a sound\'s power.',
+          'Drums without clear transients sound dull and distant. Too much transient can sound harsh and thin. Balance is everything.'
+        ],
+        resources: [
+          { name: 'Transient waveform examples', type: 'PDF' },
+          { name: 'Before/after transient visualization', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Transient Basics',
+        lesson: 2,
+        title: 'Introduction to transient shapers',
+        duration: '4:10',
+        description: 'How transient shaper plugins work and what makes them different from compressors.',
+        inThisLesson: [
+          'What a transient shaper does',
+          'Attack and sustain controls explained',
+          'Transient shaping vs compression differences',
+          'When to use a transient shaper instead of EQ or compression'
+        ],
+        keyTakeaways: [
+          'Transient shapers let you control the attack (transient) and sustain (body) of a sound independently, without affecting overall level or dynamics like a compressor.',
+          'Increasing attack makes the transient louder and punchier. Decreasing it softens the impact. Increasing sustain boosts the body, decreasing it tightens the sound.',
+          'Unlike compressors, transient shapers don\'t use threshold or ratio—they analyze the envelope automatically and reshape it. Much faster and more intuitive for punch control.'
+        ],
+        resources: [
+          { name: 'Transient shaper plugin guide', type: 'PDF' },
+          { name: 'Shaper vs compressor comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Transient Basics',
+        lesson: 3,
+        title: 'How transient detection works',
+        duration: '3:35',
+        description: 'Understanding the technology behind transient shapers and how they "see" sound.',
+        inThisLesson: [
+          'Envelope detection and analysis',
+          'How transient shapers identify attack vs sustain',
+          'Why some sounds work better than others',
+          'Limitations and edge cases'
+        ],
+        keyTakeaways: [
+          'Transient shapers analyze the volume envelope of your audio in real-time, detecting rapid increases (attacks) and the subsequent decay (sustain).',
+          'They work best on percussive material with clear transients—drums, percussion, plucked strings. Less effective on sustained pads or ambience.',
+          'Some transient shapers have sensitivity controls or frequency-dependent detection. Understanding how your plugin "sees" the signal helps you use it effectively.'
+        ],
+        resources: [
+          { name: 'Transient detection explained', type: 'PDF' },
+          { name: 'Best sources for shaping', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Attack & Sustain
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Attack & Sustain',
+        lesson: 1,
+        title: 'Attack control in depth',
+        duration: '3:50',
+        description: 'Mastering the attack parameter to add punch, clarity, and presence.',
+        inThisLesson: [
+          'Increasing attack for more punch',
+          'Decreasing attack to soften harsh hits',
+          'How much attack boost is too much',
+          'Attack and frequency content'
+        ],
+        keyTakeaways: [
+          'Boosting attack makes sounds jump forward in the mix—more aggressive, more present, more "in your face." Perfect for drums that need to cut through.',
+          'Cutting attack softens the impact without losing the body. Great for taming overly aggressive samples or blending sounds that are too sharp.',
+          'Too much attack boost can make sounds harsh, thin, and clicky. Listen for harshness in the high-mids and dial back if it sounds brittle.'
+        ],
+        resources: [
+          { name: 'Attack boost by instrument', type: 'PDF' },
+          { name: 'Attack shaping techniques', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Attack & Sustain',
+        lesson: 2,
+        title: 'Sustain control in depth',
+        duration: '3:45',
+        description: 'Using sustain to control body, tighten hits, or extend decay naturally.',
+        inThisLesson: [
+          'Increasing sustain for fuller, longer sounds',
+          'Decreasing sustain to tighten and focus',
+          'Sustain and room tone',
+          'Balancing attack and sustain together'
+        ],
+        keyTakeaways: [
+          'Boosting sustain brings out the body and tail of a sound—more resonance, more fullness, more "size." Good for thin or weak-sounding drums.',
+          'Cutting sustain tightens the sound, reducing ring-out and room bleed. Perfect for making drums punchier and more controlled in busy mixes.',
+          'Attack and sustain work together. Boost attack + cut sustain = tight and punchy. Cut attack + boost sustain = soft and full. Experiment with the balance.'
+        ],
+        resources: [
+          { name: 'Sustain shaping guide', type: 'PDF' },
+          { name: 'Attack/sustain balance examples', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Attack & Sustain',
+        lesson: 3,
+        title: 'Attack/sustain balance strategies',
+        duration: '4:05',
+        description: 'Learning to balance attack and sustain for different musical goals.',
+        inThisLesson: [
+          'Tight and punchy: boost attack, cut sustain',
+          'Smooth and full: cut attack, boost sustain',
+          'Natural enhancement: subtle adjustments both ways',
+          'Extreme shaping for creative effects'
+        ],
+        keyTakeaways: [
+          'For modern, tight, punchy drums: increase attack by 3-6dB, decrease sustain by 2-4dB. This gives you maximum impact with minimum clutter.',
+          'For smooth, vintage, or natural drums: slightly reduce attack, slightly increase sustain. The drums feel more organic and less aggressive.',
+          'Extreme settings create interesting effects. Maxed-out attack with heavy sustain reduction makes drum samples sound like drum machines. Experiment freely.'
+        ],
+        resources: [
+          { name: 'Balance strategy flowchart', type: 'PDF' },
+          { name: 'Genre-specific presets guide', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 1,
+        title: 'Shaping drums for punch',
+        duration: '3:50',
+        description: 'Making kicks, snares, and toms hit harder without EQ or compression.',
+        inThisLesson: [
+          'Kick drum transient shaping techniques',
+          'Snare presence and crack',
+          'Toms and percussion clarity',
+          'Avoiding harsh artifacts'
+        ],
+        keyTakeaways: [
+          'Kick drums: boost attack for more click and punch, cut sustain to tighten the low-end. This makes the kick cut through without muddying the mix.',
+          'Snare: increase attack to emphasize the crack and stick impact. Cut sustain if the snare has too much ring or room tone.',
+          'On toms and percussion, transient shaping adds clarity and definition without making them louder. They punch through without dominating.'
+        ],
+        resources: [
+          { name: 'Drum transient shaping guide', type: 'PDF' },
+          { name: 'Kick and snare presets', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 2,
+        title: 'Transient shaping on percussion',
+        duration: '3:25',
+        description: 'Using transient control on shakers, hi-hats, loops, and rhythmic elements.',
+        inThisLesson: [
+          'Hi-hats and cymbals: controlling harshness',
+          'Shakers and tambourines: adding presence',
+          'Percussion loops: tightening and focusing',
+          'When to use multiband transient shaping'
+        ],
+        keyTakeaways: [
+          'Hi-hats and cymbals can get harsh with too much attack boost. Use subtle attack increases (1-3dB) or even slight cuts if they\'re already bright.',
+          'Shakers and light percussion benefit from attack boosts—they gain presence and cut through the mix without needing volume increases.',
+          'On percussion loops, transient shaping cleans up the groove. Tighten the sustain to reduce bleed and blur, making each hit more distinct.'
+        ],
+        resources: [
+          { name: 'Percussion shaping techniques', type: 'PDF' },
+          { name: 'Loop enhancement guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 3,
+        title: 'Acoustic instruments and strings',
+        duration: '3:40',
+        description: 'Applying transient shaping to acoustic guitars, pianos, and plucked instruments.',
+        inThisLesson: [
+          'Acoustic guitar pick attack enhancement',
+          'Piano note clarity and presence',
+          'Plucked bass and strings',
+          'Avoiding unnatural artifacts'
+        ],
+        keyTakeaways: [
+          'Acoustic guitar: boost attack to emphasize the pick hitting the strings. This adds clarity and articulation without harsh EQ boosts.',
+          'Piano: subtle attack boost brings out the hammer strike, making notes feel more immediate and present. Don\'t overdo it—piano can quickly sound unnatural.',
+          'On plucked bass and strings, transient shaping adds definition without changing the tone. Perfect for making the instrument sit forward in a dense mix.'
+        ],
+        resources: [
+          { name: 'Acoustic instrument guide', type: 'PDF' },
+          { name: 'Natural vs enhanced comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 4,
+        title: 'Creating punchier mixes',
+        duration: '4:15',
+        description: 'Using transient shaping across your mix to improve impact and clarity.',
+        inThisLesson: [
+          'Transient shaping on buses and groups',
+          'Drum bus transient enhancement',
+          'When to use it vs when to skip it',
+          'Combining with compression and EQ'
+        ],
+        keyTakeaways: [
+          'Apply transient shaping to your drum bus for overall punch enhancement. Small attack boosts (2-4dB) across all drums creates cohesive impact.',
+          'Transient shaping works great alongside compression. Shape the transients first, then compress for level control. You\'ll get punch AND consistency.',
+          'Not every source needs transient shaping. Use it on rhythmic, percussive elements. Skip it on pads, ambience, and sustained sounds where transients don\'t matter.'
+        ],
+        resources: [
+          { name: 'Mix bus transient techniques', type: 'PDF' },
+          { name: 'Transient shaping workflow', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        showContinuePrompt(savedProgress);
+        renderLesson(0);
+      } else {
+        renderLesson(0);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Transient Shaping</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~35 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Transient Basics</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What transients are</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Introduction to transient shapers</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">How transient detection works</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Attack & Sustain</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Attack control in depth</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Sustain control in depth</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Attack/sustain balance strategies</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:05</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Shaping drums for punch</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Transient shaping on percussion</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:25</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Acoustic instruments and strings</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Creating punchier mixes</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What transients are</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the initial attack portion of a sound and why it matters so much.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Transient Shaping</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~35 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding what transients are and how they define punch and impact</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Mastering transient shaper controls: attack, sustain, and balance techniques</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical applications for drums, percussion, and acoustic instruments</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating punchier, more impactful mixes with strategic transient control</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  ================================================================
+  
+  HOW TO CREATE A NEW COURSE:
+  
+  1. Duplicate this file and rename it:
+     Example: course-player-finishing-tracks.html
+              course-player-mixing-basics.html
+              course-player-arrangement.html
+  
+  2. Update the <title> tag below (line 11)
+  
+  3. Update the courseConfig object (around line 120):
+     - title: Your course name
+     - backLink: Link to your course landing page
+     - backLinkText: Text for back button
+     - totalDuration: Total course length
+     - moduleCount: Number of modules
+  
+  4. Replace the lessons array (starting around line 130):
+     - Each lesson needs: id, module, moduleTitle, lesson, title,
+       duration, description, inThisLesson, keyTakeaways, resources
+  
+  5. Update the sidebar HTML (starting around line 650):
+     - Module titles and lesson titles must match your lessons array
+     - IMPORTANT: Keep this exact structure for each lesson:
+       <a href="#" class="lesson-item ...">
+         <div class="flex items-center flex-1">
+           <span class="lesson-check">✓</span>
+           <div class="flex-1">
+             <p class="text-sm font-medium">LESSON TITLE</p>
+             <p class="text-xs" ...>DURATION</p>
+           </div>
+         </div>
+       </a>
+     - The checkmark span is hidden by default and shows when completed
+  
+  6. Update completion modal "What you've learned" section (line 850)
+  
+  That's it! All navigation, progress tracking, checkmarks, and 
+  interactions will work automatically.
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Sidechain Compression</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       Change these values for each new course
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Sidechain Compression',
+      backLink: 'course-sidechain.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~35 minutes',
+      moduleCount: 3
+    };
+    
+    /* ============================================
+       LESSON DATA
+       Replace this array with your course content
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Sidechain Basics
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Sidechain Basics',
+        lesson: 1,
+        title: 'What is sidechaining?',
+        duration: '3:45',
+        description: 'Understanding the fundamental concept of sidechain compression and how it works.',
+        inThisLesson: [
+          'The basic principle of sidechaining',
+          'How sidechain compression differs from standard compression',
+          'Real-world examples of ducking and pumping',
+          'When to use sidechain in your mixes'
+        ],
+        keyTakeaways: [
+          'Sidechain compression uses one signal to control the compression of another, creating space and movement in your mix.',
+          'Unlike standard compression that responds to the compressed signal itself, sidechaining responds to an external trigger signal.',
+          'The two main applications are ducking (making space) and pumping (creating rhythm), and understanding which you need is the first step.'
+        ],
+        resources: [
+          { name: 'Sidechain basics overview', type: 'PDF' },
+          { name: 'Quick reference guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Sidechain Basics',
+        lesson: 2,
+        title: 'Setting up sidechain compression',
+        duration: '4:20',
+        description: 'Step-by-step guide to routing and configuring sidechain compression in your DAW.',
+        inThisLesson: [
+          'How to route sidechain signals in major DAWs',
+          'Essential compressor parameters for sidechaining',
+          'Attack and release settings explained',
+          'Setting the right threshold and ratio'
+        ],
+        keyTakeaways: [
+          'Proper routing is essential—the trigger signal needs to feed the compressor\'s sidechain input without playing through your mix.',
+          'Fast attack times (1-10ms) create immediate ducking, while slower attacks (20-50ms) let transients through before compression kicks in.',
+          'Release time determines how quickly the effect recovers. Short releases create pumping, long releases create smooth ducking.'
+        ],
+        resources: [
+          { name: 'DAW routing guide (multiple DAWs)', type: 'PDF' },
+          { name: 'Parameter cheat sheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Sidechain Basics',
+        lesson: 3,
+        title: 'Ducking fundamentals',
+        duration: '3:55',
+        description: 'How to create clean, musical ducking that makes space without sounding obvious.',
+        inThisLesson: [
+          'The purpose of ducking in modern mixes',
+          'Subtle vs. obvious ducking applications',
+          'Common ducking mistakes to avoid',
+          'When ducking is the right solution'
+        ],
+        keyTakeaways: [
+          'Ducking creates space by temporarily reducing the volume of one element when another plays, most commonly bass ducking to kick.',
+          'Subtle ducking (2-4dB reduction) solves frequency masking without being noticeable. Obvious ducking (6-10dB) is an aesthetic choice.',
+          'If you\'re ducking more than 3-4 elements in your mix, you probably have an arrangement problem, not a ducking problem.'
+        ],
+        resources: [
+          { name: 'Ducking settings starter pack', type: 'PDF' },
+          { name: 'Before/after audio examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Sidechain Basics',
+        lesson: 4,
+        title: 'Understanding pumping',
+        duration: '3:30',
+        description: 'Creating rhythmic pumping effects that add energy and movement to your tracks.',
+        inThisLesson: [
+          'What pumping is and when to use it',
+          'Genre-specific pumping styles',
+          'Fast vs. slow pumping rhythms',
+          'Balancing pumping with groove'
+        ],
+        keyTakeaways: [
+          'Pumping is obvious, rhythmic volume reduction that becomes a feature of the track rather than a transparent mixing tool.',
+          'Electronic music genres use pumping to create pulse and energy, typically with release times between 100-400ms.',
+          'Too much pumping kills groove—the track should breathe with the rhythm, not gasp for air between kicks.'
+        ],
+        resources: [
+          { name: 'Genre-specific pumping guide', type: 'PDF' },
+          { name: 'Pumping reference tracks', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Musical Applications
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Musical Applications',
+        lesson: 1,
+        title: 'Kick and bass relationship',
+        duration: '4:45',
+        description: 'Mastering the most critical sidechain application in modern music production.',
+        inThisLesson: [
+          'Why kick and bass clash without sidechaining',
+          'Finding the right amount of ducking',
+          'EQ vs. sidechain for kick-bass relationship',
+          'Genre-specific kick-bass sidechaining'
+        ],
+        keyTakeaways: [
+          'Kick and bass occupy the same frequency range and attack at the same time—sidechaining the bass to the kick solves both problems at once.',
+          'Start with 3-6dB of reduction and adjust based on genre. EDM can handle 8-10dB, while hip-hop and pop usually need 2-4dB.',
+          'Sidechain works with EQ, not instead of it. High-pass your bass around 30-40Hz and use sidechaining for the remaining overlap.'
+        ],
+        resources: [
+          { name: 'Kick-bass sidechain settings by genre', type: 'PDF' },
+          { name: 'Frequency analysis guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Musical Applications',
+        lesson: 2,
+        title: 'Pad ducking for clarity',
+        duration: '3:40',
+        description: 'Using sidechain to carve space for vocals and lead elements in dense arrangements.',
+        inThisLesson: [
+          'Why pads and synths need to duck',
+          'Multiband sidechaining for pads',
+          'Frequency-specific ducking techniques',
+          'Keeping atmosphere while creating space'
+        ],
+        keyTakeaways: [
+          'Pads and sustained synths fill midrange frequencies that compete with vocals and leads—subtle sidechain ducking creates space without losing atmosphere.',
+          'Use multiband compression to duck only the frequencies that clash (typically 200-3kHz) while keeping low and high frequencies intact.',
+          'The goal is to feel the space, not hear the ducking. If the listener notices the effect, you\'ve gone too far.'
+        ],
+        resources: [
+          { name: 'Pad ducking frequency guide', type: 'PDF' },
+          { name: 'Multiband sidechain setup', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Musical Applications',
+        lesson: 3,
+        title: 'Vocal clarity',
+        duration: '4:15',
+        description: 'Advanced sidechaining techniques to make vocals cut through without over-processing.',
+        inThisLesson: [
+          'Sidechaining multiple elements to vocals',
+          'Avoiding over-ducking and vocal fatigue',
+          'Dynamic sidechaining vs. static ducking',
+          'When automation works better than sidechaining'
+        ],
+        keyTakeaways: [
+          'Sidechaining backing vocals, guitars, and synths to the lead vocal creates natural space that sounds less processed than aggressive EQ cuts.',
+          'Use minimal reduction (1-3dB) with fast attack and medium release (100-200ms) for transparent vocal clarity.',
+          'If you\'re ducking more than 4 elements to the vocal, consider simplifying your arrangement or using volume automation instead.'
+        ],
+        resources: [
+          { name: 'Vocal sidechain checklist', type: 'PDF' },
+          { name: 'Multi-element ducking template', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Creative Uses
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Creative Uses',
+        lesson: 1,
+        title: 'Rhythmic sidechaining',
+        duration: '4:30',
+        description: 'Creating rhythmic movement and groove using sidechain as a creative effect.',
+        inThisLesson: [
+          'Using ghost kicks for rhythm',
+          'Creating pulse without obvious pumping',
+          'Layering multiple sidechain rhythms',
+          'Syncing sidechains to groove'
+        ],
+        keyTakeaways: [
+          'Ghost kicks are silent trigger tracks that control sidechain compression, letting you create rhythmic ducking without audible drum hits.',
+          'Experiment with off-beat sidechain triggers (like hi-hats or snares) to create syncopated movement that enhances your groove.',
+          'Multiple sidechain rhythms on different elements create complex, interlocking movement—but keep it musical, not chaotic.'
+        ],
+        resources: [
+          { name: 'Ghost kick setup guide', type: 'PDF' },
+          { name: 'Rhythmic pattern templates', type: 'MIDI' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Creative Uses',
+        lesson: 2,
+        title: 'Creative gating',
+        duration: '3:50',
+        description: 'Using extreme sidechain settings to create gating, stuttering, and rhythmic effects.',
+        inThisLesson: [
+          'Sidechain gating vs. traditional noise gates',
+          'Creating stutter and chop effects',
+          'Extreme ratios and fast releases',
+          'Combining sidechaining with other effects'
+        ],
+        keyTakeaways: [
+          'Extreme sidechain compression (ratios above 20:1 with fast attack/release) turns ducking into gating, completely cutting signals rhythmically.',
+          'Sidechain gating is more musical than traditional gates because it\'s synced to your rhythm and responds to actual musical events.',
+          'Layer gated pads with delay and reverb to create evolving, rhythmic textures that add depth without cluttering your mix.'
+        ],
+        resources: [
+          { name: 'Extreme sidechain settings', type: 'PDF' },
+          { name: 'Creative effects chain examples', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Creative Uses',
+        lesson: 3,
+        title: 'Sidechain troubleshooting',
+        duration: '3:35',
+        description: 'Solving common sidechain problems and knowing when sidechaining isn\'t the answer.',
+        inThisLesson: [
+          'Why your sidechain sounds unnatural',
+          'Fixing excessive pumping',
+          'When sidechaining makes things worse',
+          'Alternative solutions to common problems'
+        ],
+        keyTakeaways: [
+          'If your sidechaining sounds unnatural, you\'re probably using too much reduction, too fast an attack, or too slow a release for your tempo.',
+          'Sometimes the problem isn\'t solved by sidechain compression—EQ cuts, volume automation, or better arrangement choices might work better.',
+          'Sidechaining is a tool, not a rule. If it\'s not improving the track, don\'t force it.'
+        ],
+        resources: [
+          { name: 'Troubleshooting flowchart', type: 'PDF' },
+          { name: 'Alternative techniques guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course-sidechain.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Sidechain Compression</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~35 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Sidechain Basics</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What is sidechaining?</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Setting up sidechain compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Ducking fundamentals</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding pumping</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:30</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Musical Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Kick and bass relationship</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Pad ducking for clarity</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Vocal clarity</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Creative Uses</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Rhythmic sidechaining</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Creative gating</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Sidechain troubleshooting</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What is sidechaining?</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the fundamental concept of sidechain compression and how it works.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The basic principle of sidechaining</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How sidechain compression differs from standard compression</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Real-world examples of ducking and pumping</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>When to use sidechain in your mixes</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Sidechain compression uses one signal to control the compression of another, creating space and movement in your mix.
+          </p>
+          <p>
+            Unlike standard compression that responds to the compressed signal itself, sidechaining responds to an external trigger signal.
+          </p>
+          <p>
+            The two main applications are ducking (making space) and pumping (creating rhythm), and understanding which you need is the first step.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Sidechain basics overview (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Quick reference guide (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Sidechain Compression</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~35 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to set up and configure sidechain compression in any DAW</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Mastering the kick-bass relationship with proper ducking</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating space for vocals and leads with subtle sidechaining</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Advanced rhythmic and creative gating techniques</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">Ready to purchase?</h3>
+      <p class="text-sm mb-4" style="color: var(--text-muted);">
+        Get instant access to all lessons and downloadable resources for £35
+      </p>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Purchase course — £35
+        </a>
+        <a href="index.html#learn" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

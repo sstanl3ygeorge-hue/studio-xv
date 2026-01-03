@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER
+  Course 8: Reverb & Space
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Reverb & Space</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Reverb & Space',
+      backLink: 'learn-courses.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~45 minutes',
+      moduleCount: 3
+    };
+    
+    /* ============================================
+       LESSON DATA
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Reverb Types
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Reverb Types',
+        lesson: 1,
+        title: 'Introduction to reverb',
+        duration: '4:15',
+        description: 'Understanding what reverb does and why it\'s essential for creating depth in your mixes.',
+        inThisLesson: [
+          'What reverb actually is (sound reflections)',
+          'Why every mix needs reverb to sound natural',
+          'The difference between reverb and delay',
+          'How reverb creates depth and space'
+        ],
+        keyTakeaways: [
+          'Reverb simulates the natural reflections that happen when sound bounces off walls, floors, and ceilings. Without it, your mix sounds like it\'s floating in a void.',
+          'Your brain expects to hear reverb because that\'s how sound works in real life. Dry sounds feel unnatural and disconnected from each other.',
+          'Reverb isn\'t decoration—it\'s glue. It places sounds in the same space and creates a sense of depth that makes mixes feel three-dimensional.'
+        ],
+        resources: [
+          { name: 'Reverb basics guide', type: 'PDF' },
+          { name: 'Depth perception reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Reverb Types',
+        lesson: 2,
+        title: 'Room reverb',
+        duration: '5:20',
+        description: 'Small, natural spaces—when to use room reverb and how to keep it tight.',
+        inThisLesson: [
+          'What room reverb sounds like',
+          'Best use cases: drums, vocals, percussion',
+          'Keeping room reverb tight and controlled',
+          'Common room reverb mistakes'
+        ],
+        keyTakeaways: [
+          'Room reverb simulates small spaces like studios or bedrooms. It adds presence and cohesion without overwhelming the mix.',
+          'Use room reverb when you want instruments to feel close and intimate. It\'s perfect for drums, vocals, and anything that needs to stay upfront.',
+          'The key to room reverb is short decay times (0.3–1 second). Longer decays turn rooms into halls, which defeats the purpose.'
+        ],
+        resources: [
+          { name: 'Room reverb presets guide', type: 'PDF' },
+          { name: 'Room vs. hall comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Reverb Types',
+        lesson: 3,
+        title: 'Hall reverb',
+        duration: '5:45',
+        description: 'Large, natural spaces—creating expansive depth without losing clarity.',
+        inThisLesson: [
+          'What hall reverb sounds like',
+          'When to use hall reverb vs. room reverb',
+          'Balancing size with clarity',
+          'How hall reverb creates drama'
+        ],
+        keyTakeaways: [
+          'Hall reverb simulates concert halls, churches, or large rooms. It creates a sense of grandeur and space that room reverb can\'t.',
+          'Use hall reverb on vocals, strings, pads, or anything that benefits from sounding epic or distant. It pushes elements back in the mix.',
+          'Hall reverb can swallow your mix if you\'re not careful. Keep it subtle, EQ the low end, and use automation to control how much space you\'re creating.'
+        ],
+        resources: [
+          { name: 'Hall reverb settings guide', type: 'PDF' },
+          { name: 'Hall reverb EQ tips', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Reverb Types',
+        lesson: 4,
+        title: 'Plate reverb',
+        duration: '4:50',
+        description: 'Artificial but musical—why plate reverb is the secret weapon for vocals and snares.',
+        inThisLesson: [
+          'What plate reverb is and how it\'s different',
+          'Why plate reverb works on vocals',
+          'Using plate reverb on drums',
+          'When plate reverb is better than room or hall'
+        ],
+        keyTakeaways: [
+          'Plate reverb doesn\'t simulate real spaces—it\'s a mechanical effect created by vibrating metal plates. It sounds bright, smooth, and unnatural in the best way.',
+          'Plate reverb is the go-to for vocals because it adds presence and shine without pushing the vocal back. It sits on top of the mix instead of blending into it.',
+          'Use plate reverb when you want something to sound polished and radio-ready. It\'s less natural than room or hall, but that\'s why it works.'
+        ],
+        resources: [
+          { name: 'Plate reverb vocal settings', type: 'PDF' },
+          { name: 'Plate vs. hall comparison', type: 'PDF' }
+        ]
+      },
+      // Module 2: Creating Depth
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Creating Depth',
+        lesson: 1,
+        title: 'Pre-delay explained',
+        duration: '5:30',
+        description: 'Creating separation between the dry signal and reverb tail for clarity.',
+        inThisLesson: [
+          'What pre-delay does',
+          'How pre-delay creates depth and clarity',
+          'Finding the right pre-delay time',
+          'When to use long vs. short pre-delay'
+        ],
+        keyTakeaways: [
+          'Pre-delay is the gap between the original sound and the reverb tail. It keeps the dry signal clear while still adding space.',
+          'Short pre-delay (10–30ms) makes reverb feel tight and close. Long pre-delay (50–100ms) creates dramatic space and separation.',
+          'Use pre-delay on vocals to keep words clear but still add reverb. Without it, reverb smears the signal and makes everything muddy.'
+        ],
+        resources: [
+          { name: 'Pre-delay timing chart', type: 'PDF' },
+          { name: 'Pre-delay vocal examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Creating Depth',
+        lesson: 2,
+        title: 'Reverb EQ',
+        duration: '6:10',
+        description: 'Shaping reverb frequency content to avoid mud and harshness.',
+        inThisLesson: [
+          'Why raw reverb always sounds wrong',
+          'High-pass filtering to remove low-end mud',
+          'Taming harsh high frequencies',
+          'Creating dark vs. bright reverb'
+        ],
+        keyTakeaways: [
+          'Reverb plugins output the entire frequency spectrum, which means you\'re adding mud and harshness unless you EQ it. Always filter reverb.',
+          'High-pass your reverb around 200–500 Hz to remove low-end buildup. Low frequencies in reverb create mud that makes your mix feel cloudy.',
+          'Cut around 2–4 kHz if reverb sounds harsh or distracting. Boost around 8–10 kHz if you want reverb to sound brighter and more present.'
+        ],
+        resources: [
+          { name: 'Reverb EQ starting points', type: 'PDF' },
+          { name: 'Before/after reverb EQ audio', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Creating Depth',
+        lesson: 3,
+        title: 'Decay time decisions',
+        duration: '4:40',
+        description: 'Matching reverb decay to your tempo and genre.',
+        inThisLesson: [
+          'What decay time actually controls',
+          'Short vs. long decay times',
+          'Matching decay to your tempo',
+          'Genre-specific decay guidelines'
+        ],
+        keyTakeaways: [
+          'Decay time controls how long the reverb tail lasts. Short decay (0.5–1.5s) keeps things tight. Long decay (2–4s+) creates atmosphere.',
+          'Faster tempos need shorter decay times or reverb will smear into the next hit. Slower tempos can handle longer decays.',
+          'Electronic music typically uses 1–2 second decays. Cinematic and ambient music goes 3–5+ seconds. Match your genre expectations.'
+        ],
+        resources: [
+          { name: 'Decay time tempo chart', type: 'PDF' },
+          { name: 'Genre decay guidelines', type: 'PDF' }
+        ]
+      },
+      // Module 3: Practical Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Practical Applications',
+        lesson: 1,
+        title: 'Reverb on vocals',
+        duration: '5:50',
+        description: 'Adding space to vocals without losing clarity or intelligibility.',
+        inThisLesson: [
+          'The vocal reverb starting point',
+          'Balancing presence with space',
+          'Using automation to control reverb',
+          'When to use multiple reverbs'
+        ],
+        keyTakeaways: [
+          'Start with a plate or small hall, 1.2–1.8 second decay, 30–50ms pre-delay, and high-pass at 300 Hz. Adjust from there.',
+          'Vocals need to stay upfront and clear. Use just enough reverb to add dimension without pushing the vocal back in the mix.',
+          'Automate reverb during big moments (end of phrases, choruses) to add drama without making the entire vocal washy.'
+        ],
+        resources: [
+          { name: 'Vocal reverb presets', type: 'PDF' },
+          { name: 'Vocal reverb automation guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Practical Applications',
+        lesson: 2,
+        title: 'Reverb on drums',
+        duration: '5:15',
+        description: 'Creating cohesion and depth in your drum mix without losing punch.',
+        inThisLesson: [
+          'Room reverb for drum glue',
+          'Snare reverb techniques',
+          'Keeping kick drums dry',
+          'Reverb for percussion and hi-hats'
+        ],
+        keyTakeaways: [
+          'Use a tight room reverb (0.5–1 second) on the entire drum bus to create cohesion. This makes your drums sound like they\'re in the same space.',
+          'Snares love plate reverb. It adds energy and presence without washing out the transient. Keep decay around 1–1.5 seconds.',
+          'Keep kick drums mostly dry. Low-frequency reverb creates mud. If you want kick reverb, high-pass it aggressively around 500 Hz.'
+        ],
+        resources: [
+          { name: 'Drum reverb bus guide', type: 'PDF' },
+          { name: 'Snare reverb examples', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Practical Applications',
+        lesson: 3,
+        title: 'Avoiding reverb mud',
+        duration: '5:25',
+        description: 'Common mistakes that create buildup and how to fix them.',
+        inThisLesson: [
+          'What reverb mud is and why it happens',
+          'The most common culprit: low frequencies',
+          'Over-reverbing too many elements',
+          'Using sends instead of inserts'
+        ],
+        keyTakeaways: [
+          'Reverb mud is the cloudy, undefined buildup that happens when too many low frequencies are reverberating. It kills clarity.',
+          'Always high-pass your reverb. Most reverb mud lives below 300 Hz and doesn\'t contribute to the sense of space anyway.',
+          'Use reverb sends instead of inserting reverb on every track. This gives you central control and prevents reverb from stacking uncontrollably.'
+        ],
+        resources: [
+          { name: 'Reverb mud checklist', type: 'PDF' },
+          { name: 'Send vs. insert guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="learn-courses.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Reverb & Space</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~45 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Reverb Types</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Introduction to reverb</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Room reverb</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Hall reverb</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Plate reverb</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Creating Depth</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Pre-delay explained</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Reverb EQ</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Decay time decisions</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Practical Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Reverb on vocals</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Reverb on drums</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Avoiding reverb mud</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Introduction to reverb</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding what reverb does and why it's essential for creating depth in your mixes.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>What reverb actually is (sound reflections)</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why every mix needs reverb to sound natural</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The difference between reverb and delay</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How reverb creates depth and space</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Reverb simulates the natural reflections that happen when sound bounces off walls, floors, and ceilings. Without it, your mix sounds like it's floating in a void.
+          </p>
+          <p>
+            Your brain expects to hear reverb because that's how sound works in real life. Dry sounds feel unnatural and disconnected from each other.
+          </p>
+          <p>
+            Reverb isn't decoration—it's glue. It places sounds in the same space and creates a sense of depth that makes mixes feel three-dimensional.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Reverb basics guide (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Depth perception reference (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Reverb & Space</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~45 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Different reverb types and when to use them</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Pre-delay and EQ techniques for clear reverb</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating depth without mud</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical reverb applications for vocals and drums</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock course for £35
+        </a>
+        <a href="learn-courses.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

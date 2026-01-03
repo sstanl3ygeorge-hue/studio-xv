@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Energy & Dynamics</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Energy & Dynamics',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~45 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Energy Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Energy Fundamentals',
+        lesson: 1,
+        title: 'Understanding energy curves',
+        duration: '5:15',
+        description: 'How energy flows through a track and why it matters for listener engagement.',
+        inThisLesson: [
+          'What energy actually means in production',
+          'Reading the energy curve of a professional track',
+          'Energy vs loudness (they\'re not the same)',
+          'How energy affects listener attention and emotion'
+        ],
+        keyTakeaways: [
+          'Energy is the perceived intensity and forward momentum of your track. It\'s created by a combination of density, frequency content, dynamics, and rhythm—not just volume.',
+          'Every successful track has an energy curve: it rises and falls strategically to maintain interest. Constant high energy is exhausting, constant low energy is boring.',
+          'You can have high energy at low volume (sparse but intense elements) or low energy at high volume (dense but static elements). Energy is about movement and tension.'
+        ],
+        resources: [
+          { name: 'Energy curve analysis examples', type: 'PDF' },
+          { name: 'Energy vs loudness comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Energy Fundamentals',
+        lesson: 2,
+        title: 'Tension and release principles',
+        duration: '4:45',
+        description: 'Creating musical tension that makes drops and transitions hit harder.',
+        inThisLesson: [
+          'The psychology of tension in music',
+          'Building tension through arrangement',
+          'Harmonic and rhythmic tension techniques',
+          'When to release tension for maximum impact'
+        ],
+        keyTakeaways: [
+          'Tension is anticipation. Your brain craves resolution. The longer you hold tension (within reason), the more satisfying the release feels. This is why drops hit hard.',
+          'Create tension by removing elements (breakdown), adding dissonance (harmony), or increasing repetition (buildup). The brain notices change and anticipates what\'s next.',
+          'Release doesn\'t always mean "drop the bass." Sometimes release is space, sometimes it\'s simplicity. Match your release to the tension you\'ve built.'
+        ],
+        resources: [
+          { name: 'Tension techniques by genre', type: 'PDF' },
+          { name: 'Tension/release structure templates', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Energy Fundamentals',
+        lesson: 3,
+        title: 'Dynamic range in modern production',
+        duration: '4:30',
+        description: 'Preserving impact in a loud world without sacrificing competitive loudness.',
+        inThisLesson: [
+          'Why dynamic range still matters',
+          'The loudness wars and where we are now',
+          'Micro dynamics vs macro dynamics',
+          'Strategic dynamics placement'
+        ],
+        keyTakeaways: [
+          'Modern tracks are loud, but they still have dynamics. The difference between sections (verse vs chorus) creates impact, even if each section is internally squashed.',
+          'Micro dynamics (transient punch, natural performance variation) make your track feel alive. Macro dynamics (section-to-section changes) create structure and impact.',
+          'You can be competitive in loudness while still having dynamics. The key is choosing where to preserve dynamics and where to control them. Make intentional choices.'
+        ],
+        resources: [
+          { name: 'Dynamic range targets by genre', type: 'PDF' },
+          { name: 'Loudness vs dynamics case studies', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Dynamics Control
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Dynamics Control',
+        lesson: 1,
+        title: 'Preserving transients through processing',
+        duration: '5:00',
+        description: 'Keeping punch and impact while adding compression and limiting.',
+        inThisLesson: [
+          'Why transients disappear in processing',
+          'Attack time settings for transient preservation',
+          'Parallel processing for maintaining punch',
+          'Transient shapers and when to use them'
+        ],
+        keyTakeaways: [
+          'Transients are the initial attack of a sound—the snap of a snare, the pluck of a bass. They\'re what makes elements feel immediate and punchy. Compression kills them if you\'re not careful.',
+          'To preserve transients, use slower attack times (5-30ms) on drums and percussive elements. Let the transient pass through before compression kicks in.',
+          'If you\'ve already squashed your transients, parallel compression or transient shapers can help. Better to preserve them from the start than try to recover them later.'
+        ],
+        resources: [
+          { name: 'Transient preservation guide', type: 'PDF' },
+          { name: 'Attack time reference chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Dynamics Control',
+        lesson: 2,
+        title: 'Compression for energy shaping',
+        duration: '4:50',
+        description: 'Using compression to enhance energy flow rather than just control peaks.',
+        inThisLesson: [
+          'Compression as an arrangement tool',
+          'Sidechain compression for energy pumping',
+          'Release time and groove relationship',
+          'Multi-stage compression strategies'
+        ],
+        keyTakeaways: [
+          'Compression isn\'t just for control—it shapes energy. Fast release creates a pumping, urgent feel. Slow release creates smooth, consistent energy. Use this intentionally.',
+          'Sidechain compression doesn\'t just make space for the kick—it creates rhythmic energy. The pumping effect drives the groove and adds forward momentum.',
+          'Layer your compression: light compression for control, medium compression for tone, heavy compression (via parallel) for energy. Each stage has a different job.'
+        ],
+        resources: [
+          { name: 'Compression for energy examples', type: 'PDF' },
+          { name: 'Release time and feel', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Dynamics Control',
+        lesson: 3,
+        title: 'Limiting without destroying dynamics',
+        duration: '4:20',
+        description: 'Getting competitive loudness while maintaining punch and separation.',
+        inThisLesson: [
+          'What limiting actually does to your mix',
+          'Pre-limiting mix preparation',
+          'True peak vs sample peak limiting',
+          'How much limiting is too much'
+        ],
+        keyTakeaways: [
+          'Limiting is the final volume control—it catches peaks so you can maximize overall loudness. But it removes dynamics if you push too hard. There\'s always a tradeoff.',
+          'Your mix should be mostly ready before the limiter. If your limiter is working hard (more than 3-4dB gain reduction), your mix has too many peaks or not enough compression.',
+          'Use true peak limiting to avoid inter-sample peaks. Set your ceiling to -1dB true peak for streaming, -0.3dB for mastering. More headroom = safer on various playback systems.'
+        ],
+        resources: [
+          { name: 'Limiter settings by target', type: 'PDF' },
+          { name: 'Pre-limiting checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Dynamics Control',
+        lesson: 4,
+        title: 'Automation for dynamic movement',
+        duration: '4:35',
+        description: 'Using volume, filter, and effect automation to create energy changes.',
+        inThisLesson: [
+          'When to automate vs when to compress',
+          'Volume automation for emphasis',
+          'Filter automation for energy builds',
+          'Effect automation for transitions'
+        ],
+        keyTakeaways: [
+          'Automation is hands-on dynamics control. Use it where compression can\'t help—bringing out a word in a vocal, emphasizing a fill, creating filter sweeps.',
+          'Volume automation is your secret weapon for impact. Slight increases (1-2dB) on key moments make them pop. Slight decreases on filler parts create space.',
+          'Filter and effect automation creates perceived energy changes without changing actual loudness. High-pass filters reduce energy, low-pass filters build tension, reverb sends create space.'
+        ],
+        resources: [
+          { name: 'Automation strategies', type: 'PDF' },
+          { name: 'Common automation moves', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Arrangement Energy
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Arrangement Energy',
+        lesson: 1,
+        title: 'Designing effective build sections',
+        duration: '4:45',
+        description: 'Creating builds that increase energy and anticipation without becoming predictable.',
+        inThisLesson: [
+          'The anatomy of a great build',
+          'Layering elements progressively',
+          'Frequency and rhythm escalation',
+          'Avoiding generic build clichés'
+        ],
+        keyTakeaways: [
+          'Builds work by progressively adding complexity—more layers, higher frequencies, faster rhythms, louder volume. The brain recognizes the pattern and anticipates the peak.',
+          'Start builds low and sparse. Add elements every 2-4 bars: hi-hats, percussion, synth layers, risers. Each addition should be noticeable but not overwhelming.',
+          'The last 2-4 bars of your build should feel almost uncomfortable—dense, loud, repetitive. This makes the drop feel like relief and release, not just "louder."'
+        ],
+        resources: [
+          { name: 'Build section templates', type: 'PDF' },
+          { name: 'Build layering checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Arrangement Energy',
+        lesson: 2,
+        title: 'Drop design and impact',
+        duration: '5:10',
+        description: 'Making drops hit hard through contrast, space, and element selection.',
+        inThisLesson: [
+          'Why some drops hit harder than others',
+          'The power of the first beat',
+          'Element removal vs addition in drops',
+          'Creating second drops that don\'t disappoint'
+        ],
+        keyTakeaways: [
+          'Drops hit hard because of contrast. The bigger the difference between build and drop, the more impactful it feels. Remove some elements right before the drop to create space.',
+          'The first beat of your drop is critical. It should have the most low-end, the tightest transients, and the clearest space. Everything should support this moment hitting perfectly.',
+          'Not every drop needs more elements. Sometimes removing the mid-range and letting bass and drums breathe creates more impact than adding another synth layer.'
+        ],
+        resources: [
+          { name: 'Drop anatomy examples', type: 'PDF' },
+          { name: 'First beat impact guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Arrangement Energy',
+        lesson: 3,
+        title: 'Breakdown and bridge sections',
+        duration: '4:15',
+        description: 'Using lower energy sections to create contrast and emotional variation.',
+        inThisLesson: [
+          'The purpose of breakdowns',
+          'What to keep and what to remove',
+          'Building emotional moments',
+          'Transitioning out of breakdowns'
+        ],
+        keyTakeaways: [
+          'Breakdowns are energy resets. They give the listener a moment to breathe before the next section. Without them, your track feels relentless and exhausting.',
+          'Remove drums or bass, but keep something musical—a vocal, a chord progression, a melody. Silence is powerful, but total silence is risky. Give them something to hold onto.',
+          'The transition out of a breakdown is as important as the breakdown itself. You can build back gradually or snap back suddenly. Each choice creates a different feeling.'
+        ],
+        resources: [
+          { name: 'Breakdown strategies', type: 'PDF' },
+          { name: 'Breakdown to build transitions', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Arrangement Energy',
+        lesson: 4,
+        title: 'Maintaining energy in extended sections',
+        duration: '4:00',
+        description: 'Keeping 16+ bar sections interesting without major arrangement changes.',
+        inThisLesson: [
+          'Subtle variation techniques',
+          'Introducing and removing single elements',
+          'Automation for movement within sections',
+          'Preventing listener fatigue'
+        ],
+        keyTakeaways: [
+          'Long sections (16-32 bars of the same energy) need micro-variations to stay interesting. Add a shaker at bar 8, remove a synth layer at bar 12, automate a filter over 16 bars.',
+          'The listener shouldn\'t consciously notice these changes, but they should feel the section evolving. Movement keeps attention even when the arrangement stays similar.',
+          'Don\'t confuse energy maintenance with adding more. Sometimes removing an element for 4 bars and bringing it back creates more interest than adding something new.'
+        ],
+        resources: [
+          { name: 'Micro-variation techniques', type: 'PDF' },
+          { name: 'Extended section checklist', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    let completedLessons = new Set();
+    
+    function loadLesson(index) {
+      if (index < 0 || index >= lessons.length) return;
+      
+      currentLessonIndex = index;
+      const lesson = lessons[index];
+      
+      // Mark previous lesson as completed
+      if (index > 0) {
+        completedLessons.add(lessons[index - 1].id);
+      }
+      
+      // Update sidebar active state
+      document.querySelectorAll('.lesson-item').forEach((item, idx) => {
+        item.classList.remove('active');
+        if (idx === index) {
+          item.classList.add('active');
+        }
+        if (completedLessons.has(lessons[idx].id)) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Update content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson" list
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson
+        .map(item => `<li class="flex gap-3"><span style="color: var(--accent);">•</span><span>${item}</span></li>`)
+        .join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways
+        .map(takeaway => `<p>${takeaway}</p>`)
+        .join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources
+        .map(resource => `
+          <a href="#" class="flex items-center justify-between p-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+            <span class="text-sm">${resource.name}</span>
+            <span class="text-xs px-2 py-1 rounded" style="background: var(--bg-section); color: var(--text-muted);">${resource.type}</span>
+          </a>
+        `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (index === 0) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (index === lessons.length - 1) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      // Scroll to top
+      document.querySelector('main').scrollTop = 0;
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        loadLesson(currentLessonIndex + 1);
+      } else {
+        // Show completion modal
+        completedLessons.add(lessons[currentLessonIndex].id);
+        document.getElementById('completion-modal').classList.add('active');
+      }
+    }
+    
+    function previousLesson() {
+      if (currentLessonIndex > 0) {
+        loadLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set course metadata
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      
+      // Load first lesson
+      loadLesson(0);
+      
+      // Setup sidebar click handlers
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadLesson(index);
+        });
+      });
+      
+      // Setup navigation handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        previousLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Energy & Dynamics</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~45 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Energy Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding energy curves</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Tension and release principles</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Dynamic range in modern production</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Dynamics Control</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Preserving transients through processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:00</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Compression for energy shaping</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Limiting without destroying dynamics</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Automation for dynamic movement</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Arrangement Energy</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Designing effective build sections</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Drop design and impact</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Breakdown and bridge sections</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Maintaining energy in extended sections</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:00</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Understanding energy curves</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          How energy flows through a track and why it matters for listener engagement.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Energy & Dynamics</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~45 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding energy curves, tension/release, and dynamic range in modern production</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Preserving transients and using compression strategically for energy shaping</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Designing impactful builds, drops, and breakdowns that maintain listener engagement</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating dynamic movement through automation and arrangement techniques</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

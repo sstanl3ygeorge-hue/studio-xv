@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Multiband Compression</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Multiband Compression',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~45 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Multiband Basics
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Multiband Basics',
+        lesson: 1,
+        title: 'Why multiband exists',
+        duration: '4:30',
+        description: 'Understanding the fundamental problem multiband compression solves and when you need it.',
+        inThisLesson: [
+          'The limitations of full-band compression',
+          'Why different frequencies need different control',
+          'Real scenarios where multiband wins',
+          'When standard compression is still better'
+        ],
+        keyTakeaways: [
+          'Regular compression affects all frequencies equally. If your bass is too dynamic, full-band compression will also duck your vocals and highs every time the bass hits.',
+          'Multiband splits your signal into frequency bands and compresses each independently. You can control low-end without affecting the midrange or highs.',
+          'Don\'t use multiband just because it exists. If your dynamics problem is consistent across frequencies, regular compression is simpler and more transparent.'
+        ],
+        resources: [
+          { name: 'Full-band vs multiband comparison', type: 'PDF' },
+          { name: 'When to use multiband guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Multiband Basics',
+        lesson: 2,
+        title: 'How multiband works',
+        duration: '5:10',
+        description: 'The technical architecture behind splitting and recombining frequency bands.',
+        inThisLesson: [
+          'Crossovers and frequency splitting',
+          'Independent compression per band',
+          'Phase coherence and transparent recombining',
+          'Typical band configurations (3-band, 4-band, etc.)'
+        ],
+        keyTakeaways: [
+          'A multiband compressor splits your signal into separate frequency bands using crossover filters (like a DJ mixer), compresses each band independently, then sums them back together.',
+          'Most multiband units offer 3-4 bands. Three is usually enough: low (bass), mid (fundamental/body), high (presence/air). Four adds more precision but also more complexity.',
+          'Good multiband compressors maintain phase relationships when recombining. Cheap ones can create phase issues that make your mix sound weird or hollow.'
+        ],
+        resources: [
+          { name: 'Multiband signal flow diagram', type: 'PDF' },
+          { name: 'Band configuration reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Multiband Basics',
+        lesson: 3,
+        title: 'Understanding crossover points',
+        duration: '4:45',
+        description: 'Setting the frequencies that divide your bands and why they matter.',
+        inThisLesson: [
+          'What crossover frequencies do',
+          'Common crossover starting points',
+          'How crossover choices affect sound',
+          'Matching crossovers to your source material'
+        ],
+        keyTakeaways: [
+          'Crossover points are the frequencies where one band ends and another begins. Setting a crossover at 120Hz means everything below is band 1, everything above is band 2.',
+          'Standard starting point for 3-band: Low/mid crossover at 100-150Hz, mid/high crossover at 2-4kHz. Adjust based on your source and what needs control.',
+          'Put crossovers where natural gaps exist in your mix. Avoid splitting a fundamental frequency (like a vocal) between two bands—it can create weird artifacts.'
+        ],
+        resources: [
+          { name: 'Crossover frequency guide', type: 'PDF' },
+          { name: 'Frequency allocation chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Multiband Basics',
+        lesson: 4,
+        title: 'Solo, bypass, and monitoring',
+        duration: '3:50',
+        description: 'Using your multiband\'s monitoring features to understand what each band is doing.',
+        inThisLesson: [
+          'Soloing bands to hear what you\'re compressing',
+          'Bypassing bands to check contribution',
+          'Monitoring gain reduction per band',
+          'A/B comparison techniques'
+        ],
+        keyTakeaways: [
+          'Always solo each band to hear exactly what you\'re compressing. It\'s easy to accidentally compress frequencies you didn\'t intend to target.',
+          'Use bypass on individual bands to hear their contribution. If bypassing a band makes no difference, you either don\'t need it or your settings are wrong.',
+          'Watch the gain reduction meters for each band independently. One band working hard while others do nothing is usually correct—that\'s the whole point.'
+        ],
+        resources: [
+          { name: 'Multiband monitoring workflow', type: 'PDF' },
+          { name: 'Band isolation techniques', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Frequency-Specific Control
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Frequency-Specific Control',
+        lesson: 1,
+        title: 'Controlling low-end dynamics',
+        duration: '5:20',
+        description: 'Taming bass without affecting the rest of your mix.',
+        inThisLesson: [
+          'Why bass frequencies need separate control',
+          'Setting low-band crossover and compression',
+          'Balancing punch with consistency',
+          'Avoiding low-end pumping'
+        ],
+        keyTakeaways: [
+          'Bass has huge dynamic range and can trigger full-band compression unnecessarily. Multiband lets you control the low-end independently so mids and highs stay untouched.',
+          'Set your low band crossover around 100-150Hz (depends on your key), use 3:1 to 5:1 ratio, medium-fast attack (5-15ms), and aim for 3-5dB gain reduction on bass hits.',
+          'If your whole mix pumps with the kick, your low-band crossover is too high or you\'re compressing too hard. Lower the crossover or reduce the ratio.'
+        ],
+        resources: [
+          { name: 'Low-end multiband settings', type: 'PDF' },
+          { name: 'Bass crossover frequency guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Frequency-Specific Control',
+        lesson: 2,
+        title: 'Midrange consistency',
+        duration: '4:55',
+        description: 'Controlling the fundamental frequencies where most musical information lives.',
+        inThisLesson: [
+          'The importance of midrange control',
+          'Vocal, guitar, and synth fundamentals',
+          'Medium band compression techniques',
+          'Preserving character while controlling peaks'
+        ],
+        keyTakeaways: [
+          'The midrange (200Hz-2kHz) contains the fundamental frequencies of most instruments. This is where body, warmth, and note definition live. Control here is subtle but powerful.',
+          'Use gentle compression on the mid-band: 2:1 to 3:1 ratio, medium attack (10-20ms), and only 2-4dB gain reduction. The goal is consistency, not obvious compression.',
+          'Over-compressing the mids makes everything sound flat and lifeless. If your mix loses energy after multiband, check your mid-band settings first.'
+        ],
+        resources: [
+          { name: 'Midrange frequency reference', type: 'PDF' },
+          { name: 'Mid-band starting points', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Frequency-Specific Control',
+        lesson: 3,
+        title: 'High-frequency management',
+        duration: '4:40',
+        description: 'Managing brightness, air, and harshness without dulling your mix.',
+        inThisLesson: [
+          'What the high band controls',
+          'Taming harshness vs maintaining air',
+          'High-frequency compression settings',
+          'De-essing vs high-band compression'
+        ],
+        keyTakeaways: [
+          'The high band (above 2-4kHz) controls presence, clarity, and air. It can also contain harshness and sibilance that needs control without affecting the fundamental.',
+          'Use light compression on highs: 2:1 to 3:1 ratio, fast attack (1-3ms), fast release (40-80ms), and minimal gain reduction (1-3dB). Highs are delicate.',
+          'If you\'re using heavy high-band compression, you probably need a de-esser instead. De-essers target specific harsh frequencies; multiband affects the whole high range.'
+        ],
+        resources: [
+          { name: 'High-band compression guide', type: 'PDF' },
+          { name: 'Brightness vs harshness reference', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 1,
+        title: 'Multiband on vocals',
+        duration: '5:15',
+        description: 'Advanced vocal control using frequency-specific compression.',
+        inThisLesson: [
+          'When vocals need multiband',
+          'Controlling body without affecting presence',
+          'Sibilance and brightness management',
+          'Multiband vs multiple stages of compression'
+        ],
+        keyTakeaways: [
+          'Use multiband on vocals when standard compression can\'t solve the problem—like boomy low-mids that trigger compression and duck the highs, or harsh sibilance that needs separate control.',
+          'Set crossovers around 200Hz and 3kHz. Compress the low-mid band (200Hz-3kHz) for body consistency, and use the high band as gentle de-essing.',
+          'Multiband can fix problem vocals, but it\'s easy to overdo. If standard compression plus EQ works, use that instead. Simpler is usually better.'
+        ],
+        resources: [
+          { name: 'Vocal multiband techniques', type: 'PDF' },
+          { name: 'Vocal frequency zones guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 2,
+        title: 'Mix bus multiband',
+        duration: '5:05',
+        description: 'Using multiband on your full mix for final polish and competitive loudness.',
+        inThisLesson: [
+          'Mix bus multiband strategy',
+          'Gluing without squashing',
+          'Controlling rogue frequency buildups',
+          'How much is too much on the mix bus'
+        ],
+        keyTakeaways: [
+          'Mix bus multiband is the final polish—smoothing out frequency-specific dynamics that survived individual track processing. It\'s subtle correction, not heavy-handed control.',
+          'Use 3-band configuration: Low (below 120Hz) at 3:1, mid (120Hz-3kHz) at 2:1, high (above 3kHz) at 2:1. Aim for 1-3dB gain reduction per band on peaks only.',
+          'If you\'re seeing more than 3dB gain reduction on any band consistently, something earlier in your chain needs fixing. Mix bus multiband is the polish, not the solution.'
+        ],
+        resources: [
+          { name: 'Mix bus multiband guide', type: 'PDF' },
+          { name: 'Mastering-style multiband settings', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 3,
+        title: 'Surgical frequency correction',
+        duration: '4:25',
+        description: 'Using multiband as a problem-solving tool for specific frequency issues.',
+        inThisLesson: [
+          'Multiband as surgical EQ',
+          'Controlling resonances and buildups',
+          'Narrow-band compression techniques',
+          'When dynamic EQ is better'
+        ],
+        keyTakeaways: [
+          'You can use multiband compression like dynamic EQ—set a very narrow band around a problem frequency and compress only that range. It\'s surgical control when you need it.',
+          'Example: A bass guitar has a 200Hz resonance that\'s inconsistent. Create a narrow band from 180-220Hz, compress at 4:1, and leave everything else alone.',
+          'Modern dynamic EQs often work better for surgical tasks because they\'re built specifically for this. But if you only have a multiband, it can do the job with careful setup.'
+        ],
+        resources: [
+          { name: 'Surgical multiband techniques', type: 'PDF' },
+          { name: 'Problem frequency reference', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    const completedLessons = new Set();
+    
+    function updateLesson(index) {
+      const lesson = lessons[index];
+      if (!lesson) return;
+      
+      currentLessonIndex = index;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => 
+        `<li class="flex gap-3">
+          <span style="color: var(--accent);">•</span>
+          <span>${item}</span>
+        </li>`
+      ).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => 
+        `<p>${takeaway}</p>`
+      ).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => 
+        `<div class="flex items-center justify-between p-3 rounded" style="background: var(--bg-card);">
+          <div class="flex items-center gap-3">
+            <span class="text-xs px-2 py-1 rounded" style="background: var(--accent); color: white;">${resource.type}</span>
+            <span class="text-sm">${resource.name}</span>
+          </div>
+          <a href="#" class="text-xs hover:opacity-70" style="color: var(--accent);">Download</a>
+        </div>`
+      ).join('');
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        if (i === index) {
+          item.classList.add('active');
+        }
+      });
+      
+      const prevBtn = document.getElementById('prev-lesson');
+      const nextBtn = document.getElementById('next-lesson');
+      
+      if (index === 0) {
+        prevBtn.style.opacity = '0.3';
+        prevBtn.style.pointerEvents = 'none';
+      } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.pointerEvents = 'auto';
+      }
+      
+      if (index === lessons.length - 1) {
+        nextBtn.textContent = 'Complete course →';
+      } else {
+        nextBtn.textContent = 'Next lesson →';
+      }
+      
+      completedLessons.add(lesson.id);
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        if (completedLessons.has(lessons[i].id)) {
+          item.classList.add('completed');
+        }
+      });
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        updateLesson(currentLessonIndex + 1);
+        window.scrollTo(0, 0);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        updateLesson(currentLessonIndex - 1);
+        window.scrollTo(0, 0);
+      }
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      const lessonItems = document.querySelectorAll('.lesson-item');
+      lessonItems.forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          updateLesson(index);
+          window.scrollTo(0, 0);
+        });
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      updateLesson(0);
+    });
+  </script>
+  
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a href="course.html" class="text-xs uppercase tracking-wider mb-3 block hover:opacity-70 transition" style="color: var(--text-muted);">
+        ← Back to Courses
+      </a>
+      <h2 class="text-xl font-bold mb-2">Multiband Compression</h2>
+      <p class="text-xs mb-4" style="color: var(--text-muted);">
+        10 lessons · ~45 minutes
+      </p>
+      <div class="flex gap-2 text-xs">
+        <span class="px-3 py-1 rounded-full" style="background: var(--bg-soft); color: var(--text-muted);">Intermediate</span>
+        <span class="px-3 py-1 rounded-full" style="background: var(--bg-soft); color: var(--text-muted);">3 modules</span>
+      </div>
+    </div>
+    
+    <!-- Module 1 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Multiband Basics</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Why multiband exists</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">How multiband works</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding crossover points</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Solo, bypass, and monitoring</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Frequency-Specific Control</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Controlling low-end dynamics</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Midrange consistency</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">High-frequency management</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Multiband on vocals</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Mix bus multiband</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:05</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Surgical frequency correction</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Why multiband exists</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the fundamental problem multiband compression solves and when you need it.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Multiband Compression</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~45 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding when and why multiband compression is necessary</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Setting crossover points and configuring bands for optimal control</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Independent frequency control for bass, mids, and highs</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Applying multiband to vocals, mix bus, and surgical corrections</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Parallel Processing</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Parallel Processing',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~45 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Parallel Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Parallel Fundamentals',
+        lesson: 1,
+        title: 'What is parallel processing?',
+        duration: '4:30',
+        description: 'Understanding the core concept of parallel processing and why it\'s one of the most powerful mixing techniques.',
+        inThisLesson: [
+          'The fundamental concept behind parallel processing',
+          'Why blending works better than inserting',
+          'Parallel vs serial signal flow',
+          'When parallel processing is the right choice'
+        ],
+        keyTakeaways: [
+          'Parallel processing means processing a copy of your signal and blending it with the unprocessed original. This lets you use extreme processing without destroying the original character.',
+          'Think of it as "having your cake and eating it too"—you get the aggression and power of heavy processing while keeping the natural dynamics and detail of the original.',
+          'Parallel processing isn\'t always better than serial, but it excels when you want dramatic effects without sacrificing the core sound. It\'s particularly powerful for compression, saturation, and EQ.'
+        ],
+        resources: [
+          { name: 'Parallel processing overview', type: 'PDF' },
+          { name: 'Parallel vs serial comparison chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Parallel Fundamentals',
+        lesson: 2,
+        title: 'Setting up parallel chains',
+        duration: '5:15',
+        description: 'The practical routing and setup for parallel processing in your DAW.',
+        inThisLesson: [
+          'Send/return setup vs duplicate track method',
+          'Pre-fader vs post-fader sends',
+          'Gain staging in parallel chains',
+          'Phase alignment and mono compatibility'
+        ],
+        keyTakeaways: [
+          'Use send/return for most parallel processing—it\'s more flexible and CPU-efficient. Duplicate tracks work for more complex parallel chains where you need multiple stages.',
+          'Post-fader sends are usually better because the parallel blend stays consistent when you adjust the source level. Pre-fader sends can be useful for creative effects where you want the parallel independent.',
+          'Always check phase when blending. If something sounds hollow or weak when you add the parallel, flip the phase. Trust your ears—if it sounds wrong, it is wrong.'
+        ],
+        resources: [
+          { name: 'Parallel routing guide', type: 'PDF' },
+          { name: 'Send vs duplicate track flowchart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Parallel Fundamentals',
+        lesson: 3,
+        title: 'Understanding blend ratios',
+        duration: '4:45',
+        description: 'How to balance your processed and unprocessed signals for different results.',
+        inThisLesson: [
+          'What blend percentage actually means',
+          'Subtle enhancement vs obvious effect',
+          'Blend ratios for different sources',
+          'Using your ears vs using numbers'
+        ],
+        keyTakeaways: [
+          'Blend ratio is how much processed signal you mix with the original. 20% blend means quiet parallel, 50% is equal mix, 80%+ is heavily processed with a hint of original.',
+          'Start around 30-40% for most mixing applications. This gives you power and impact without being obvious. For more dramatic effects, push to 50-70%.',
+          'There are no rules—some sources need just 15% parallel compression to come alive, others can handle 60%. Adjust until it feels right, not until the meter says it\'s right.'
+        ],
+        resources: [
+          { name: 'Blend ratio starting points', type: 'PDF' },
+          { name: 'Parallel intensity reference', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Parallel Techniques
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Parallel Techniques',
+        lesson: 1,
+        title: 'Parallel compression (NY compression)',
+        duration: '5:30',
+        description: 'The classic technique that adds power and density without squashing dynamics.',
+        inThisLesson: [
+          'What New York compression is and why it works',
+          'Setting up aggressive compression for parallel',
+          'Blend control for different intensity levels',
+          'Common parallel compression mistakes'
+        ],
+        keyTakeaways: [
+          'NY compression (parallel compression) uses heavily compressed signal blended with the original. Set your compressor aggressively: 8:1+ ratio, fast attack and release, 10dB+ gain reduction.',
+          'The compressed channel should sound bad on its own—slammed, dense, maybe even distorted. That\'s the point. When you blend it under the original at 30-40%, magic happens.',
+          'Parallel compression is particularly powerful on drums, vocals, and bass. It adds weight and density while preserving the natural transients and dynamics that make things feel alive.'
+        ],
+        resources: [
+          { name: 'NY compression settings guide', type: 'PDF' },
+          { name: 'Parallel compression by source', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Parallel Techniques',
+        lesson: 2,
+        title: 'Parallel EQ techniques',
+        duration: '4:20',
+        description: 'Using parallel EQ to add character and power without destroying balance.',
+        inThisLesson: [
+          'Why parallel EQ works for extreme boosts',
+          'Low-end density with parallel EQ',
+          'High-end air and presence',
+          'Parallel EQ vs serial EQ decision-making'
+        ],
+        keyTakeaways: [
+          'Parallel EQ lets you make huge boosts (10dB+) that would sound terrible in serial. Boost the hell out of what you want to enhance, then blend it in at 20-40% for subtle emphasis.',
+          'Try parallel low-end EQ for adding weight to thin sources. Boost 80-120Hz aggressively on a parallel channel, add some compression, then blend. Instant thickness.',
+          'Parallel high-end works great for adding air and sparkle. Boost 8kHz+ on the parallel channel with a gentle EQ curve, maybe add subtle saturation, then blend for presence without harshness.'
+        ],
+        resources: [
+          { name: 'Parallel EQ applications', type: 'PDF' },
+          { name: 'Frequency ranges for parallel boost', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Parallel Techniques',
+        lesson: 3,
+        title: 'Parallel saturation and distortion',
+        duration: '4:50',
+        description: 'Adding harmonic richness and edge without making things sound distorted.',
+        inThisLesson: [
+          'Using saturation in parallel for warmth',
+          'Aggressive distortion blended subtly',
+          'Parallel saturation on different sources',
+          'Combining saturation with compression or EQ'
+        ],
+        keyTakeaways: [
+          'Parallel saturation adds harmonics and character without making the source sound obviously distorted. Drive it hard on the parallel channel, then blend for subtle richness.',
+          'This technique is amazing on bass—parallel distortion adds midrange presence and makes bass audible on small speakers while keeping the low-end clean on the main channel.',
+          'Try stacking parallel processing: compression + saturation + EQ on one parallel channel. You can create incredibly aggressive processing that still sounds natural when blended.'
+        ],
+        resources: [
+          { name: 'Parallel saturation guide', type: 'PDF' },
+          { name: 'Saturation types and applications', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Advanced Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Advanced Applications',
+        lesson: 1,
+        title: 'Parallel processing on drums',
+        duration: '5:25',
+        description: 'Making drums hit harder and feel bigger without losing punch.',
+        inThisLesson: [
+          'Parallel compression on drum bus',
+          'Individual parallel processing on kick and snare',
+          'Room sound with parallel reverb',
+          'Combining multiple parallel chains on drums'
+        ],
+        keyTakeaways: [
+          'Parallel compression on the drum bus is mixing 101. Slam a compressor (10:1, fast attack/release, 10-15dB GR) and blend at 30-50% for instant power and cohesion.',
+          'Try parallel processing individual drums too—parallel compress the kick with really fast attack to add sustain, parallel compress the snare to add body. Blend around 20-30%.',
+          'Parallel reverb creates huge drum rooms without washing out the drums. Send to a big reverb, low-pass filter the reverb around 8kHz, then blend at 15-25% for size without blur.'
+        ],
+        resources: [
+          { name: 'Drum parallel processing guide', type: 'PDF' },
+          { name: 'Parallel drum bus settings', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Advanced Applications',
+        lesson: 2,
+        title: 'Parallel processing on vocals',
+        duration: '4:40',
+        description: 'Getting vocals to cut through dense mixes without sounding harsh or over-compressed.',
+        inThisLesson: [
+          'Parallel compression for vocal power',
+          'Parallel EQ for presence and clarity',
+          'Parallel saturation for character',
+          'Multiple parallel sends for complete vocal treatment'
+        ],
+        keyTakeaways: [
+          'Parallel vocal compression adds density and consistency without squashing the performance. Use 6:1-10:1 with fast attack/release, blend at 25-40% depending on how aggressive you want it.',
+          'Parallel presence EQ: boost 3-5kHz and 8-10kHz aggressively on a parallel channel, then blend for cut and air without harshness. Way better than EQ on the main channel.',
+          'For modern vocal production, use multiple parallel sends: one for compression, one for high-end air, one for saturation. Each blended at 20-30% for a complete, powerful vocal sound.'
+        ],
+        resources: [
+          { name: 'Vocal parallel chain guide', type: 'PDF' },
+          { name: 'Parallel vocal EQ targets', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Advanced Applications',
+        lesson: 3,
+        title: 'Parallel processing on bass',
+        duration: '4:35',
+        description: 'Creating bass that\'s powerful in the subs but still audible on small speakers.',
+        inThisLesson: [
+          'Clean low-end with parallel midrange processing',
+          'Parallel distortion for speaker translation',
+          'Parallel compression for consistency',
+          'Crossover-based parallel processing'
+        ],
+        keyTakeaways: [
+          'Keep your main bass channel clean and focused on the low-end (40-150Hz). Send to a parallel channel, filter out the lows, add distortion and compression to the mids, then blend.',
+          'Parallel bass distortion makes bass audible on phones and laptops by adding midrange harmonics while keeping the low-end pure. Send to parallel, high-pass around 150Hz, drive hard, blend at 30-50%.',
+          'For ultimate control, use two parallel bass channels: one for compressed/consistent low-end, one for distorted/present midrange. Blend each independently for complete control over bass character.'
+        ],
+        resources: [
+          { name: 'Bass parallel processing guide', type: 'PDF' },
+          { name: 'Bass crossover settings', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Advanced Applications',
+        lesson: 4,
+        title: 'Creative parallel chains',
+        duration: '5:10',
+        description: 'Advanced multi-stage parallel processing for unique sounds and powerful mixes.',
+        inThisLesson: [
+          'Stacking multiple effects in parallel',
+          'Parallel multiband processing',
+          'Parallel stereo widening',
+          'Building signature parallel chains for your sound'
+        ],
+        keyTakeaways: [
+          'Don\'t limit parallel processing to one effect. Try compression → EQ → saturation → reverb all on one parallel channel. Extreme processing blended subtly creates incredible depth.',
+          'Parallel multiband: split your signal into bands (lows, mids, highs), process each band differently on parallel channels, then blend. You can add low-end weight, midrange aggression, and high-end air independently.',
+          'Create reusable parallel chains for your workflow: save favorite parallel settings as presets or track templates. Having consistent parallel processing across your mixes helps develop your signature sound.'
+        ],
+        resources: [
+          { name: 'Creative parallel chains library', type: 'PDF' },
+          { name: 'Parallel processing workflow guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        showContinuePrompt(savedProgress);
+        renderLesson(0);
+      } else {
+        renderLesson(0);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Parallel Processing</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~45 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Parallel Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What is parallel processing?</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Setting up parallel chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding blend ratios</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Parallel Techniques</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel compression (NY compression)</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel EQ techniques</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel saturation and distortion</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Advanced Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel processing on drums</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:25</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel processing on vocals</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel processing on bass</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:35</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Creative parallel chains</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:10</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What is parallel processing?</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the core concept of parallel processing and why it's one of the most powerful mixing techniques.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Parallel Processing</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~45 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Core parallel processing concepts: signal routing, blend ratios, and phase alignment</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>NY compression, parallel EQ, and parallel saturation techniques</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical applications on drums, vocals, and bass for powerful mixes</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Advanced multi-stage parallel chains for creative processing</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

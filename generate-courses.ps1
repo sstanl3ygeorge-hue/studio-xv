@@ -1,0 +1,207 @@
+# Course landing page generator script
+$template = @'
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{TITLE} — Studio XV</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+      --accent: #f97316;
+      --border-soft: rgba(255,255,255,0.12);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    .mobile-link {
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 0;
+      transition: color 0.25s ease;
+    }
+    section {
+      scroll-margin-top: 96px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur border-b"
+     style="background: var(--bg-main); color: var(--text-main); border-color: var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="text-xl font-bold">Studio XV</a>
+    <div class="hidden md:flex space-x-8">
+      <a href="index.html#home" class="transition hover:text-[var(--accent)]">Home</a>
+      <a href="index.html#services" class="transition hover:text-[var(--accent)]">Services</a>
+      <a href="index.html#portfolio" class="transition hover:text-[var(--accent)]">Listen</a>
+      <a href="index.html#learn" class="transition hover:text-[var(--accent)]">Learn</a>
+      <a href="index.html#booking" class="transition hover:text-[var(--accent)]">Book</a>
+    </div>
+    <button id="menu-toggle" class="md:hidden text-3xl">☰</button>
+  </div>
+</nav>
+
+<div id="mobile-menu" class="fixed top-0 right-0 h-full w-4/5 max-w-sm transform translate-x-full transition-transform duration-300 z-[9999] shadow-2xl" style="background: var(--bg-main); color: var(--text-main);">
+  <div class="flex justify-end p-6">
+    <button id="menu-close" class="text-3xl">✕</button>
+  </div>
+  <nav class="flex flex-col gap-8 text-center mt-10 text-xl">
+    <a href="index.html#home" class="mobile-link hover:text-[var(--accent)]">Home</a>
+    <a href="index.html#services" class="mobile-link hover:text-[var(--accent)]">Services</a>
+    <a href="index.html#portfolio" class="mobile-link hover:text-[var(--accent)]">Listen</a>
+    <a href="index.html#learn" class="mobile-link hover:text-[var(--accent)]">Learn</a>
+    <a href="index.html#booking" class="mobile-link hover:text-[var(--accent)]">Book</a>
+  </nav>
+</div>
+
+<section class="pt-32 pb-12 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-5xl md:text-6xl font-bold mb-8 leading-tight">{TITLE}</h1>
+    <p class="text-xl md:text-2xl mb-12 leading-relaxed" style="color: var(--text-muted);">{SUBTITLE}</p>
+    <div class="flex flex-wrap gap-3 items-center mb-12 text-sm" style="color: var(--text-muted);">
+      <span>Video course</span>
+      <span>·</span>
+      <span>~{DURATION} minutes</span>
+      <span>·</span>
+      <span>{LEVEL}</span>
+    </div>
+    <div class="flex flex-wrap gap-4 items-center">
+      <a href="#pricing" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">Get the course</a>
+      <a href="course-player-{SLUG}.html" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold transition hover:opacity-90" style="background: var(--bg-card); border: 1px solid var(--border-soft);">Preview course</a>
+    </div>
+    <p class="text-sm mt-4" style="color: var(--text-muted);"><span style="color: var(--accent);">Note:</span> Course content is currently open for preview. After launch, access will require purchase.</p>
+  </div>
+</section>
+
+<section class="py-8 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    <a href="learn-courses.html" class="inline-flex items-center gap-2 text-sm opacity-70 hover:opacity-100 hover:text-[var(--accent)] transition">← Back to all courses</a>
+  </div>
+</section>
+
+<section class="py-20 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8">Why this course exists</h2>
+    <div class="space-y-5 text-lg leading-relaxed" style="color: var(--text-muted);">{WHY}</div>
+  </div>
+</section>
+
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10">What you'll learn</h2>
+    <div class="space-y-5">{LEARN}</div>
+  </div>
+</section>
+
+<section class="py-20 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10">How the course works</h2>
+    <div class="space-y-5">
+      <div class="flex gap-4"><span class="text-2xl" style="color: var(--accent);">→</span><p class="text-lg" style="color: var(--text-muted);">Short, focused video lessons (5–10 minutes each)</p></div>
+      <div class="flex gap-4"><span class="text-2xl" style="color: var(--accent);">→</span><p class="text-lg" style="color: var(--text-muted);">Real project walkthroughs</p></div>
+      <div class="flex gap-4"><span class="text-2xl" style="color: var(--accent);">→</span><p class="text-lg" style="color: var(--text-muted);">No plugin recommendations or DAW-specific tricks</p></div>
+      <div class="flex gap-4"><span class="text-2xl" style="color: var(--accent);">→</span><p class="text-lg" style="color: var(--text-muted);">Concepts apply to any genre or workflow</p></div>
+      <div class="flex gap-4"><span class="text-2xl" style="color: var(--accent);">→</span><p class="text-lg" style="color: var(--text-muted);">Watch at your own pace, revisit anytime</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10">Who this is for</h2>
+    <div class="grid md:grid-cols-2 gap-10">{WHO}</div>
+  </div>
+</section>
+
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10">Course modules</h2>
+    <div class="space-y-8">{MODULES}</div>
+  </div>
+</section>
+
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10">Format & access</h2>
+    <div class="space-y-3 text-lg" style="color: var(--text-muted);">
+      <p>Self-paced video course</p>
+      <p>Lifetime access</p>
+      <p>Watch on any device</p>
+      <p>No deadlines, no pressure</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="py-24 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-2xl mx-auto">
+    <div class="rounded-2xl p-12 text-center" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Access</h2>
+      <div class="mb-8">
+        <p class="text-5xl md:text-6xl font-bold mb-2">£35</p>
+        <p class="text-sm" style="color: var(--text-muted);">One-time payment</p>
+      </div>
+      <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="inline-block px-14 py-5 rounded-lg text-lg font-semibold text-white transition hover:opacity-90 mb-8" style="background: var(--accent);">Access the course</a>
+      <p class="text-sm" style="color: var(--text-muted);">Includes the full video course. Watch at your own pace.</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 px-6" style="background: var(--bg-main);">
+  <div class="max-w-3xl mx-auto text-center">
+    <p class="text-base mb-4" style="color: var(--text-muted);">Many artists take this course first, then book a session when they want a second set of ears.</p>
+  </div>
+</section>
+
+<footer class="py-12 text-center border-t" style="border-color: var(--border-soft); color: var(--text-muted);">
+  <p class="text-sm">© 2025 Studio XV. All rights reserved.</p>
+</footer>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileLinks = mobileMenu.querySelectorAll('a');
+  menuToggle.addEventListener('click', () => { mobileMenu.style.transform = 'translateX(0)'; });
+  menuClose.addEventListener('click', () => { mobileMenu.style.transform = 'translateX(100%)'; });
+  mobileLinks.forEach(link => { link.addEventListener('click', () => { mobileMenu.style.transform = 'translateX(100%)'; }); });
+</script>
+
+</body>
+</html>
+'@
+
+# Course data
+$courses = @(
+  @{slug='loop-to-arrangement'; title='From Loop to Arrangement'; subtitle='Learn how to turn 8-bar loops into full arrangements that feel complete and engaging.'; duration='75'; level='Intermediate'}
+)
+
+Write-Output "Template created. Ready to generate $($courses.Count) courses."

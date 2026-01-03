@@ -53,10 +53,24 @@
 </head>
 <body>
 
+<!-- Navigation -->
+<nav class="fixed w-full z-50 py-5" style="background: var(--bg-main); border-bottom: 1px solid var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+    
+    <div class="flex items-center gap-8 text-sm font-medium">
+      <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+      <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+      <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+      <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+    </div>
+  </div>
+</nav>
+
 <!-- COURSES PAGE -->
 <!-- Detailed course catalog moved from Learn section -->
 
-<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main); padding-top: 120px;">
   <div class="max-w-4xl mx-auto">
     
     <!-- Academy: Courses Index -->
@@ -130,17 +144,15 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video course</span>
           <span>·</span>
-          <span>18 pages</span>
-          <span>·</span>
-          <span>45–60 min read</span>
+          <span>~75 minutes</span>
           <span>·</span>
           <span>Beginner → Intermediate</span>
         </div>
         
         <a 
-           href="course-finishing-tracks.html"
+           href="course-finishing-tracks-info.html"
            class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
            style="background: var(--accent); color: white;"
            onmouseover="this.style.opacity='0.9'" 
@@ -150,12 +162,12 @@
       </div>
       
       <!-- Course 2: Balancing Vocals -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Balancing Vocals Without Fighting the Mix" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Balancing Vocals Without Fighting the Mix" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Balancing Vocals Without Fighting the Mix</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -164,23 +176,32 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>16–20 pages</span>
+          <span>~65 minutes</span>
           <span>·</span>
-          <span>40–55 min read</span>
+          <span>11 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a 
+           href="course-balancing-vocals-info.html"
+           class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
+           style="background: var(--accent); color: white;"
+           onmouseover="this.style.opacity='0.9'" 
+           onmouseout="this.style.opacity='1'">
+          View course
+        </a>
       </div>
       
       <!-- Course 3: Space, Depth & Translation -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Space, Depth & Translation" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Space, Depth & Translation" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Space, Depth & Translation</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -189,23 +210,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>22–28 pages</span>
-          <span>·</span>
-          <span>55–75 min read</span>
+          <span>~90 minutes, 13 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-space-depth-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 4: Creative Clarity for Producers -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Creative Clarity for Producers" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Creative Clarity for Producers" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Creative Clarity for Producers</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -214,23 +235,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>14–18 pages</span>
-          <span>·</span>
-          <span>35–45 min read</span>
+          <span>~70 minutes, 12 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-creative-clarity-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 5: From Loop to Arrangement -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="From Loop to Arrangement" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="From Loop to Arrangement" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">From Loop to Arrangement</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -239,23 +260,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>20–24 pages</span>
-          <span>·</span>
-          <span>50–60 min read</span>
+          <span>~75 minutes, 12 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-loop-to-arrangement-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 6: EQ Fundamentals -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="EQ Fundamentals for Producers" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="EQ Fundamentals for Producers" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">EQ Fundamentals for Producers</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -264,23 +285,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>18–22 pages</span>
-          <span>·</span>
-          <span>45–55 min read</span>
+          <span>~55 minutes, 11 lessons</span>
           <span>·</span>
           <span>Novice</span>
         </div>
+        
+        <a href="course-eq-fundamentals-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 7: Compression Without Confusion -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Compression Without Confusion" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="Compression Without Confusion" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Compression Without Confusion</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -289,23 +310,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>16–20 pages</span>
-          <span>·</span>
-          <span>40–50 min read</span>
+          <span>~50 minutes, 10 lessons</span>
           <span>·</span>
           <span>Novice</span>
         </div>
+        
+        <a href="course-compression-basics-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 8: Reverb & Space -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Reverb & Space" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Reverb & Space" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Reverb & Space</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -314,23 +335,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>14–18 pages</span>
-          <span>·</span>
-          <span>35–45 min read</span>
+          <span>~45 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-reverb-space-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 9: Stereo Width Decisions -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Stereo Width Decisions" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Stereo Width Decisions" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Stereo Width Decisions</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -339,23 +360,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>12–16 pages</span>
-          <span>·</span>
-          <span>30–40 min read</span>
+          <span>~40 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-stereo-width-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 10: Reference Tracks That Help -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Reference Tracks That Help" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Reference Tracks That Help" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Reference Tracks That Help</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -364,23 +385,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>10–14 pages</span>
-          <span>·</span>
-          <span>25–35 min read</span>
+          <span>~35 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-finishing-tracks-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 11: Gain Staging for Clarity -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Gain Staging for Clarity" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="Gain Staging for Clarity" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Gain Staging for Clarity</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -389,23 +410,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>12–16 pages</span>
-          <span>·</span>
-          <span>30–40 min read</span>
+          <span>~40 minutes, 10 lessons</span>
           <span>·</span>
           <span>Novice</span>
         </div>
+        
+        <a href="course-gain-staging-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 12: Bass & Low End Management -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Bass & Low End Management" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Bass & Low End Management" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Bass & Low End Management</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -414,23 +435,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>18–22 pages</span>
-          <span>·</span>
-          <span>45–55 min read</span>
+          <span>~55 minutes, 11 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-bass-management-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 13: Mastering for Producers -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Mastering for Producers" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Mastering for Producers" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Mastering for Producers</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -439,23 +460,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>16–20 pages</span>
-          <span>·</span>
-          <span>40–50 min read</span>
+          <span>~50 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-mastering-basics-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 14: Automation Essentials -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Automation Essentials" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Automation Essentials" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Automation Essentials</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -464,23 +485,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>14–18 pages</span>
-          <span>·</span>
-          <span>35–45 min read</span>
+          <span>~45 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-automation-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 15: Saturation & Harmonic Distortion -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Saturation & Harmonic Distortion" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Saturation & Harmonic Distortion" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Saturation & Harmonic Distortion</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -489,23 +510,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>12–16 pages</span>
-          <span>·</span>
-          <span>30–40 min read</span>
+          <span>~40 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-saturation-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 16: Sidechain Compression -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Sidechain Compression" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Sidechain Compression" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Sidechain Compression</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -514,23 +535,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>10–14 pages</span>
-          <span>·</span>
-          <span>25–35 min read</span>
+          <span>~35 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-sidechain-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 17: Parallel Processing -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Parallel Processing" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Parallel Processing" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Parallel Processing</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -539,23 +560,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>14–18 pages</span>
-          <span>·</span>
-          <span>35–45 min read</span>
+          <span>~45 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-parallel-processing-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 18: Delay & Echo -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Delay & Echo" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Delay & Echo" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Delay & Echo</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -564,23 +585,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>12–16 pages</span>
-          <span>·</span>
-          <span>30–40 min read</span>
+          <span>~40 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-delay-echo-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 19: Multiband Processing -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Multiband Processing" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Multiband Processing" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Multiband Processing</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -589,23 +610,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>14–18 pages</span>
-          <span>·</span>
-          <span>35–45 min read</span>
+          <span>~45 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-multiband-processing-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 20: Transient Shaping -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Transient Shaping" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Transient Shaping" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Transient Shaping</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -614,23 +635,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>10–14 pages</span>
-          <span>·</span>
-          <span>25–35 min read</span>
+          <span>~35 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-transient-shaping-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 21: Limiting Without Crushing -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Limiting Without Crushing" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Limiting Without Crushing" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Limiting Without Crushing</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -639,23 +660,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>12–16 pages</span>
-          <span>·</span>
-          <span>30–40 min read</span>
+          <span>~40 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-limiting-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 22: De-Essing & Sibilance Control -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="De-Essing & Sibilance Control" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="De-Essing & Sibilance Control" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">De-Essing & Sibilance Control</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -664,23 +685,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>8–12 pages</span>
-          <span>·</span>
-          <span>20–30 min read</span>
+          <span>~30 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-deessing-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 23: Genre-Specific Mix Balance -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Genre-Specific Mix Balance" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Genre-Specific Mix Balance" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Genre-Specific Mix Balance</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -689,23 +710,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>20–24 pages</span>
-          <span>·</span>
-          <span>50–60 min read</span>
+          <span>~60 minutes, 12 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-genre-balance-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 24: Listening Environment Setup -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Listening Environment Setup" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="Listening Environment Setup" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Listening Environment Setup</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -714,23 +735,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>16–20 pages</span>
-          <span>·</span>
-          <span>40–50 min read</span>
+          <span>~50 minutes, 10 lessons</span>
           <span>·</span>
           <span>Novice</span>
         </div>
+        
+        <a href="course-listening-environment-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 25: Mixing on Headphones -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Mixing on Headphones" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Mixing on Headphones" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Mixing on Headphones</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -739,23 +760,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>12–16 pages</span>
-          <span>·</span>
-          <span>30–40 min read</span>
+          <span>~40 minutes, 10 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-headphone-mixing-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 26: Energy & Dynamics -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Energy & Dynamics" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Energy & Dynamics" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Energy & Dynamics</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -764,23 +785,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>14–18 pages</span>
-          <span>·</span>
-          <span>35–45 min read</span>
+          <span>~45 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-energy-dynamics-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 27: Vocal Production Essentials -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="beginner" data-title="Vocal Production Essentials" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Vocal Production Essentials" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Vocal Production Essentials</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -789,23 +810,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>22–28 pages</span>
-          <span>·</span>
-          <span>55–70 min read</span>
+          <span>~70 minutes, 12 lessons</span>
           <span>·</span>
           <span>Beginner</span>
         </div>
+        
+        <a href="course-vocal-production-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 28: Drum Processing & Layering -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Drum Processing & Layering" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Drum Processing & Layering" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Drum Processing & Layering</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -814,23 +835,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>18–22 pages</span>
-          <span>·</span>
-          <span>45–55 min read</span>
+          <span>~55 minutes, 11 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-drum-processing-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 29: Creative Effects Chains -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="intermediate" data-title="Creative Effects Chains" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Creative Effects Chains" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Creative Effects Chains</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -839,23 +860,23 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>16–20 pages</span>
-          <span>·</span>
-          <span>40–50 min read</span>
+          <span>~50 minutes, 10 lessons</span>
           <span>·</span>
           <span>Intermediate</span>
         </div>
+        
+        <a href="course-effects-chains-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
       <!-- Course 30: Export & Delivery Standards -->
-      <div class="course-item border-b pb-12 opacity-50" data-status="coming-soon" data-level="novice" data-title="Export & Delivery Standards" style="border-color: var(--border-soft);">
+      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="Export & Delivery Standards" style="border-color: var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Export & Delivery Standards</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-                style="border-color: var(--border-soft);">
-            Coming soon
+          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
+                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+            Available
           </span>
         </div>
         
@@ -864,14 +885,14 @@
         </p>
         
         <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>PDF Ebook</span>
+          <span>Video Course</span>
           <span>·</span>
-          <span>10–14 pages</span>
-          <span>·</span>
-          <span>25–35 min read</span>
+          <span>~35 minutes, 10 lessons</span>
           <span>·</span>
           <span>Novice</span>
         </div>
+        
+        <a href="course-export-delivery-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
     </div>

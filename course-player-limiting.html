@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Limiting</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Limiting',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~40 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Limiting Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Limiting Fundamentals',
+        lesson: 1,
+        title: 'What limiters do differently',
+        duration: '4:30',
+        description: 'Understanding the difference between compression and limiting, and when you need true brick-wall control.',
+        inThisLesson: [
+          'Limiting vs compression: what makes them different',
+          'The brick-wall concept and why it matters',
+          'When compression isn\'t enough',
+          'True peak vs sample peak limiting'
+        ],
+        keyTakeaways: [
+          'A limiter is just a compressor with a very high ratio (usually 10:1 or higher) and a fast attack. The difference is purpose: limiters exist to prevent audio from exceeding a specific level, no matter what.',
+          'Think of compression as dynamic control. Think of limiting as a safety ceiling. Compression shapes sound; limiting stops it from clipping.',
+          'You need limiting when you have no room above your signal. Mastering, streaming preparation, broadcast—anywhere you need absolute level certainty.'
+        ],
+        resources: [
+          { name: 'Limiting vs compression comparison', type: 'PDF' },
+          { name: 'When to use limiting checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Limiting Fundamentals',
+        lesson: 2,
+        title: 'Ceiling and threshold',
+        duration: '4:15',
+        description: 'How ceiling sets your maximum level and how threshold determines where limiting starts.',
+        inThisLesson: [
+          'Setting your ceiling correctly',
+          'Why -0.3dB to -1dB is the safe zone',
+          'Threshold determines limiting intensity',
+          'The relationship between ceiling and threshold'
+        ],
+        keyTakeaways: [
+          'The ceiling is your absolute maximum output level. Set it to -0.3dB or -1dB to prevent intersample peaks that can cause distortion when converted to MP3 or AAC.',
+          'The threshold determines when limiting starts working. Lower threshold = more limiting = louder output but more audible processing.',
+          'The gap between threshold and ceiling is your gain reduction. If threshold is -6dB and ceiling is -1dB, you\'re getting 5dB of limiting when peaks hit.'
+        ],
+        resources: [
+          { name: 'Ceiling recommendations by format', type: 'PDF' },
+          { name: 'Threshold setting workflow', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Limiting Fundamentals',
+        lesson: 3,
+        title: 'Transparent vs obvious limiting',
+        duration: '3:50',
+        description: 'Recognizing when limiting becomes audible and learning to work within your limits.',
+        inThisLesson: [
+          'What transparent limiting sounds like',
+          'Signs your limiting is too aggressive',
+          'Finding the threshold sweet spot',
+          'Genre expectations and limiting'
+        ],
+        keyTakeaways: [
+          'Transparent limiting catches occasional peaks without changing the character of your mix. You shouldn\'t hear it working. Aim for 1-3dB of peak gain reduction.',
+          'When limiting becomes obvious, you hear pumping, loss of transients, or a "crushed" quality. This happens when sustained gain reduction exceeds 4-6dB.',
+          'Some genres expect loud, limited masters (EDM, pop). Others need dynamics (jazz, acoustic). Know your target before you push your limiter hard.'
+        ],
+        resources: [
+          { name: 'Limiting intensity by genre', type: 'PDF' },
+          { name: 'Audible limiting examples', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Loudness Targets
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Loudness Targets',
+        lesson: 1,
+        title: 'Understanding LUFS',
+        duration: '4:45',
+        description: 'What LUFS measures, why it matters, and how streaming platforms use it.',
+        inThisLesson: [
+          'LUFS explained: integrated loudness measurement',
+          'Why peak normalization isn\'t enough anymore',
+          'How streaming platforms normalize audio',
+          'Short-term vs integrated LUFS'
+        ],
+        keyTakeaways: [
+          'LUFS (Loudness Units relative to Full Scale) measures perceived loudness over time, not just peak levels. It accounts for how humans actually hear loudness.',
+          'Streaming services normalize to target LUFS levels: Spotify -14 LUFS, Apple Music -16 LUFS, YouTube -14 LUFS. If you\'re louder, they turn you down.',
+          'Integrated LUFS measures the entire track. Short-term LUFS measures in 3-second windows. Use integrated LUFS for mastering decisions.'
+        ],
+        resources: [
+          { name: 'LUFS measurement guide', type: 'PDF' },
+          { name: 'Streaming platform targets', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Loudness Targets',
+        lesson: 2,
+        title: 'Streaming platform targets',
+        duration: '3:55',
+        description: 'Specific loudness targets for Spotify, Apple Music, YouTube, and other platforms.',
+        inThisLesson: [
+          'Spotify: -14 LUFS with normalization on',
+          'Apple Music: -16 LUFS (no turning down)',
+          'YouTube: -14 LUFS target',
+          'Should you master for streaming?'
+        ],
+        keyTakeaways: [
+          'Most streaming services target -14 to -16 LUFS. Mastering to -13 to -14 LUFS gives you competitive loudness without being turned down.',
+          'Mastering louder than the platform target doesn\'t make you louder—it makes you quieter because they turn you down. Worse, you lose dynamics in the process.',
+          'Master for streaming if it\'s your primary release format. Master louder (-8 to -10 LUFS) if you need club/radio playback where dynamics don\'t matter as much.'
+        ],
+        resources: [
+          { name: 'Platform-by-platform targets', type: 'PDF' },
+          { name: 'Streaming mastering workflow', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Loudness Targets',
+        lesson: 3,
+        title: 'When to push harder',
+        duration: '4:10',
+        description: 'Situations where aggressive limiting is appropriate and how to do it without destroying your mix.',
+        inThisLesson: [
+          'Club and DJ contexts where dynamics compress anyway',
+          'Maximizing loudness for specific genres',
+          'The cost of aggressive limiting',
+          'Limiting in stages to preserve quality'
+        ],
+        keyTakeaways: [
+          'In high-SPL environments (clubs, festivals), playback systems compress your music anyway. Aggressive limiting (-8 to -10 LUFS) ensures your track holds its energy.',
+          'EDM, some pop, and hip-hop often expect -8 to -10 LUFS masters. This is loud and requires heavy limiting, but it\'s genre-appropriate.',
+          'When pushing for maximum loudness, use multiple limiters in series (2-3dB each) instead of one limiter doing all the work. It sounds less obvious.'
+        ],
+        resources: [
+          { name: 'Aggressive limiting guide', type: 'PDF' },
+          { name: 'Multi-stage limiting approach', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Preserving Dynamics
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Preserving Dynamics',
+        lesson: 1,
+        title: 'Avoiding the crushed sound',
+        duration: '4:20',
+        description: 'Recognizing over-limiting and learning techniques to maintain dynamics while achieving loudness.',
+        inThisLesson: [
+          'What "crushed" audio sounds like',
+          'How to hear when you\'ve gone too far',
+          'The loudness vs dynamics tradeoff',
+          'Reference tracks for perspective'
+        ],
+        keyTakeaways: [
+          'Crushed audio loses its transients, sounds flat and lifeless, and pumps unnaturally. This happens when you push limiting beyond what your mix can handle.',
+          'If your drums lose punch, your vocals sound strained, or your mix feels exhausting to listen to, you\'re limiting too hard. Back off the threshold.',
+          'Use commercially released tracks in your genre as loudness references. If your track is as loud but sounds worse, you\'re crushing it.'
+        ],
+        resources: [
+          { name: 'Over-limiting examples', type: 'PDF' },
+          { name: 'Dynamic preservation checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Preserving Dynamics',
+        lesson: 2,
+        title: 'Release time and character',
+        duration: '3:45',
+        description: 'How release time affects the feel of limiting and prevents pumping artifacts.',
+        inThisLesson: [
+          'Fast vs slow release in limiting context',
+          'Preventing pumping and breathing',
+          'Auto release modes in limiters',
+          'Matching release to your material'
+        ],
+        keyTakeaways: [
+          'Release time determines how quickly the limiter stops working after a peak. Too fast creates distortion. Too slow creates pumping.',
+          'Most modern limiters default to auto release, which adapts to the material. This works well for most tracks. Only adjust manually if you hear artifacts.',
+          'If you hear pumping (the entire mix getting louder/quieter rhythmically), your release is too slow. If you hear distortion on sustained loud parts, your release is too fast.'
+        ],
+        resources: [
+          { name: 'Release time by tempo guide', type: 'PDF' },
+          { name: 'Pumping prevention tips', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Preserving Dynamics',
+        lesson: 3,
+        title: 'Clipping before the limiter',
+        duration: '4:05',
+        description: 'Using controlled clipping to achieve additional loudness without over-limiting.',
+        inThisLesson: [
+          'Soft clipping vs hard clipping',
+          'Why clipping 1-2dB before limiting helps',
+          'Setting up a clipper-limiter chain',
+          'When clipping is too much'
+        ],
+        keyTakeaways: [
+          'Soft clipping rounds off the extreme peaks before they hit the limiter. This lets you push louder without as much audible limiting. It\'s a mastering secret.',
+          'Use 1-2dB of soft clipping before your limiter. This shaves the peaks that would otherwise force the limiter to work too hard.',
+          'Hard clipping creates obvious distortion. Soft clipping is gentle and often inaudible at moderate amounts. Most limiter plugins include soft clipping options.'
+        ],
+        resources: [
+          { name: 'Clipper-limiter chain guide', type: 'PDF' },
+          { name: 'Clipping vs limiting comparison', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Preserving Dynamics',
+        lesson: 4,
+        title: 'Limiting workflow and meters',
+        duration: '4:10',
+        description: 'Setting up your limiting chain, reading meters correctly, and finalizing your master.',
+        inThisLesson: [
+          'The complete limiting workflow from mix to master',
+          'Reading peak, RMS, and LUFS meters',
+          'Checking intersample peaks',
+          'Final listening checks before export'
+        ],
+        keyTakeaways: [
+          'Workflow: Set your ceiling (-0.3dB or -1dB), check your starting LUFS, lower threshold until you reach your target LUFS, then check if it still sounds good.',
+          'Watch all three meters: peak (stays at ceiling), LUFS (your loudness target), and gain reduction (shouldn\'t be constant or exceed 6dB sustained).',
+          'Always check your master at low volume and on multiple systems. If limiting was too aggressive, it becomes obvious when you can\'t hear the details.'
+        ],
+        resources: [
+          { name: 'Complete limiting workflow', type: 'PDF' },
+          { name: 'Metering and analysis guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        showContinuePrompt(savedProgress);
+        renderLesson(0);
+      } else {
+        renderLesson(0);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Limiting</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~40 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Limiting Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What limiters do differently</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Ceiling and threshold</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Transparent vs obvious limiting</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Loudness Targets</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding LUFS</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Streaming platform targets</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">When to push harder</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Preserving Dynamics</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Avoiding the crushed sound</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Release time and character</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Clipping before the limiter</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:05</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Limiting workflow and meters</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:10</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What limiters do differently</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the difference between compression and limiting, and when you need true brick-wall control.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Limiting</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~40 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding brick-wall limiting and when to use it vs compression</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>LUFS measurement and streaming platform loudness targets</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Preserving dynamics while achieving competitive loudness</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Advanced techniques like clipping before limiting for maximum impact</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

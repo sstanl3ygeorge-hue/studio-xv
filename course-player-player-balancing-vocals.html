@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Balancing Vocals Without Fighting the Mix</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Balancing Vocals Without Fighting the Mix',
+      backLink: 'course.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~65 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Vocal Positioning
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Vocal Positioning',
+        lesson: 1,
+        title: 'The vocal level myth',
+        duration: '7:12',
+        description: 'Why louder doesn\'t mean clearer and how to find the right level without fighting your mix.',
+        inThisLesson: [
+          'Why pushing vocal volume creates more problems',
+          'The relationship between level and clarity',
+          'Finding the natural vocal pocket in your mix',
+          'When vocals sit back vs. sit forward'
+        ],
+        keyTakeaways: [
+          'Most vocal level problems aren\'t actually level problems—they\'re frequency masking problems. Making the vocal louder just makes the problem louder.',
+          'The right vocal level feels effortless. If you\'re fighting to hear it, you\'re solving the wrong problem.',
+          'Test: If you have to turn the vocal up more than 2dB to "fix" it, you need to clear space first, not add volume.'
+        ],
+        resources: [
+          { name: 'Vocal level reference guide', type: 'PDF' },
+          { name: 'Masking frequency chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Vocal Positioning',
+        lesson: 2,
+        title: 'Clearing space, not adding volume',
+        duration: '9:28',
+        description: 'Strategic frequency management to make vocals sit naturally without turning anything up.',
+        inThisLesson: [
+          'Identifying what\'s competing with your vocal',
+          'The 3 key frequency ranges for vocal clarity',
+          'Subtractive EQ before additive processing',
+          'Making space without thinning out instruments'
+        ],
+        keyTakeaways: [
+          'Vocal clarity comes from removing what doesn\'t need to be there, not adding more. Cut competing frequencies in backing tracks before you touch the vocal.',
+          'Focus on three ranges: 200-400Hz (boxiness), 1-3kHz (presence clash), and 4-6kHz (definition). Clear these first.',
+          'A small cut in the right instrument does more for vocal clarity than any amount of EQ boost on the vocal itself.'
+        ],
+        resources: [
+          { name: 'Frequency clearing template', type: 'PDF' },
+          { name: 'Vocal space EQ guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Vocal Positioning',
+        lesson: 3,
+        title: 'Reference listening for balance',
+        duration: '6:45',
+        description: 'Using reference tracks to calibrate your ear and stop second-guessing vocal levels.',
+        inThisLesson: [
+          'How to choose the right reference tracks',
+          'What to listen for in professional vocal balances',
+          'Matching vocal energy, not just level',
+          'When your mix is close enough'
+        ],
+        keyTakeaways: [
+          'Reference tracks aren\'t about copying—they\'re about calibrating your expectations. Use them to understand where vocals actually sit in finished productions.',
+          'Listen to how much the vocal moves. Professional mixes have more vocal volume variation than you think. Stop trying to make it perfectly consistent.',
+          'If your vocal is within 1-2dB of your reference in the verse and chorus, you\'re done. Move on.'
+        ],
+        resources: [
+          { name: 'Reference track checklist', type: 'PDF' },
+          { name: 'Vocal balance comparison tool', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Vocal Positioning',
+        lesson: 4,
+        title: 'Walkthrough: Setting vocal level in context',
+        duration: '10:35',
+        description: 'Real-time demonstration of finding the right vocal balance from scratch.',
+        inThisLesson: [
+          'Initial listen and balance assessment',
+          'Clearing frequency space in backing tracks',
+          'Setting the vocal level relative to key elements',
+          'Final check against reference'
+        ],
+        keyTakeaways: [
+          'Notice how little EQ is actually needed when you clear space first. The vocal finds its place naturally.',
+          'The process takes 10 minutes, not an hour. If you\'re spending longer, you\'re overthinking it.',
+          'Good vocal balance feels obvious in hindsight. That\'s the goal—making it sound like it was never a problem.'
+        ],
+        resources: [
+          { name: 'Session notes from walkthrough', type: 'PDF' },
+          { name: 'Before/after audio examples', type: 'ZIP' }
+        ]
+      },
+      
+      // Module 2: Compression Strategies
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Compression Strategies',
+        lesson: 1,
+        title: 'What compression actually does to vocals',
+        duration: '8:16',
+        description: 'Understanding compression beyond the controls—what you\'re really changing and why it matters.',
+        inThisLesson: [
+          'Level control vs. tone control',
+          'How attack and release shape vocal character',
+          'When to compress vs. when to leave alone',
+          'The two types of vocal compression'
+        ],
+        keyTakeaways: [
+          'Compression does two things: controls dynamics and adds tone. Most vocal issues need one, not both. Figure out which before you start adjusting.',
+          'Fast attack softens consonants and smooths delivery. Slow attack lets transients through and keeps energy. Choose based on what the vocal needs, not what sounds "better."',
+          'Not every vocal needs compression. If the performance is already consistent, compression just adds color you might not want.'
+        ],
+        resources: [
+          { name: 'Compression decision tree', type: 'PDF' },
+          { name: 'Attack & release guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Compression Strategies',
+        lesson: 2,
+        title: 'Serial compression: why and how',
+        duration: '9:52',
+        description: 'Using multiple compressors to achieve control without squashing the life out of your vocal.',
+        inThisLesson: [
+          'Why one compressor isn\'t always enough',
+          'The 3-stage approach: catch peaks, add tone, final control',
+          'Setting ratios and thresholds for each stage',
+          'When serial compression is overkill'
+        ],
+        keyTakeaways: [
+          'Serial compression is about doing less with each stage. 3dB of gain reduction across three compressors sounds better than 9dB on one.',
+          'Stage 1: Fast attack, high ratio, catch peaks only. Stage 2: Slower, add character. Stage 3: Gentle glue compression. Done.',
+          'If the vocal sounds lifeless, you\'re doing too much. Scale back to two stages or reduce the amount of compression.'
+        ],
+        resources: [
+          { name: 'Serial compression template', type: 'PDF' },
+          { name: '3-stage setup guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Compression Strategies',
+        lesson: 3,
+        title: 'Parallel compression for density',
+        duration: '7:48',
+        description: 'Adding weight and presence to vocals without losing dynamics or natural feel.',
+        inThisLesson: [
+          'What parallel compression actually adds to vocals',
+          'Setting up a parallel chain that works',
+          'How much compressed signal to blend',
+          'Common parallel compression mistakes'
+        ],
+        keyTakeaways: [
+          'Parallel compression is heavily compressed signal blended with the dry vocal. It adds density without making the vocal feel squashed.',
+          'Crush the parallel chain hard—10:1 ratio, 10+dB gain reduction. Then blend it in at 20-30%. It should add weight without being obvious.',
+          'If you can hear the parallel compression, you\'re using too much. It should feel fuller, not different.'
+        ],
+        resources: [
+          { name: 'Parallel compression setup', type: 'PDF' },
+          { name: 'Blend percentage guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Clarity Without Volume
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Clarity Without Volume',
+        lesson: 1,
+        title: 'Additive EQ for presence',
+        duration: '8:24',
+        description: 'Strategic frequency boosts that make vocals cut through without sounding harsh or thin.',
+        inThisLesson: [
+          'The presence zone: 2-5kHz',
+          'Air frequencies: when and how much',
+          'Avoiding the harsh, brittle vocal sound',
+          'Broad vs. narrow boosts for clarity'
+        ],
+        keyTakeaways: [
+          'Presence lives in 2-5kHz. A 2-3dB boost around 3kHz makes most vocals sit forward without getting harsh. Start there.',
+          'Air (8-12kHz) adds sparkle but can make vocals feel disconnected from the mix. Use sparingly—1-2dB max, and only if the vocal needs it.',
+          'Use wide, gentle boosts for clarity. Narrow boosts sound harsh and surgical. Q of 1-2 is your friend.'
+        ],
+        resources: [
+          { name: 'Vocal EQ frequency map', type: 'PDF' },
+          { name: 'Presence boost guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Clarity Without Volume',
+        lesson: 2,
+        title: 'De-essing without killing life',
+        duration: '6:38',
+        description: 'Controlling sibilance and harshness without making vocals sound dull or over-processed.',
+        inThisLesson: [
+          'What de-essing actually does',
+          'Finding the right frequency range to target',
+          'Threshold and ratio settings that work',
+          'When you\'re de-essing too much'
+        ],
+        keyTakeaways: [
+          'De-essing is narrow-band compression on sibilant frequencies (5-8kHz). It tames "s" sounds without dulling the entire vocal.',
+          'Sweep a narrow boost to find where the sibilance is harshest, then de-ess just that range. Don\'t use presets—every voice is different.',
+          'If the vocal sounds lispy or dull, you\'ve overdone it. Aim for 3-5dB of reduction on the loudest "s" sounds, no more.'
+        ],
+        resources: [
+          { name: 'De-essing frequency guide', type: 'PDF' },
+          { name: 'Sibilance troubleshooting', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Clarity Without Volume',
+        lesson: 3,
+        title: 'Automation for natural movement',
+        duration: '9:15',
+        description: 'Using volume automation to create dynamic, engaging vocals that feel human.',
+        inThisLesson: [
+          'Why automation beats static compression',
+          'The three automation passes: words, phrases, sections',
+          'How much movement is too much',
+          'Automating for emotion, not just level'
+        ],
+        keyTakeaways: [
+          'Compression makes things consistent. Automation makes things musical. Use compression to control peaks, automation to shape performance.',
+          'Three passes: ride words that get buried, lift phrases for emphasis, balance sections for energy. Do them in that order.',
+          'Natural-sounding automation has small moves (1-3dB) frequently, not big moves occasionally. Think gradual, not dramatic.'
+        ],
+        resources: [
+          { name: 'Automation workflow guide', type: 'PDF' },
+          { name: '3-pass automation template', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Clarity Without Volume',
+        lesson: 4,
+        title: 'Final walkthrough: Complete vocal chain',
+        duration: '11:42',
+        description: 'Bringing everything together—from raw vocal to polished, balanced result.',
+        inThisLesson: [
+          'Starting with the raw vocal',
+          'Applying the full processing chain in order',
+          'Balancing each stage for clarity and tone',
+          'Final checks and adjustments'
+        ],
+        keyTakeaways: [
+          'The order matters: clear space in mix → set level → compression → EQ → de-essing → automation. Skip or rearrange steps and you\'ll fight yourself.',
+          'Each stage does less than you think. Compression is 3-5dB, EQ is small moves, de-essing is surgical. The sum of small improvements is a great vocal.',
+          'When it sounds good, stop. Don\'t keep processing because you feel like you should. Done is better than perfect.'
+        ],
+        resources: [
+          { name: 'Complete vocal chain guide', type: 'PDF' },
+          { name: 'Processing order checklist', type: 'PDF' },
+          { name: 'Before/after audio examples', type: 'ZIP' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Balancing Vocals Without Fighting the Mix</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~65 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Vocal Positioning</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The vocal level myth</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:12</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Clearing space, not adding volume</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:28</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Reference listening for balance</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Walkthrough: Setting vocal level in context</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Compression Strategies</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What compression actually does to vocals</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:16</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Serial compression: why and how</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:52</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel compression for density</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:48</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Clarity Without Volume</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Additive EQ for presence</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:24</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">De-essing without killing life</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:38</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Automation for natural movement</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final walkthrough: Complete vocal chain</p>
+              <p class="text-xs" style="color: var(--text-muted);">11:42</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">The vocal level myth</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Why louder doesn't mean clearer and how to find the right level without fighting your mix.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why pushing vocal volume creates more problems</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The relationship between level and clarity</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Finding the natural vocal pocket in your mix</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>When vocals sit back vs. sit forward</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>Most vocal level problems aren't actually level problems—they're frequency masking problems. Making the vocal louder just makes the problem louder.</p>
+          <p>The right vocal level feels effortless. If you're fighting to hear it, you're solving the wrong problem.</p>
+          <p>Test: If you have to turn the vocal up more than 2dB to "fix" it, you need to clear space first, not add volume.</p>
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Vocal level reference guide (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Masking frequency chart (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Balancing Vocals Without Fighting the Mix</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        11 lessons · ~65 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to clear frequency space instead of fighting with volume</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Serial and parallel compression techniques for control</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Strategic EQ and de-essing for clarity without harshness</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Automation workflows for natural, dynamic vocals</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">Ready to get started?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Get this course for £35
+        </a>
+        <a href="index.html#learn" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

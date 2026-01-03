@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  ================================================================
+  
+  HOW TO CREATE A NEW COURSE:
+  
+  1. Duplicate this file and rename it:
+     Example: course-player-finishing-tracks.html
+              course-player-mixing-basics.html
+              course-player-arrangement.html
+  
+  2. Update the <title> tag below (line 11)
+  
+  3. Update the courseConfig object (around line 120):
+     - title: Your course name
+     - backLink: Link to your course landing page
+     - backLinkText: Text for back button
+     - totalDuration: Total course length
+     - moduleCount: Number of modules
+  
+  4. Replace the lessons array (starting around line 130):
+     - Each lesson needs: id, module, moduleTitle, lesson, title,
+       duration, description, inThisLesson, keyTakeaways, resources
+  
+  5. Update the sidebar HTML (starting around line 650):
+     - Module titles and lesson titles must match your lessons array
+     - IMPORTANT: Keep this exact structure for each lesson:
+       <a href="#" class="lesson-item ...">
+         <div class="flex items-center flex-1">
+           <span class="lesson-check">✓</span>
+           <div class="flex-1">
+             <p class="text-sm font-medium">LESSON TITLE</p>
+             <p class="text-xs" ...>DURATION</p>
+           </div>
+         </div>
+       </a>
+     - The checkmark span is hidden by default and shows when completed
+  
+  6. Update completion modal "What you've learned" section (line 850)
+  
+  That's it! All navigation, progress tracking, checkmarks, and 
+  interactions will work automatically.
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Genre Balance</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       Change these values for each new course
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Genre Balance',
+      backLink: 'academy.html',
+      backLinkText: 'Back to Academy',
+      totalDuration: '~60 minutes',
+      moduleCount: 4
+    };
+    
+    /* ============================================
+       LESSON DATA
+       Replace this array with your course content
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Electronic Balance
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Electronic Balance',
+        lesson: 1,
+        title: 'Sub and kick relationship',
+        duration: '5:45',
+        description: 'How electronic genres handle low-end clarity and when to separate vs. combine sub and kick frequencies.',
+        inThisLesson: [
+          'The sub-kick split in electronic music',
+          'When to keep sub and kick together',
+          'Frequency spacing for maximum impact',
+          'Genre-specific low-end conventions'
+        ],
+        keyTakeaways: [
+          'Electronic music typically separates sub and kick into distinct frequency zones—sub below 60Hz, kick above. This creates punch and clarity without low-end mud.',
+          'Not every electronic genre uses the same approach. House and techno often blend them more, while dubstep and drum & bass need surgical separation.',
+          'Reference tracks reveal the truth: A/B your mix against professional tracks in your genre to hear exactly where sub and kick sit.'
+        ],
+        resources: [
+          { name: 'Sub-kick frequency chart', type: 'PDF' },
+          { name: 'Electronic reference tracks', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Electronic Balance',
+        lesson: 2,
+        title: 'Synth vs. vocal space',
+        duration: '6:20',
+        description: 'Managing frequency and stereo space when synths and vocals compete for attention.',
+        inThisLesson: [
+          'Carving space for vocals in dense synth arrangements',
+          'Using stereo width to separate elements',
+          'Mid-range EQ strategies for electronic mixes',
+          'When to duck synths vs. when to EQ'
+        ],
+        keyTakeaways: [
+          'Vocals and synths often fight in the 1-3kHz range. The solution isn\'t always EQ—sometimes it\'s stereo placement, timing, or simply choosing which element leads.',
+          'Dynamic EQ and sidechain techniques let synths breathe around vocals without permanently cutting frequencies. This preserves fullness while maintaining clarity.',
+          'Electronic mixes can be dense, but the best ones still have space. If everything is loud and wide, nothing is.'
+        ],
+        resources: [
+          { name: 'Vocal-synth EQ template', type: 'PDF' },
+          { name: 'Stereo placement guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Electronic Balance',
+        lesson: 3,
+        title: 'Build vs. drop balance',
+        duration: '4:55',
+        description: 'How to balance build sections so drops hit with maximum impact and energy.',
+        inThisLesson: [
+          'Energy management before the drop',
+          'Frequency reduction in builds',
+          'When to thin out vs. when to add tension',
+          'Drop impact through contrast'
+        ],
+        keyTakeaways: [
+          'Drops only hit hard when builds set them up properly. If your build is already at full frequency and loudness, the drop has nowhere to go.',
+          'Effective builds create tension through reduction, not addition. Remove low end, thin out mid-range, create space—then the drop fills it.',
+          'Professional electronic tracks use dramatic contrast. Compare your build and drop levels directly to references to ensure you\'re not underselling the impact.'
+        ],
+        resources: [
+          { name: 'Build-drop contrast worksheet', type: 'PDF' },
+          { name: 'Energy mapping template', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Hip-Hop Balance
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Hip-Hop Balance',
+        lesson: 1,
+        title: 'Vocal clarity over dense beats',
+        duration: '5:30',
+        description: 'Ensuring vocals stay clear and present without making the beat feel empty or thin.',
+        inThisLesson: [
+          'Hip-hop vocal frequency priorities',
+          'Making space without losing beat fullness',
+          'De-essing and vocal presence in rap',
+          'When to push vocals forward vs. sit them in'
+        ],
+        keyTakeaways: [
+          'Hip-hop vocals sit forward but not isolated. The vocal should feel like it\'s on top of the beat, not floating above it. This comes from careful high-mid EQ and compression.',
+          'Beat density is part of the genre. Don\'t over-carve the instrumental—hip-hop mixes are supposed to feel full. The vocal wins through level and presence, not excessive space.',
+          'Reference modern hip-hop tracks to calibrate your vocal level. Too quiet is amateur, but too loud disconnects the vocal from the beat.'
+        ],
+        resources: [
+          { name: 'Hip-hop vocal EQ guide', type: 'PDF' },
+          { name: 'Beat-vocal balance reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Hip-Hop Balance',
+        lesson: 2,
+        title: '808 and kick interaction',
+        duration: '6:15',
+        description: 'How to balance 808s and kicks so both have impact without fighting in the low end.',
+        inThisLesson: [
+          'When to use kick and 808 together',
+          'Frequency tuning for 808s',
+          'Timing and transient control',
+          'Genre variations: trap, drill, boom-bap'
+        ],
+        keyTakeaways: [
+          '808s and kicks serve different purposes. Kicks provide transient punch, 808s provide sustained low-end weight. Both can coexist if you tune them correctly.',
+          'The 808 should be tuned to the key of your track. Out-of-tune 808s create dissonance that no amount of EQ will fix.',
+          'Different hip-hop subgenres balance 808s differently. Trap 808s dominate; boom-bap kicks lead. Study your references to understand your genre\'s conventions.'
+        ],
+        resources: [
+          { name: '808 tuning guide', type: 'PDF' },
+          { name: 'Kick-808 frequency chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Hip-Hop Balance',
+        lesson: 3,
+        title: 'Sample vs. original elements',
+        duration: '4:40',
+        description: 'Balancing sampled material with original production so everything feels cohesive.',
+        inThisLesson: [
+          'Matching sample tonality to new elements',
+          'Leveling vintage samples against modern drums',
+          'Creating cohesion through processing',
+          'When to leave samples raw vs. when to process'
+        ],
+        keyTakeaways: [
+          'Samples often have different tonal characteristics than your original elements. Use subtle EQ and saturation to blend them into the same sonic space.',
+          'Don\'t over-process vintage samples trying to make them sound modern. The character is the point—just make sure they sit at the right level.',
+          'If your sample sounds disconnected, it\'s usually a volume or EQ issue, not a lack of effects. Start simple before reaching for complex processing.'
+        ],
+        resources: [
+          { name: 'Sample integration checklist', type: 'PDF' },
+          { name: 'Cohesion processing guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Rock Balance
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Rock Balance',
+        lesson: 1,
+        title: 'Guitar density management',
+        duration: '5:55',
+        description: 'Preventing guitars from overwhelming the mix while maintaining power and energy.',
+        inThisLesson: [
+          'Layering rhythm guitars without mud',
+          'Stereo placement for guitar tracks',
+          'Taming mid-range guitar buildup',
+          'Balancing distortion levels'
+        ],
+        keyTakeaways: [
+          'Rock mixes often have multiple guitar tracks competing in the same frequency range. The solution is width, not level—pan rhythm guitars hard and use different tones for each side.',
+          'Too much distortion creates mid-range mush. If your guitars sound muddy, reduce gain on the amp or use a tighter distortion sound.',
+          'Leave space in the center for vocals, bass, and kick. Guitars can dominate the sides, but the middle needs breathing room.'
+        ],
+        resources: [
+          { name: 'Guitar layering guide', type: 'PDF' },
+          { name: 'Rock stereo placement chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Rock Balance',
+        lesson: 2,
+        title: 'Vocal cut-through in heavy mixes',
+        duration: '6:30',
+        description: 'Getting vocals to sit clearly on top of distorted guitars and aggressive drums.',
+        inThisLesson: [
+          'Finding vocal presence frequencies in rock',
+          'Compression for rock vocal punch',
+          'When to reduce guitars vs. boost vocals',
+          'Managing sibilance in loud mixes'
+        ],
+        keyTakeaways: [
+          'Rock vocals need to cut through without sounding harsh. This comes from boosting 2-4kHz presence and using aggressive compression to control dynamics.',
+          'Don\'t rely solely on vocal boosts—reduce competing guitar frequencies between 1-3kHz so vocals have space.',
+          'Rock vocal chains are typically more aggressive than other genres: heavier compression, more saturation, tighter de-essing. Reference professional rock mixes to calibrate your approach.'
+        ],
+        resources: [
+          { name: 'Rock vocal processing chain', type: 'PDF' },
+          { name: 'Presence frequency guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Rock Balance',
+        lesson: 3,
+        title: 'Bass and guitar low-end',
+        duration: '5:10',
+        description: 'Managing the low-mid overlap between bass guitar and rhythm guitars.',
+        inThisLesson: [
+          'Separating bass and guitar fundamentals',
+          'The 200-500Hz problem zone',
+          'When to high-pass guitars',
+          'Balancing bass presence and clarity'
+        ],
+        keyTakeaways: [
+          'Bass guitar and rhythm guitars often clash in the 200-500Hz range, creating muddy low-mids. High-pass guitars around 80-120Hz to give bass exclusive access to the low end.',
+          'Bass needs to be both felt and heard. Boost around 100Hz for weight, 800Hz-1kHz for definition. If the bass disappears on small speakers, add more high-mids.',
+          'In rock, the bass isn\'t just supporting the kick—it\'s also locking in with the guitars. Make sure all three elements (kick, bass, guitars) work together rhythmically.'
+        ],
+        resources: [
+          { name: 'Bass-guitar EQ chart', type: 'PDF' },
+          { name: 'Rock low-end balance guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 4: Pop Balance
+      {
+        id: 'm4-l1',
+        module: 4,
+        moduleTitle: 'Pop Balance',
+        lesson: 1,
+        title: 'Vocal-first mixing approach',
+        duration: '5:25',
+        description: 'How pop mixes prioritize vocals above everything else while keeping the production exciting.',
+        inThisLesson: [
+          'Building the mix around the vocal',
+          'Pop vocal brightness and presence',
+          'Supporting elements without competition',
+          'Maintaining energy with vocal priority'
+        ],
+        keyTakeaways: [
+          'Pop mixes are vocal-first, period. Every other element supports the vocal. If something competes with the vocal, it gets reduced or removed.',
+          'Pop vocals are typically bright, present, and polished. Use de-essing, saturation, and air boosts (10kHz+) to achieve that professional sheen.',
+          'The production can still be exciting and full—it just needs to sit under the vocal. Use arrangement and automation to create space dynamically.'
+        ],
+        resources: [
+          { name: 'Pop vocal chain template', type: 'PDF' },
+          { name: 'Vocal-first mix checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l2',
+        module: 4,
+        moduleTitle: 'Pop Balance',
+        lesson: 2,
+        title: 'Kick and bass in sparse arrangements',
+        duration: '5:50',
+        description: 'Creating fullness and groove when the arrangement is minimal and vocal-focused.',
+        inThisLesson: [
+          'Pop low-end weight without overwhelming',
+          'Kick-bass pocket in modern pop',
+          'Supporting sparse productions',
+          'When less is actually more'
+        ],
+        keyTakeaways: [
+          'Modern pop often has minimal arrangements—just kick, bass, vocal, and a few key elements. The low end needs to be solid but controlled to avoid overwhelming the vocal.',
+          'Kick and bass should groove together tightly. Use sidechain compression or careful EQ so they occupy complementary frequency zones without fighting.',
+          'Sparse doesn\'t mean weak. Pop mixes achieve fullness through careful level balance, stereo width, and strategic use of reverb and delay.'
+        ],
+        resources: [
+          { name: 'Pop kick-bass balance guide', type: 'PDF' },
+          { name: 'Minimal arrangement reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l3',
+        module: 4,
+        moduleTitle: 'Pop Balance',
+        lesson: 3,
+        title: 'Width and depth for impact',
+        duration: '4:35',
+        description: 'Using stereo width and spatial depth to create big, polished, radio-ready pop mixes.',
+        inThisLesson: [
+          'Stereo width techniques for pop',
+          'Depth through reverb and delay',
+          'Keeping low end mono while widening highs',
+          'Translation to mono and small speakers'
+        ],
+        keyTakeaways: [
+          'Pop mixes sound wide and spacious, but the low end and vocal are typically mono or narrow. Width comes from synths, pads, and effects—not the core elements.',
+          'Use reverb and delay to create depth, not just space. Short delays create size; longer reverbs create distance. Balance both to build a three-dimensional mix.',
+          'Always check your mix in mono. If it collapses or loses clarity, you\'ve over-done the stereo width. Pop mixes need to work everywhere, including phone speakers.'
+        ],
+        resources: [
+          { name: 'Pop stereo width guide', type: 'PDF' },
+          { name: 'Depth processing techniques', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 1; // Start with lesson 2
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="academy.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Academy</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Genre Balance</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">4 modules · ~60 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Electronic Balance</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item completed flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Sub and kick relationship</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Synth vs. vocal space</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Build vs. drop balance</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:55</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Hip-Hop Balance</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Vocal clarity over dense beats</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">808 and kick interaction</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Sample vs. original elements</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Rock Balance</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Guitar density management</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Vocal cut-through in heavy mixes</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Bass and guitar low-end</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:10</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 4 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 4</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Pop Balance</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Vocal-first mixing approach</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:25</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Kick and bass in sparse arrangements</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Width and depth for impact</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 2</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Synth vs. vocal space</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Managing frequency and stereo space when synths and vocals compete for attention.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Carving space for vocals in dense synth arrangements</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Using stereo width to separate elements</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Mid-range EQ strategies for electronic mixes</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>When to duck synths vs. when to EQ</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Vocals and synths often fight in the 1-3kHz range. The solution isn't always EQ—sometimes it's stereo placement, timing, or simply choosing which element leads.
+          </p>
+          <p>
+            Dynamic EQ and sidechain techniques let synths breathe around vocals without permanently cutting frequencies. This preserves fullness while maintaining clarity.
+          </p>
+          <p>
+            Electronic mixes can be dense, but the best ones still have space. If everything is loud and wide, nothing is.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Vocal-synth EQ template (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Stereo placement guide (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Genre Balance</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        12 lessons · ~60 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Genre-specific balance conventions for electronic, hip-hop, rock, and pop</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to use reference tracks to calibrate your mixes</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Translation techniques to ensure mixes work on all systems</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical frequency and stereo placement strategies per genre</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="tools.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Download all course tools
+        </a>
+        <a href="track-feedback.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

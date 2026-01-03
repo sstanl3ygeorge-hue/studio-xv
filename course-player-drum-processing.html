@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  ================================================================
+  
+  HOW TO CREATE A NEW COURSE:
+  
+  1. Duplicate this file and rename it:
+     Example: course-player-finishing-tracks.html
+              course-player-mixing-basics.html
+              course-player-arrangement.html
+  
+  2. Update the <title> tag below (line 11)
+  
+  3. Update the courseConfig object (around line 120):
+     - title: Your course name
+     - backLink: Link to your course landing page
+     - backLinkText: Text for back button
+     - totalDuration: Total course length
+     - moduleCount: Number of modules
+  
+  4. Replace the lessons array (starting around line 130):
+     - Each lesson needs: id, module, moduleTitle, lesson, title,
+       duration, description, inThisLesson, keyTakeaways, resources
+  
+  5. Update the sidebar HTML (starting around line 650):
+     - Module titles and lesson titles must match your lessons array
+     - IMPORTANT: Keep this exact structure for each lesson:
+       <a href="#" class="lesson-item ...">
+         <div class="flex items-center flex-1">
+           <span class="lesson-check">✓</span>
+           <div class="flex-1">
+             <p class="text-sm font-medium">LESSON TITLE</p>
+             <p class="text-xs" ...>DURATION</p>
+           </div>
+         </div>
+       </a>
+     - The checkmark span is hidden by default and shows when completed
+  
+  6. Update completion modal "What you've learned" section (line 850)
+  
+  That's it! All navigation, progress tracking, checkmarks, and 
+  interactions will work automatically.
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Drum Processing</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       Change these values for each new course
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Drum Processing',
+      backLink: 'academy.html',
+      backLinkText: 'Back to Academy',
+      totalDuration: '~55 minutes',
+      moduleCount: 3
+    };
+    
+    /* ============================================
+       LESSON DATA
+       Replace this array with your course content
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Drum Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Drum Fundamentals',
+        lesson: 1,
+        title: 'Introduction to drum processing',
+        duration: '4:20',
+        description: 'Understanding the fundamentals of drum processing and how to approach your drum chain with clarity and purpose.',
+        inThisLesson: [
+          'What makes drums hit hard in modern production',
+          'The processing order that matters most',
+          'Common mistakes that kill your drums',
+          'Setting up your session for effective processing'
+        ],
+        keyTakeaways: [
+          'Great drum processing starts with great source sounds. No amount of processing can fix poorly chosen or recorded drums.',
+          'The order of your processing chain matters more than the individual plugins you use. Start with fundamentals: gain staging, EQ, compression, then enhancement.',
+          'Most drums fail because they\'re over-processed, not under-processed. Learn to recognize when less is more and when to stop tweaking.'
+        ],
+        resources: [
+          { name: 'Drum processing checklist', type: 'PDF' },
+          { name: 'Signal flow diagram', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Drum Fundamentals',
+        lesson: 2,
+        title: 'Kick drum processing',
+        duration: '6:15',
+        description: 'How to shape your kick drum for maximum impact, clarity, and weight in any genre.',
+        inThisLesson: [
+          'Finding and enhancing the fundamental frequency',
+          'Controlling the attack and body separately',
+          'Sub-bass management without muddiness',
+          'Making kicks cut through dense arrangements'
+        ],
+        keyTakeaways: [
+          'Every kick has two parts: the attack (beater) and the body (low end). Process them independently using EQ to control each element without affecting the other.',
+          'The fundamental frequency of your kick (usually 50-80Hz) is what gives it weight. Find it, boost it subtly, and cut competing frequencies in other elements.',
+          'If your kick doesn\'t punch, it\'s usually an attack problem, not a loudness problem. Sharp transients at 2-5kHz create perceived impact.'
+        ],
+        resources: [
+          { name: 'Kick EQ reference chart', type: 'PDF' },
+          { name: 'Frequency isolation examples', type: 'Audio' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Drum Fundamentals',
+        lesson: 3,
+        title: 'Snare drum processing',
+        duration: '5:45',
+        description: 'Achieving that perfect snare crack with body, presence, and character.',
+        inThisLesson: [
+          'Balancing attack, body, and ring',
+          'Creating presence without harshness',
+          'Dealing with unwanted resonances',
+          'Genre-specific snare approaches'
+        ],
+        keyTakeaways: [
+          'Snare body lives around 150-250Hz. Too much and it\'s boxy, too little and it\'s thin. Find the sweet spot and commit to it.',
+          'The "crack" comes from 2-5kHz. Boost here for presence, but watch for harshness. If it\'s too aggressive, you\'re boosting too wide or too much.',
+          'Most snares need ring control at 300-500Hz. Use a narrow cut to tame boxiness without losing the snare\'s character.'
+        ],
+        resources: [
+          { name: 'Snare EQ template', type: 'PDF' },
+          { name: 'Ring frequency finder', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Drum Fundamentals',
+        lesson: 4,
+        title: 'Hi-hat and cymbal processing',
+        duration: '4:50',
+        description: 'Adding air and clarity to your top-end without creating harshness or fatigue.',
+        inThisLesson: [
+          'High-pass filtering for clean separation',
+          'Adding air and sparkle without sibilance',
+          'Controlling harsh frequencies',
+          'Stereo width techniques for cymbals'
+        ],
+        keyTakeaways: [
+          'Always high-pass your hi-hats and cymbals. Start around 500Hz and adjust by ear. This prevents them from cluttering your low-mids.',
+          'Air and sparkle live above 10kHz. Boost gently with a shelf EQ for polish, but too much creates listening fatigue.',
+          'If your cymbals sound harsh, it\'s usually 6-9kHz. Cut here first before adding air, or your top-end will be aggressive.'
+        ],
+        resources: [
+          { name: 'Hi-hat processing guide', type: 'PDF' },
+          { name: 'Cymbal frequency chart', type: 'PDF' }
+        ]
+      },
+      // Module 2: Layering Techniques
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Layering Techniques',
+        lesson: 1,
+        title: 'Sample selection and layering',
+        duration: '5:30',
+        description: 'How to choose and layer drum samples for power, depth, and sonic interest without creating a mess.',
+        inThisLesson: [
+          'Selecting complementary samples',
+          'Phase alignment basics',
+          'Frequency-conscious layering',
+          'When one sample is enough'
+        ],
+        keyTakeaways: [
+          'Layer samples to fill gaps, not to add more of what you already have. If your kick has great low-end but weak attack, layer with an attack-heavy sample, not another boomy kick.',
+          'Phase alignment matters. If your layered drums sound thin or weak, flip the polarity on one sample and listen again. Small timing adjustments can make huge differences.',
+          'Most producers over-layer. Start with one great sample. Only add a second if it solves a specific problem that EQ or compression can\'t fix.'
+        ],
+        resources: [
+          { name: 'Sample selection checklist', type: 'PDF' },
+          { name: 'Phase alignment tutorial', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Layering Techniques',
+        lesson: 2,
+        title: 'Blending layers effectively',
+        duration: '6:10',
+        description: 'Making multiple drum samples sound like a single, cohesive instrument.',
+        inThisLesson: [
+          'Volume balancing between layers',
+          'Using EQ to carve space for each layer',
+          'Creating blend without losing definition',
+          'Group processing for cohesion'
+        ],
+        keyTakeaways: [
+          'Start by setting volumes. One layer should dominate, the others should support. If you can hear each layer equally, your blend is wrong.',
+          'Use EQ cuts on layers, not just boosts. Cut the lows from your top layer, cut the highs from your bottom layer. This creates clean separation.',
+          'Once layers are balanced and EQ\'d individually, route them to a group and compress them together. This glues them into a single sound.'
+        ],
+        resources: [
+          { name: 'Layer balancing guide', type: 'PDF' },
+          { name: 'EQ carving examples', type: 'Audio' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Layering Techniques',
+        lesson: 3,
+        title: 'Parallel processing fundamentals',
+        duration: '5:25',
+        description: 'Using parallel compression and saturation to add power without losing dynamics.',
+        inThisLesson: [
+          'Setting up parallel channels',
+          'Heavy compression on parallel chains',
+          'Blending parallel and dry signals',
+          'When to use parallel vs. insert processing'
+        ],
+        keyTakeaways: [
+          'Parallel processing lets you add aggression, sustain, or density without crushing your original signal. The key is to blend, not replace.',
+          'On your parallel chain, go heavy. Slam it with compression, saturate it, make it sound wrong on its own. Then blend just enough to add power without losing punch.',
+          'Use parallel processing when you want more of something without losing what you already have. Insert processing is for fixing problems; parallel is for enhancement.'
+        ],
+        resources: [
+          { name: 'Parallel drum setup', type: 'PDF' },
+          { name: 'Compression settings reference', type: 'PDF' }
+        ]
+      },
+      // Module 3: Processing Chain
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Processing Chain',
+        lesson: 1,
+        title: 'Transient shaping explained',
+        duration: '5:40',
+        description: 'Using transient designers to control attack and sustain independently.',
+        inThisLesson: [
+          'What transient shapers actually do',
+          'Attack vs. sustain controls',
+          'When to enhance vs. reduce transients',
+          'Transient shaping in context of the mix'
+        ],
+        keyTakeaways: [
+          'Transient shapers let you control attack and sustain separately. This is impossible with EQ or compression alone.',
+          'Increase attack to make drums punchier and more defined. Decrease attack to make them sit back and blend. Sustain controls the body and tail.',
+          'Don\'t use transient shapers in isolation. A/B them with the full mix playing. What sounds punchy solo might be too aggressive in context.'
+        ],
+        resources: [
+          { name: 'Transient shaper guide', type: 'PDF' },
+          { name: 'Before/after examples', type: 'Audio' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Processing Chain',
+        lesson: 2,
+        title: 'Glue compression',
+        duration: '6:20',
+        description: 'Making your drum bus feel tight, cohesive, and powerful without squashing dynamics.',
+        inThisLesson: [
+          'What glue compression is and isn\'t',
+          'Choosing the right compressor type',
+          'Settings that glue without pumping',
+          'Parallel glue for extra control'
+        ],
+        keyTakeaways: [
+          'Glue compression isn\'t about loudness—it\'s about making separate drum hits feel like they belong together. Light ratio, slow attack, medium release.',
+          'Use a slow attack (10-30ms) so the transients punch through, then compress the body. This gives you cohesion without losing punch.',
+          'Aim for 2-4dB of gain reduction on average hits. If you\'re hitting 6dB+, you\'re compressing too much and killing your drums.'
+        ],
+        resources: [
+          { name: 'Glue compression settings', type: 'PDF' },
+          { name: 'Compressor comparison guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Processing Chain',
+        lesson: 3,
+        title: 'Saturation and harmonics',
+        duration: '4:45',
+        description: 'Adding warmth, grit, and character to your drums with harmonic saturation.',
+        inThisLesson: [
+          'How saturation adds harmonics and color',
+          'Tape vs. tube vs. transistor saturation',
+          'Subtle vs. aggressive saturation',
+          'Where in the chain to add saturation'
+        ],
+        keyTakeaways: [
+          'Saturation adds harmonics that make drums sound fuller, warmer, and more analog. It\'s subtle coloration, not distortion.',
+          'Tape saturation smooths transients and adds low-end warmth. Tube adds mid-range thickness. Transistor adds edge and brightness. Choose based on what your drums need.',
+          'Add saturation after EQ and compression in your chain. This prevents the saturation from emphasizing problems you\'ve already fixed.'
+        ],
+        resources: [
+          { name: 'Saturation types comparison', type: 'PDF' },
+          { name: 'Chain order reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Processing Chain',
+        lesson: 4,
+        title: 'Final drum bus processing',
+        duration: '5:05',
+        description: 'Putting it all together—how to process your drum bus for a professional, cohesive sound.',
+        inThisLesson: [
+          'The complete drum bus chain',
+          'Final EQ and tonal shaping',
+          'Limiting for consistency',
+          'A/B testing your processing decisions'
+        ],
+        keyTakeaways: [
+          'Your drum bus chain should be simple: EQ → compression → saturation → limiter. Each plugin has a specific job. Don\'t overcomplicate it.',
+          'Use final bus EQ for broad tonal shaping, not fixing individual drums. A gentle high shelf for air, a low-mid cut for clarity, nothing drastic.',
+          'Always A/B your processing against the dry signal. If the processed version isn\'t clearly better, it\'s not helping. Trust your ears, not your eyes.'
+        ],
+        resources: [
+          { name: 'Complete bus chain template', type: 'PDF' },
+          { name: 'A/B testing checklist', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    /* ============================================
+       PLAYER FUNCTIONALITY
+       Do not modify unless you know what you're doing
+       ============================================ */
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      currentLessonIndex = index;
+      const lesson = lessons[index];
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson" list
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update sidebar active state
+      document.querySelectorAll('.lesson-item').forEach((item, idx) => {
+        item.classList.toggle('active', idx === index);
+        if (idx < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (index === 0) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (index === lessons.length - 1) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Save progress
+      saveProgress(index, lesson.title);
+    }
+    
+    function saveProgress(lessonIndex, lessonTitle) {
+      const progress = {
+        lessonIndex,
+        lessonTitle,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('drumProcessingProgress', JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const saved = localStorage.getItem('drumProcessingProgress');
+      return saved ? JSON.parse(saved) : null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        // Show continue prompt after a brief delay
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        // Render the first lesson initially (will be replaced if user clicks Continue)
+        renderLesson(currentLessonIndex);
+      } else {
+        // No saved progress, start from current lesson
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="academy.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Academy</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Drum Processing</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~55 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Drum Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Introduction to drum processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Kick drum processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Snare drum processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Hi-hat and cymbal processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Layering Techniques</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Sample selection and layering</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Blending layers effectively</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel processing fundamentals</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Processing Chain</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Transient shaping explained</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Glue compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Saturation and harmonics</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final drum bus processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:05</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Introduction to drum processing</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the fundamentals of drum processing and how to approach your drum chain with clarity and purpose.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>What makes drums hit hard in modern production</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The processing order that matters most</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Common mistakes that kill your drums</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Setting up your session for effective processing</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Great drum processing starts with great source sounds. No amount of processing can fix poorly chosen or recorded drums.
+          </p>
+          <p>
+            The order of your processing chain matters more than the individual plugins you use. Start with fundamentals: gain staging, EQ, compression, then enhancement.
+          </p>
+          <p>
+            Most drums fail because they're over-processed, not under-processed. Learn to recognize when less is more and when to stop tweaking.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Drum processing checklist (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Signal flow diagram (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Drum Processing</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        11 lessons · ~55 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Professional kick and snare processing techniques</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Layering drum samples for power and depth</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Parallel processing and transient control</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Glue compression and complete bus processing</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="tools.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Download all course tools
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

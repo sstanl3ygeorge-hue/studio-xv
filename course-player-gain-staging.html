@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  Course 11: Gain Staging for Clarity
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Gain Staging for Clarity</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Gain Staging for Clarity',
+      backLink: 'academy.html',
+      backLinkText: 'Back to Academy',
+      totalDuration: '~40 minutes',
+      moduleCount: 3,
+      price: '£35',
+      stripeLink: 'https://buy.stripe.com/test_28E14neDteada9MaY48g001'
+    };
+    
+    /* ============================================
+       LESSON DATA
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Gain Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Gain Fundamentals',
+        lesson: 1,
+        title: 'What is Gain Staging?',
+        duration: '4:45',
+        description: 'Understanding the foundation of clean signal flow and why proper gain staging matters for every mix.',
+        inThisLesson: [
+          'The definition and purpose of gain staging',
+          'How signal level affects your entire mix',
+          'Common gain staging myths debunked',
+          'Why starting right saves time later'
+        ],
+        keyTakeaways: [
+          'Gain staging is about maintaining optimal signal levels throughout your entire signal chain, from input to output.',
+          'Proper gain staging prevents distortion, reduces noise, and gives you more headroom to work with during mixing.',
+          'Starting with good gain staging is easier than trying to fix it later—it\'s the foundation everything else builds on.'
+        ],
+        resources: [
+          { name: 'Gain staging overview PDF', type: 'PDF' },
+          { name: 'Quick reference chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Gain Fundamentals',
+        lesson: 2,
+        title: 'Understanding Signal Flow',
+        duration: '5:12',
+        description: 'How audio signals travel through your DAW and plugins, and where things can go wrong.',
+        inThisLesson: [
+          'Signal path from input to master',
+          'How plugins affect gain at each stage',
+          'Pre-fader vs. post-fader signal',
+          'Identifying problem areas in your chain'
+        ],
+        keyTakeaways: [
+          'Every plugin in your chain affects the gain going into the next plugin. One loud plugin can throw off everything downstream.',
+          'Understanding signal flow helps you identify exactly where levels are getting out of control.',
+          'Most gain staging problems happen because people focus on individual tracks instead of the entire signal path.'
+        ],
+        resources: [
+          { name: 'Signal flow diagram', type: 'PDF' },
+          { name: 'Plugin gain checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Gain Fundamentals',
+        lesson: 3,
+        title: 'Optimal Level Standards',
+        duration: '3:58',
+        description: 'Target levels for different stages of your mix and why these numbers matter.',
+        inThisLesson: [
+          'Recommended peak levels for tracking',
+          'Ideal levels for mixing (-18dBFS standard)',
+          'When to use RMS vs. peak metering',
+          'Headroom requirements for mastering'
+        ],
+        keyTakeaways: [
+          'Aim for -18dBFS to -12dBFS average levels during mixing. This gives you plenty of headroom and keeps your mix clean.',
+          'Peak levels should stay below -6dBFS on individual channels, and your master should peak around -6dBFS before mastering.',
+          'These are guidelines, not rules. The key is consistency—pick a standard and stick to it across all your projects.'
+        ],
+        resources: [
+          { name: 'Level reference guide', type: 'PDF' },
+          { name: 'Metering setup tips', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Gain Fundamentals',
+        lesson: 4,
+        title: 'Common Gain Problems',
+        duration: '4:30',
+        description: 'The most frequent gain staging mistakes and how to spot them in your own mixes.',
+        inThisLesson: [
+          'Clipping at different stages',
+          'Too much headroom (yes, it\'s a problem)',
+          'Inconsistent levels between tracks',
+          'Plugin gain compensation issues'
+        ],
+        keyTakeaways: [
+          'Clipping doesn\'t just happen at the master—it can occur at any point in your signal chain, and it all adds up.',
+          'Too much headroom means you\'re mixing too quiet, which can lead to noise issues and weak mixes.',
+          'Most DAWs have automatic gain compensation, but it doesn\'t always work perfectly. Trust your ears and meters.'
+        ],
+        resources: [
+          { name: 'Problem identification guide', type: 'PDF' },
+          { name: 'Troubleshooting flowchart', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Staging Workflow
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Staging Workflow',
+        lesson: 1,
+        title: 'Setting Up Your Session',
+        duration: '5:20',
+        description: 'How to establish proper gain staging from the moment you start a new project.',
+        inThisLesson: [
+          'Session templates with proper gain structure',
+          'Initial level setting for imported audio',
+          'Virtual instrument output levels',
+          'Creating a gain staging baseline'
+        ],
+        keyTakeaways: [
+          'Set up your session with gain staging in mind from the start. Create a template that enforces good practices automatically.',
+          'When importing audio, check levels immediately and adjust at the source before adding any processing.',
+          'Virtual instruments often output at wildly different levels. Normalize their outputs first thing.'
+        ],
+        resources: [
+          { name: 'Session template guide', type: 'PDF' },
+          { name: 'Initial setup checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Staging Workflow',
+        lesson: 2,
+        title: 'Track-by-Track Gain Setting',
+        duration: '6:15',
+        description: 'A systematic approach to setting proper gain on every track in your mix.',
+        inThisLesson: [
+          'The clip gain method',
+          'Using gain plugins vs. fader level',
+          'Batch processing similar tracks',
+          'When to adjust gain vs. fader volume'
+        ],
+        keyTakeaways: [
+          'Use clip gain or a gain plugin at the start of your chain to set proper input levels. Save your fader for mixing balance.',
+          'Setting gain before EQ and compression ensures those processors receive optimal signal levels.',
+          'Group similar tracks and set their gain together to maintain consistency and speed up your workflow.'
+        ],
+        resources: [
+          { name: 'Track gain workflow PDF', type: 'PDF' },
+          { name: 'Gain plugin recommendations', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Staging Workflow',
+        lesson: 3,
+        title: 'Plugin Chain Management',
+        duration: '5:45',
+        description: 'Maintaining proper levels throughout your plugin chains without killing your mix.',
+        inThisLesson: [
+          'Input/output matching on each plugin',
+          'Gain compensation in EQs and compressors',
+          'Saturation and distortion gain management',
+          'Using metering plugins strategically'
+        ],
+        keyTakeaways: [
+          'After applying any processing, match the output level to the input level. This ensures you\'re hearing the processing, not just "louder."',
+          'Most quality plugins have input/output meters. Use them. Don\'t trust that automatic gain compensation is working.',
+          'Saturation adds harmonics and often adds gain. Always check and adjust the output level after saturation plugins.'
+        ],
+        resources: [
+          { name: 'Plugin gain workflow', type: 'PDF' },
+          { name: 'Metering plugin guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Headroom Management
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Headroom Management',
+        lesson: 1,
+        title: 'Master Bus Headroom',
+        duration: '4:40',
+        description: 'Why leaving headroom on your master bus is essential and how much you actually need.',
+        inThisLesson: [
+          'Why mastering needs headroom',
+          'Target peak levels for your master',
+          'RMS levels vs. peak levels',
+          'How to create headroom without losing impact'
+        ],
+        keyTakeaways: [
+          'Leave at least -6dBFS of headroom on your master bus. This gives the mastering engineer (or yourself) room to work.',
+          'Your mix should sound great at -6dB peak. If it doesn\'t, you\'re relying on loudness instead of balance.',
+          'Creating headroom isn\'t about turning everything down—it\'s about proper gain staging from the beginning.'
+        ],
+        resources: [
+          { name: 'Master bus headroom guide', type: 'PDF' },
+          { name: 'Headroom checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Headroom Management',
+        lesson: 2,
+        title: 'Mix Bus Processing',
+        duration: '5:30',
+        description: 'How to apply mix bus processing without destroying your carefully staged gain structure.',
+        inThisLesson: [
+          'Gain staging before mix bus compression',
+          'Managing levels with mix bus EQ',
+          'Glue compression and gain structure',
+          'When mix bus processing goes wrong'
+        ],
+        keyTakeaways: [
+          'Check your levels before adding mix bus compression. If your mix is too hot going in, compression will make it worse.',
+          'Mix bus processing should be subtle. If it\'s drastically changing your levels, something is wrong with your gain staging.',
+          'Always check your master output level after adding mix bus processing. Adjust makeup gain to maintain headroom.'
+        ],
+        resources: [
+          { name: 'Mix bus gain workflow', type: 'PDF' },
+          { name: 'Processing gain checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Headroom Management',
+        lesson: 3,
+        title: 'Final Gain Staging Check',
+        duration: '4:25',
+        description: 'A systematic final check to ensure your entire mix has proper gain staging before export.',
+        inThisLesson: [
+          'The pre-export gain audit',
+          'Checking every track and bus',
+          'Master level verification',
+          'Export settings for optimal levels'
+        ],
+        keyTakeaways: [
+          'Before exporting, do a full gain staging audit: check every track, every bus, and your master. Fix anything over -6dB peak.',
+          'Your meters tell the truth. If something looks wrong, it is wrong. Don\'t export until your levels are right.',
+          'Export at the same bit depth and sample rate you mixed at. Don\'t let your export settings mess up your gain staging.'
+        ],
+        resources: [
+          { name: 'Pre-export checklist', type: 'PDF' },
+          { name: 'Export settings guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="academy.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Academy</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Gain Staging for Clarity</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~40 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Gain Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What is Gain Staging?</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding Signal Flow</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:12</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Optimal Level Standards</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:58</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Common Gain Problems</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Staging Workflow</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Setting Up Your Session</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Track-by-Track Gain Setting</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Plugin Chain Management</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Headroom Management</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Master Bus Headroom</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Mix Bus Processing</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final Gain Staging Check</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What is Gain Staging?</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the foundation of clean signal flow and why proper gain staging matters for every mix.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The definition and purpose of gain staging</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How signal level affects your entire mix</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Common gain staging myths debunked</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why starting right saves time later</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Gain staging is about maintaining optimal signal levels throughout your entire signal chain, from input to output.
+          </p>
+          <p>
+            Proper gain staging prevents distortion, reduces noise, and gives you more headroom to work with during mixing.
+          </p>
+          <p>
+            Starting with good gain staging is easier than trying to fix it later—it's the foundation everything else builds on.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Gain staging overview PDF (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Quick reference chart (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Gain Staging for Clarity</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~40 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to maintain optimal signal levels throughout your chain</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Systematic workflows for track-by-track gain setting</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Managing headroom for clean, professional mixes</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Pre-export gain staging verification techniques</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="academy.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Back to Academy
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

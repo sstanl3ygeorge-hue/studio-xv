@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  Course 12: Bass & Low End Management
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Bass & Low End Management</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Bass & Low End Management',
+      backLink: 'academy.html',
+      backLinkText: 'Back to Academy',
+      totalDuration: '~55 minutes',
+      moduleCount: 3,
+      price: '£35',
+      stripeLink: 'https://buy.stripe.com/test_28E14neDteada9MaY48g001'
+    };
+    
+    /* ============================================
+       LESSON DATA
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Low Frequency Control
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Low Frequency Control',
+        lesson: 1,
+        title: 'Understanding Low End',
+        duration: '5:45',
+        description: 'The physics and perception of low frequencies, and why they behave differently than mids and highs.',
+        inThisLesson: [
+          'How low frequencies work in a mix',
+          'Why bass is harder to control',
+          'The frequency ranges that matter',
+          'Listening environment considerations'
+        ],
+        keyTakeaways: [
+          'Low frequencies contain more energy and take up more space in a mix than any other frequency range.',
+          'What sounds good on headphones often doesn\'t translate to speakers because low end behaves differently in different spaces.',
+          'The sub-bass range (20-60Hz) is felt more than heard. The bass range (60-250Hz) is where most problems occur.'
+        ],
+        resources: [
+          { name: 'Low frequency guide', type: 'PDF' },
+          { name: 'Frequency chart reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Low Frequency Control',
+        lesson: 2,
+        title: 'EQ for Bass Clarity',
+        duration: '6:30',
+        description: 'Surgical EQ techniques to clean up mud and create space in the low end.',
+        inThisLesson: [
+          'High-pass filtering everything else',
+          'Finding and cutting problem frequencies',
+          'Shelving vs. surgical cuts',
+          'When to boost vs. when to cut'
+        ],
+        keyTakeaways: [
+          'High-pass filter everything that doesn\'t need low end. Your guitars, synths, and vocals are stealing bass energy.',
+          'Most bass problems are solved by cutting, not boosting. Remove the mud before you add shine.',
+          'Use a spectrum analyzer to see what you can\'t hear. Low end issues often hide in plain sight.'
+        ],
+        resources: [
+          { name: 'EQ frequency guide', type: 'PDF' },
+          { name: 'High-pass filter chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Low Frequency Control',
+        lesson: 3,
+        title: 'Compression on Bass',
+        duration: '7:10',
+        description: 'How to use compression to control dynamics and create consistent low end energy.',
+        inThisLesson: [
+          'Why bass needs compression',
+          'Attack and release for bass',
+          'Parallel compression for punch',
+          'Multi-band compression strategies'
+        ],
+        keyTakeaways: [
+          'Compression evens out the dynamics of bass so every note has consistent energy. Uncompressed bass disappears in the mix.',
+          'Slow attack lets the initial transient through, fast release keeps it tight. Start with 30ms attack, auto release.',
+          'Parallel compression gives you control and punch at the same time. Compress one copy heavily, blend with the dry signal.'
+        ],
+        resources: [
+          { name: 'Bass compression guide', type: 'PDF' },
+          { name: 'Compressor settings chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Low Frequency Control',
+        lesson: 4,
+        title: 'Saturation & Harmonic Content',
+        duration: '5:20',
+        description: 'Adding harmonics to make bass audible on small speakers without losing weight.',
+        inThisLesson: [
+          'Why pure sine waves disappear',
+          'Saturation for perceived loudness',
+          'Harmonic distortion techniques',
+          'Maintaining low end weight'
+        ],
+        keyTakeaways: [
+          'Pure low frequencies disappear on small speakers. Saturation adds harmonics that make bass audible without changing the fundamental.',
+          'Subtle saturation makes bass sound louder without actually increasing volume. It\'s a psychoacoustic trick.',
+          'Don\'t overdo it. Too much saturation turns your bass into a mid-range instrument and loses the weight.'
+        ],
+        resources: [
+          { name: 'Saturation guide', type: 'PDF' },
+          { name: 'Harmonic enhancement tips', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Kick-Bass Relationship
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Kick-Bass Relationship',
+        lesson: 1,
+        title: 'Frequency Separation',
+        duration: '6:45',
+        description: 'How to carve out space so kick and bass both hit hard without fighting each other.',
+        inThisLesson: [
+          'Identifying frequency conflicts',
+          'Complementary EQ techniques',
+          'Who gets the sub, who gets the punch',
+          'Testing your frequency decisions'
+        ],
+        keyTakeaways: [
+          'Kick and bass fight in the same frequency range. One needs to dominate the sub (usually kick), the other takes the mid-bass (usually bass).',
+          'Use complementary EQ: boost one where you cut the other. If the kick owns 60Hz, cut that from the bass and boost 80-100Hz instead.',
+          'Your decision depends on the genre. Electronic music often gives sub to the kick. Hip-hop and R&B often give it to the bass.'
+        ],
+        resources: [
+          { name: 'Frequency separation guide', type: 'PDF' },
+          { name: 'Genre-specific charts', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Kick-Bass Relationship',
+        lesson: 2,
+        title: 'Sidechain Compression',
+        duration: '5:55',
+        description: 'Using sidechain compression to create rhythmic space and prevent low end buildup.',
+        inThisLesson: [
+          'What sidechaining actually does',
+          'Sidechain compression settings',
+          'Subtle ducking vs. pumping',
+          'Multi-band sidechaining'
+        ],
+        keyTakeaways: [
+          'Sidechain compression automatically ducks the bass when the kick hits, creating space and preventing frequency buildup.',
+          'For subtle control, use a ratio of 2:1 to 4:1 with fast attack and medium release. For pumping, crank the ratio and threshold.',
+          'Multi-band sidechaining lets you duck only the low frequencies of the bass, keeping the mid-bass intact for tone.'
+        ],
+        resources: [
+          { name: 'Sidechain compression guide', type: 'PDF' },
+          { name: 'Settings reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Kick-Bass Relationship',
+        lesson: 3,
+        title: 'Timing & Groove',
+        duration: '4:50',
+        description: 'The rhythmic relationship between kick and bass that creates groove and pocket.',
+        inThisLesson: [
+          'When kick and bass should align',
+          'Creating space through rhythm',
+          'Push and pull techniques',
+          'Quantization vs. feel'
+        ],
+        keyTakeaways: [
+          'Perfect alignment creates power. Slight offset creates groove. Know which one you need and when.',
+          'If your low end feels stiff, try shifting the bass 5-10ms later than the kick. This creates a pocket.',
+          'Don\'t over-quantize. Real groove comes from slight timing variations, not robotic perfection.'
+        ],
+        resources: [
+          { name: 'Timing guide', type: 'PDF' },
+          { name: 'Groove reference tracks', type: 'ZIP' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Kick-Bass Relationship',
+        lesson: 4,
+        title: 'Practical Walkthrough',
+        duration: '8:15',
+        description: 'Watch a real mix example where kick and bass are balanced from scratch.',
+        inThisLesson: [
+          'Analyzing the raw tracks',
+          'Applying frequency separation',
+          'Setting up sidechain compression',
+          'Final balance and testing'
+        ],
+        keyTakeaways: [
+          'Start by listening to the kick and bass in isolation. Understand what each one brings before trying to blend them.',
+          'EQ first, compression second, sidechaining third. Build the foundation before adding dynamics control.',
+          'Always reference your low end on multiple systems. What works on monitors might not work on earbuds.'
+        ],
+        resources: [
+          { name: 'Walkthrough session notes', type: 'PDF' },
+          { name: 'Before/after audio files', type: 'ZIP' }
+        ]
+      },
+      
+      // Module 3: Clean Low End
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Clean Low End',
+        lesson: 1,
+        title: 'Mono vs. Stereo Bass',
+        duration: '4:35',
+        description: 'Why low frequencies should be mono and how to properly manage stereo width in the low end.',
+        inThisLesson: [
+          'The phase cancellation problem',
+          'Keeping sub bass mono',
+          'Adding width to mid-bass',
+          'Testing for mono compatibility'
+        ],
+        keyTakeaways: [
+          'Keep everything below 150Hz mono. Stereo low frequencies cause phase cancellation and disappear on single speakers.',
+          'You can add stereo width to the upper bass and harmonics without affecting the sub. This gives you presence and focus.',
+          'Always check your mix in mono. If your bass disappears, you have phase issues from stereo information in the low end.'
+        ],
+        resources: [
+          { name: 'Mono bass guide', type: 'PDF' },
+          { name: 'Phase correlation reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Clean Low End',
+        lesson: 2,
+        title: 'Removing Rumble & Noise',
+        duration: '3:50',
+        description: 'Cleaning up subsonic rumble and low frequency noise that muddies your mix.',
+        inThisLesson: [
+          'Identifying unwanted low frequency content',
+          'High-pass filtering strategies',
+          'De-rumbling techniques',
+          'Cleaning up room noise'
+        ],
+        keyTakeaways: [
+          'Most tracks contain subsonic rumble that wastes headroom and muddies your low end. High-pass everything.',
+          'Start with a gentle 12dB/octave high-pass filter and sweep up until you hear the sound thin out. Pull back slightly.',
+          'Don\'t be afraid to high-pass at 40-50Hz even on bass and kick. Anything below that is usually just rumble.'
+        ],
+        resources: [
+          { name: 'Rumble removal guide', type: 'PDF' },
+          { name: 'Filter settings chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Clean Low End',
+        lesson: 3,
+        title: 'Low End Reference',
+        duration: '5:40',
+        description: 'Using reference tracks to check your low end balance and make informed decisions.',
+        inThisLesson: [
+          'Choosing the right reference tracks',
+          'Matching low end levels',
+          'Frequency balance comparison',
+          'When to deviate from the reference'
+        ],
+        keyTakeaways: [
+          'Pick reference tracks in your genre that sound great on all systems. Import them into your session at the same level as your mix.',
+          'Use a spectrum analyzer to compare your low end balance to the reference. Match the general shape, not exact numbers.',
+          'Your reference shows you what\'s possible. Don\'t copy it exactly—use it to understand where your mix should sit.'
+        ],
+        resources: [
+          { name: 'Reference workflow guide', type: 'PDF' },
+          { name: 'Genre reference track list', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="academy.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Academy</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Bass & Low End Management</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~55 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Low Frequency Control</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding Low End</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">EQ for Bass Clarity</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Compression on Bass</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:10</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Saturation & Harmonic Content</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Kick-Bass Relationship</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Frequency Separation</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Sidechain Compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Timing & Groove</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Practical Walkthrough</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:15</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Clean Low End</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Mono vs. Stereo Bass</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:35</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Removing Rumble & Noise</p>
+              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Low End Reference</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Understanding Low End</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          The physics and perception of low frequencies, and why they behave differently than mids and highs.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How low frequencies work in a mix</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why bass is harder to control</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The frequency ranges that matter</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Listening environment considerations</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Low frequencies contain more energy and take up more space in a mix than any other frequency range.
+          </p>
+          <p>
+            What sounds good on headphones often doesn't translate to speakers because low end behaves differently in different spaces.
+          </p>
+          <p>
+            The sub-bass range (20-60Hz) is felt more than heard. The bass range (60-250Hz) is where most problems occur.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Low frequency guide (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Frequency chart reference (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Bass & Low End Management</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        11 lessons · ~55 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to control and clean up low frequency energy</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Making kick and bass work together rhythmically and tonally</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating clean, mono-compatible low end</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Using reference tracks to dial in professional bass</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="academy.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Back to Academy
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

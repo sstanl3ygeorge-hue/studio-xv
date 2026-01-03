@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Compression Basics</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Compression Basics',
+      backLink: 'course.html',
+      backLinkText: 'Back to Courses',
+      totalDuration: '~50 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Fundamentals
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Fundamentals',
+        lesson: 1,
+        title: 'What compression actually does',
+        duration: '5:45',
+        description: 'Understanding compression beyond "making things louder"—what it really does to your audio.',
+        inThisLesson: [
+          'The simple explanation of dynamic range control',
+          'Compression as volume automation',
+          'Why we use compression in modern production',
+          'When compression helps vs when it hurts'
+        ],
+        keyTakeaways: [
+          'Compression reduces the difference between the loudest and quietest parts of a sound. That\'s it. Everything else is a result of that core function.',
+          'Think of a compressor as automatic volume control that turns down the loud parts, making space to turn up the whole signal.',
+          'Compression isn\'t always necessary. If your sound already has consistent dynamics, don\'t compress just because you think you should.'
+        ],
+        resources: [
+          { name: 'Compression basics overview', type: 'PDF' },
+          { name: 'Dynamic range visualization guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Fundamentals',
+        lesson: 1,
+        title: 'Threshold explained',
+        duration: '4:50',
+        description: 'Understanding the most important parameter that determines when compression happens.',
+        inThisLesson: [
+          'What threshold controls',
+          'Setting threshold by ear',
+          'How threshold interacts with ratio',
+          'Common threshold mistakes'
+        ],
+        keyTakeaways: [
+          'Threshold is the volume level where compression starts working. Signal above threshold gets compressed, signal below threshold passes through unchanged.',
+          'Set your threshold so the compressor works on the peaks you want to control, not on the whole signal. You want some compression, not constant compression.',
+          'If your meter shows constant gain reduction, your threshold is too low. Compression should breathe—working on peaks, releasing between them.'
+        ],
+        resources: [
+          { name: 'Threshold setting guide', type: 'PDF' },
+          { name: 'Gain reduction target reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Fundamentals',
+        lesson: 3,
+        title: 'Ratio and compression amount',
+        duration: '5:20',
+        description: 'How ratio controls the intensity of compression and how to choose the right setting.',
+        inThisLesson: [
+          'Understanding ratio numbers (2:1, 4:1, 8:1, etc.)',
+          'Gentle compression vs aggressive compression',
+          'When to use low ratios vs high ratios',
+          'Ratio and genre expectations'
+        ],
+        keyTakeaways: [
+          'Ratio determines how much the compressor turns down the signal once it crosses the threshold. 4:1 means for every 4dB over threshold, only 1dB comes out.',
+          'Lower ratios (2:1 to 4:1) are transparent and musical. Higher ratios (6:1 to 10:1) are more obvious and controlling. Above 10:1 is limiting.',
+          'Most mixing compression lives between 2:1 and 6:1. If you need more than 8:1, you probably need better gain staging or a different approach.'
+        ],
+        resources: [
+          { name: 'Ratio guide by use case', type: 'PDF' },
+          { name: 'Compression intensity reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Fundamentals',
+        lesson: 4,
+        title: 'Gain reduction meters',
+        duration: '4:15',
+        description: 'Learning to read and understand what your compressor is actually doing.',
+        inThisLesson: [
+          'How to read the GR meter',
+          'How much gain reduction is enough',
+          'Constant vs pumping compression',
+          'Metering vs listening'
+        ],
+        keyTakeaways: [
+          'The gain reduction (GR) meter shows how many dB the compressor is turning down. This is the core feedback for setting your compressor.',
+          'For transparent compression, aim for 2-5dB of gain reduction on peaks. For obvious compression, 6-10dB. More than 12dB is usually too much.',
+          'Watch the meter, but trust your ears. Some compressors sound good with more GR than the "rules" suggest, some sound bad with less.'
+        ],
+        resources: [
+          { name: 'GR meter reading guide', type: 'PDF' },
+          { name: 'Visual compression examples', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Parameters
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Parameters',
+        lesson: 1,
+        title: 'Attack time: When compression starts',
+        duration: '5:30',
+        description: 'Understanding how attack time shapes transients and groove.',
+        inThisLesson: [
+          'What attack time actually controls',
+          'Fast attack vs slow attack behavior',
+          'Preserving punch with slower attacks',
+          'When fast attacks are necessary'
+        ],
+        keyTakeaways: [
+          'Attack time is how quickly the compressor responds once signal crosses the threshold. Fast attack (0.1-1ms) catches transients immediately. Slow attack (10-30ms) lets them through.',
+          'Slower attacks preserve punch and impact. Most drums sound better with 5-20ms attack so the transient hits before compression engages.',
+          'Use fast attack when you need tight control (vocals, bass) or when transients are too harsh and need taming.'
+        ],
+        resources: [
+          { name: 'Attack time by instrument', type: 'PDF' },
+          { name: 'Transient shaping with attack', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Parameters',
+        lesson: 2,
+        title: 'Release time: When it stops',
+        duration: '5:45',
+        description: 'How release time affects the feel and flow of compression.',
+        inThisLesson: [
+          'What release time controls',
+          'Setting release to the tempo',
+          'Fast release vs slow release character',
+          'Auto release modes explained'
+        ],
+        keyTakeaways: [
+          'Release time is how fast the compressor stops compressing after the signal drops below threshold. This controls the flow and feel of compression.',
+          'Match release to your tempo. Fast release (40-60ms) for fast material, medium (100-200ms) for most mixes, slow (300ms+) for smooth compression.',
+          'Auto release adapts to the material. It\'s a good starting point until you understand what you want manually.'
+        ],
+        resources: [
+          { name: 'Release time calculator', type: 'PDF' },
+          { name: 'Musical release settings', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Parameters',
+        lesson: 3,
+        title: 'Knee: Hard vs soft compression',
+        duration: '4:25',
+        description: 'Understanding how knee shape affects the character of compression.',
+        inThisLesson: [
+          'What hard knee and soft knee mean',
+          'How knee affects compression curve',
+          'Transparent compression with soft knee',
+          'When to use hard knee'
+        ],
+        keyTakeaways: [
+          'Knee determines how abruptly compression kicks in. Hard knee means it starts immediately at threshold. Soft knee gradually increases compression as you approach threshold.',
+          'Soft knee (2-10dB range) sounds more natural and transparent. Hard knee (0dB) is more precise and controlled.',
+          'For most mixing, soft knee works better. Use hard knee for obvious effects or when you need exact control at a specific threshold.'
+        ],
+        resources: [
+          { name: 'Knee setting guide', type: 'PDF' },
+          { name: 'Compression curve examples', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Parameters',
+        lesson: 4,
+        title: 'Makeup gain and loudness',
+        duration: '4:40',
+        description: 'Properly adjusting gain to maintain level after compression.',
+        inThisLesson: [
+          'Why compression makes things quieter',
+          'Setting makeup gain correctly',
+          'Auto makeup gain pros and cons',
+          'Comparing before/after fairly'
+        ],
+        keyTakeaways: [
+          'Compression reduces peaks, making the overall signal quieter. Makeup gain compensates by turning the whole signal back up.',
+          'Set makeup gain to match the average loudness before compression. Don\'t just match the peaks—you\'ll think every compressor "sounds better" when it\'s just louder.',
+          'Use auto makeup gain as a starting point, then adjust by ear. The goal is fair A/B comparison, not maximum loudness.'
+        ],
+        resources: [
+          { name: 'Makeup gain procedure', type: 'PDF' },
+          { name: 'Level matching guide', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Applications
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 1,
+        title: 'Compressing vocals',
+        duration: '5:35',
+        description: 'Making vocals consistent and present without squashing the life out of them.',
+        inThisLesson: [
+          'Why vocals need compression',
+          'Starting point settings for vocals',
+          'Multiple stages of vocal compression',
+          'Common vocal compression mistakes'
+        ],
+        keyTakeaways: [
+          'Vocals have huge dynamic range—whispers to shouts. Compression keeps them consistent and audible without constant volume rides.',
+          'Start with 3:1 to 5:1 ratio, medium attack (3-10ms), medium-fast release (100-200ms), and aim for 3-6dB gain reduction on the loud parts.',
+          'Two stages of light compression (3dB each) often works better than one stage of heavy compression (6dB). It sounds more natural.'
+        ],
+        resources: [
+          { name: 'Vocal compression guide', type: 'PDF' },
+          { name: 'Vocal starting points by style', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 2,
+        title: 'Drum compression',
+        duration: '5:15',
+        description: 'Adding punch, glue, and control to drums without losing transients.',
+        inThisLesson: [
+          'Individual drums vs drum bus compression',
+          'Kick and snare compression techniques',
+          'Keeping drums punchy while controlling peaks',
+          'Parallel compression preview'
+        ],
+        keyTakeaways: [
+          'Compress individual drums for control (taming the loudest hits). Compress the drum bus for glue (making them feel like one unit).',
+          'For kick and snare, use slower attack (5-20ms) to let the transient through, medium ratio (4:1), and 3-5dB gain reduction.',
+          'If your drums lose punch after compression, your attack is too fast. Slow it down and let the transient hit first.'
+        ],
+        resources: [
+          { name: 'Drum compression by piece', type: 'PDF' },
+          { name: 'Drum bus settings guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 3,
+        title: 'Bass compression',
+        duration: '4:50',
+        description: 'Creating consistent low-end that supports the track without overpowering.',
+        inThisLesson: [
+          'Why bass needs compression',
+          'Fast attack for bass consistency',
+          'Ratio and threshold for bass',
+          'Multiband vs full-band on bass'
+        ],
+        keyTakeaways: [
+          'Bass is the foundation. It needs to be consistent in level across all notes. Compression makes sure no note disappears or overpowers.',
+          'Bass usually needs faster attack (1-5ms) than drums because you want to control the fundamental, not preserve the attack transient.',
+          'Start with 4:1 ratio and adjust threshold until you get steady 3-6dB gain reduction. Bass should feel solid and even.'
+        ],
+        resources: [
+          { name: 'Bass compression techniques', type: 'PDF' },
+          { name: 'Bass consistency checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Applications',
+        lesson: 4,
+        title: 'Parallel compression basics',
+        duration: '5:20',
+        description: 'Understanding the technique that adds power without sacrificing dynamics.',
+        inThisLesson: [
+          'What parallel compression is and why it works',
+          'Setting up a parallel compression chain',
+          'When to use parallel vs serial compression',
+          'Parallel compression on different sources'
+        ],
+        keyTakeaways: [
+          'Parallel compression means blending heavily compressed audio with the uncompressed original. You get the power of compression without losing the dynamics.',
+          'Set up a send/return with aggressive compression (8:1+, fast attack/release, 10dB+ GR), then blend it under the original at 20-40%.',
+          'Parallel compression is magic on drums and vocals. It adds thickness and power while keeping natural dynamics intact. Try it on everything.'
+        ],
+        resources: [
+          { name: 'Parallel compression setup guide', type: 'PDF' },
+          { name: 'Blend ratio starting points', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        showContinuePrompt(savedProgress);
+        renderLesson(0);
+      } else {
+        renderLesson(0);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Courses</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Compression Basics</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~50 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Fundamentals</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What compression actually does</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Threshold explained</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Ratio and compression amount</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Gain reduction meters</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:15</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Parameters</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Attack time: When compression starts</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Release time: When it stops</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Knee: Hard vs soft compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:25</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Makeup gain and loudness</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Applications</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Compressing vocals</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:35</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Drum compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Bass compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Parallel compression basics</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What compression actually does</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding compression beyond "making things louder"—what it really does to your audio.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Compression Basics</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~50 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding compression fundamentals: threshold, ratio, and gain reduction</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Mastering attack, release, knee, and makeup gain parameters</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical compression techniques for vocals, drums, and bass</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Introduction to parallel compression for adding power and punch</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Unlock this course for £35
+        </a>
+        <a href="academy.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore all courses
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

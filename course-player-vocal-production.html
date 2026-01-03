@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Vocal Production Essentials</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Vocal Production Essentials',
+      backLink: 'course.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~70 minutes',
+      moduleCount: 4
+    };
+    
+    const lessons = [
+      // Module 1: Recording Basics
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Recording Basics',
+        lesson: 1,
+        title: 'Mic technique fundamentals',
+        duration: '6:45',
+        description: 'Understanding distance, angle, and positioning for clean, professional vocal recordings.',
+        inThisLesson: [
+          'Optimal mic distance for different vocal styles',
+          'Angle and positioning to control tone',
+          'Managing proximity effect',
+          'Pop filter vs. windscreen placement'
+        ],
+        keyTakeaways: [
+          'Distance changes tone dramatically. 6-8 inches is the sweet spot for most vocals—closer adds warmth but risks plosives, farther loses intimacy.',
+          'Slightly off-axis (15-30 degrees) reduces harsh consonants without losing clarity. Dead-center isn\'t always best.',
+          'Proximity effect adds bass as you get closer. Use it intentionally for warmth, or back off if the vocal sounds muddy.'
+        ],
+        resources: [
+          { name: 'Mic positioning guide', type: 'PDF' },
+          { name: 'Distance & tone chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Recording Basics',
+        lesson: 2,
+        title: 'Setting input gain correctly',
+        duration: '5:28',
+        description: 'Getting clean recordings with proper headroom—neither too quiet nor clipping.',
+        inThisLesson: [
+          'Where to set gain for optimal signal',
+          'Peak levels vs. average levels',
+          'How much headroom to leave',
+          'Monitoring input levels during takes'
+        ],
+        keyTakeaways: [
+          'Peak around -12 to -6dB during the loudest parts. This gives you clean signal without risk of clipping when the singer really goes for it.',
+          'Too quiet (peaks below -18dB) means adding gain later and raising the noise floor. Too hot (peaks above -3dB) risks distortion.',
+          'Set gain during a practice take where the singer performs at full intensity. If they hold back, your levels will be wrong.'
+        ],
+        resources: [
+          { name: 'Gain staging worksheet', type: 'PDF' },
+          { name: 'Level meters explained', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Recording Basics',
+        lesson: 3,
+        title: 'Recording environment setup',
+        duration: '7:12',
+        description: 'Managing room acoustics and noise for clean, usable vocal takes.',
+        inThisLesson: [
+          'Identifying and reducing room reflections',
+          'Simple acoustic treatment that works',
+          'Managing background noise',
+          'When room sound helps vs. hurts'
+        ],
+        keyTakeaways: [
+          'You don\'t need a perfect room, just a controlled one. Treat first reflections (walls beside and behind the mic) with blankets or foam—that\'s 80% of the work.',
+          'Dead rooms sound lifeless. Some natural ambience is good. Aim for controlled, not anechoic.',
+          'Turn off anything that hums or buzzes. AC, fans, computers—if it makes noise, it\'s on the recording. Background noise is easier to prevent than remove.'
+        ],
+        resources: [
+          { name: 'Home studio acoustics guide', type: 'PDF' },
+          { name: 'Noise troubleshooting checklist', type: 'PDF' }
+        ]
+      },
+
+      // Module 2: Editing Workflow
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Editing Workflow',
+        lesson: 1,
+        title: 'Comping vocals efficiently',
+        duration: '8:35',
+        description: 'Building the perfect vocal take from multiple performances without spending hours editing.',
+        inThisLesson: [
+          'Recording multiple takes for comping',
+          'Listening for pitch, timing, and feel',
+          'Making quick comp decisions',
+          'Crossfading between takes smoothly'
+        ],
+        keyTakeaways: [
+          'Record 3-4 full takes, then comp the best parts. Don\'t record 20 takes hoping for perfection—you\'ll spend more time choosing than recording.',
+          'Comp in passes: first for pitch and timing, then for emotion and delivery. Trying to judge everything at once slows you down.',
+          'Short crossfades (5-10ms) between takes keep transitions smooth. Too long and you hear both takes; too short and you hear clicks.'
+        ],
+        resources: [
+          { name: 'Comping workflow guide', type: 'PDF' },
+          { name: 'Crossfade length reference', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Editing Workflow',
+        lesson: 2,
+        title: 'Cleaning up vocal recordings',
+        duration: '6:18',
+        description: 'Removing breaths, clicks, and unwanted noise without making vocals sound over-edited.',
+        inThisLesson: [
+          'When to remove vs. reduce breaths',
+          'Eliminating mouth clicks and pops',
+          'Managing headphone bleed',
+          'Keeping edits natural and transparent'
+        ],
+        keyTakeaways: [
+          'Don\'t remove all breaths—it sounds robotic. Reduce loud ones by 6-10dB instead. Breaths are part of a human performance.',
+          'Mouth clicks happen at the start of phrases. Zoom in, cut them out, and add a tiny fade. Takes 30 seconds and makes a huge difference.',
+          'If you can hear the edits, you\'re being too aggressive. Natural-sounding vocals have imperfections. Don\'t polish them to death.'
+        ],
+        resources: [
+          { name: 'Vocal cleanup checklist', type: 'PDF' },
+          { name: 'Breath reduction guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Editing Workflow',
+        lesson: 3,
+        title: 'Timing correction basics',
+        duration: '5:52',
+        description: 'Subtle timing adjustments that tighten performance without losing groove.',
+        inThisLesson: [
+          'When timing correction is needed',
+          'Manual vs. grid-based correction',
+          'How much to correct',
+          'Preserving natural feel and groove'
+        ],
+        keyTakeaways: [
+          'Timing correction is for obvious problems, not perfection. If a word lands late and throws off the groove, fix it. If it feels good, leave it.',
+          'Small nudges (10-30ms) are usually enough. Moving vocals to the grid kills groove. Adjust by ear, not by sight.',
+          'Rushed vs. laid-back delivery is a feel choice, not a timing error. Don\'t correct style out of the performance.'
+        ],
+        resources: [
+          { name: 'Timing correction workflow', type: 'PDF' },
+          { name: 'When to correct guide', type: 'PDF' }
+        ]
+      },
+
+      // Module 3: Tuning & Timing
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Tuning & Timing',
+        lesson: 1,
+        title: 'Pitch correction that sounds natural',
+        duration: '7:45',
+        description: 'Using Auto-Tune and Melodyne to fix pitch issues without the robotic sound.',
+        inThisLesson: [
+          'Manual vs. automatic pitch correction',
+          'Retune speed settings explained',
+          'Correcting specific notes vs. full passes',
+          'When to correct and when to re-record'
+        ],
+        keyTakeaways: [
+          'Slow retune speed (50-100ms) sounds natural. Fast (0-20ms) is the "Auto-Tune effect." Most corrections need slow.',
+          'Correct only the notes that are actually off. Pitch-correcting an entire vocal flattens the performance—fix problems, not perfection.',
+          'If a note is more than 50 cents off, it\'s probably a performance issue, not a tuning one. Re-record it instead of forcing a correction.'
+        ],
+        resources: [
+          { name: 'Pitch correction settings guide', type: 'PDF' },
+          { name: 'Natural tuning workflow', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Tuning & Timing',
+        lesson: 2,
+        title: 'Correcting vibrato and drift',
+        duration: '6:28',
+        description: 'Handling pitch modulation and sustained notes without killing expression.',
+        inThisLesson: [
+          'Preserving natural vibrato during correction',
+          'Fixing pitch drift on long notes',
+          'When vibrato sounds like pitch problems',
+          'Humanize controls and settings'
+        ],
+        keyTakeaways: [
+          'Vibrato is pitch modulation—tuning software can flatten it if you\'re not careful. Use low retune speeds and enable "preserve formants" to keep it natural.',
+          'Notes that drift flat over time are common. Correct the drift, not the entire note. Draw in a gentle pitch curve instead of snapping to the grid.',
+          'If vibrato sounds shaky or uneven, it might be a breath support issue, not a pitch one. Tuning won\'t fix technique problems.'
+        ],
+        resources: [
+          { name: 'Vibrato correction guide', type: 'PDF' },
+          { name: 'Pitch drift solutions', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Tuning & Timing',
+        lesson: 3,
+        title: 'Advanced timing techniques',
+        duration: '5:15',
+        description: 'Tightening phrasing and delivery for polished, professional-sounding vocals.',
+        inThisLesson: [
+          'Phrase timing vs. note timing',
+          'Adjusting word starts and ends',
+          'Creating rhythmic consistency',
+          'When timing changes feel and groove'
+        ],
+        keyTakeaways: [
+          'Tighten phrase starts so vocals sit in the pocket with the beat. A few milliseconds makes the difference between sloppy and tight.',
+          'Word endings matter too—drawn-out endings can drag or clash with other elements. Trim or adjust as needed.',
+          'Don\'t time-correct everything. Slight imperfections give vocals personality. Aim for tight enough, not perfect.'
+        ],
+        resources: [
+          { name: 'Phrase timing guide', type: 'PDF' },
+          { name: 'Timing adjustment checklist', type: 'PDF' }
+        ]
+      },
+
+      // Module 4: Processing Chain
+      {
+        id: 'm4-l1',
+        module: 4,
+        moduleTitle: 'Processing Chain',
+        lesson: 1,
+        title: 'Essential vocal EQ',
+        duration: '8:45',
+        description: 'Shaping tone with EQ—removing problems and adding clarity without harshness.',
+        inThisLesson: [
+          'Subtractive EQ: removing mud and boxiness',
+          'Additive EQ: presence and air',
+          'High-pass filtering for clean low end',
+          'Common EQ mistakes to avoid'
+        ],
+        keyTakeaways: [
+          'Start subtractive: cut 200-400Hz (mud), 500-800Hz (boxiness), and harsh peaks around 2-4kHz. Clean the vocal before you add anything.',
+          'High-pass around 80-120Hz to remove low-end rumble without making the vocal thin. Too high (150Hz+) and you lose body.',
+          'Additive boosts: 3kHz for presence, 8-12kHz for air. Keep boosts gentle (2-3dB) and use wide Qs. Narrow, aggressive EQ sounds surgical.'
+        ],
+        resources: [
+          { name: 'Vocal EQ frequency map', type: 'PDF' },
+          { name: 'Problem frequency guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l2',
+        module: 4,
+        moduleTitle: 'Processing Chain',
+        lesson: 2,
+        title: 'Compression for control and tone',
+        duration: '7:35',
+        description: 'Using compression to even out dynamics and add character without squashing the vocal.',
+        inThisLesson: [
+          'Attack and release settings for vocals',
+          'Ratio and threshold for different styles',
+          'Gain reduction targets',
+          'When to use multiple compressors'
+        ],
+        keyTakeaways: [
+          'Medium attack (10-30ms) and auto release work for most vocals. Fast attack tames peaks but softens transients; slow attack lets energy through.',
+          'Aim for 3-6dB of gain reduction. More than that and you\'re squashing dynamics. If you need more control, use serial compression instead of one heavy stage.',
+          'Compression adds tone. Slower attack keeps the vocal punchy; faster smooths it out. Choose based on the song, not what "sounds better" in solo.'
+        ],
+        resources: [
+          { name: 'Compression settings guide', type: 'PDF' },
+          { name: 'Attack & release explained', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l3',
+        module: 4,
+        moduleTitle: 'Processing Chain',
+        lesson: 3,
+        title: 'Adding space: reverb and delay',
+        duration: '6:52',
+        description: 'Creating depth and dimension with time-based effects without washing out the vocal.',
+        inThisLesson: [
+          'Reverb types and when to use them',
+          'Pre-delay for vocal clarity',
+          'Short vs. long delay for texture',
+          'Mix levels: how much is too much'
+        ],
+        keyTakeaways: [
+          'Short reverb (0.5-1.2s) keeps vocals present. Long reverb (2s+) pushes them back. Choose decay time based on where the vocal sits in the mix.',
+          'Pre-delay (20-50ms) separates the dry vocal from the reverb tail, keeping clarity. Without it, reverb muddies the words.',
+          'Delay adds texture without washing out the vocal like reverb can. Try 1/8 or 1/4 note delays mixed low (10-20%) for subtle movement.'
+        ],
+        resources: [
+          { name: 'Reverb settings guide', type: 'PDF' },
+          { name: 'Delay timing chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l4',
+        module: 4,
+        moduleTitle: 'Processing Chain',
+        lesson: 4,
+        title: 'Final polish: saturation and enhancement',
+        duration: '5:48',
+        description: 'Adding harmonic richness and excitement to make vocals sit perfectly in the mix.',
+        inThisLesson: [
+          'What saturation does to vocals',
+          'Tape vs. tube vs. analog-style saturation',
+          'Harmonic exciters and when to use them',
+          'Avoiding over-processing'
+        ],
+        keyTakeaways: [
+          'Saturation adds harmonic content—subtle distortion that makes vocals feel fuller and more present. Use it like salt: a little goes a long way.',
+          'Tape saturation smooths harshness. Tube saturation adds warmth. Choose based on what the vocal needs, not what you think sounds cool.',
+          'If you can hear the saturation, you\'re using too much. It should make the vocal feel better, not sound different. Trust your ears, not the meter.'
+        ],
+        resources: [
+          { name: 'Saturation types guide', type: 'PDF' },
+          { name: 'Processing chain checklist', type: 'PDF' }
+        ]
+      }
+    ];
+  </script>
+  
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- LEFT PANEL: LESSON LIST -->
+  <aside id="lesson-sidebar" class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+        <span>←</span>
+        <span>Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-bold mb-2">Vocal Production Essentials</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">12 lessons · ~70 minutes · 4 modules</p>
+    </div>
+    
+    <div id="lessons-container" class="p-4">
+      <!-- Lessons will be dynamically populated -->
+    </div>
+    
+  </aside>
+  
+  <!-- RIGHT PANEL: LESSON CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- VIDEO PLAYER PLACEHOLDER -->
+    <div class="w-full bg-black flex items-center justify-center" style="height: 400px;">
+      <div class="text-center">
+        <div class="text-6xl mb-4">▶️</div>
+        <p class="text-white text-lg font-semibold" id="video-lesson-title">Mic technique fundamentals</p>
+        <p class="text-gray-400 text-sm mt-2" id="video-lesson-duration">6:45</p>
+      </div>
+    </div>
+    
+    <!-- LESSON DETAILS -->
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Mic technique fundamentals</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding distance, angle, and positioning for clean, professional vocal recordings.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Optimal mic distance for different vocal styles</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Angle and positioning to control tone</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Managing proximity effect</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Pop filter vs. windscreen placement</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>Distance changes tone dramatically. 6-8 inches is the sweet spot for most vocals—closer adds warmth but risks plosives, farther loses intimacy.</p>
+          <p>Slightly off-axis (15-30 degrees) reduces harsh consonants without losing clarity. Dead-center isn't always best.</p>
+          <p>Proximity effect adds bass as you get closer. Use it intentionally for warmth, or back off if the vocal sounds muddy.</p>
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Mic positioning guide (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Distance & tone chart (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Vocal Production Essentials</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        12 lessons · ~70 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Professional mic technique and recording setup</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Efficient comping and vocal editing workflows</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Natural pitch correction and timing techniques</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Complete vocal processing chain from EQ to effects</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">Ready to get started?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Get this course for £35
+        </a>
+        <a href="index.html#learn" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+<script>
+  let currentLessonIndex = 0;
+  let completedLessons = new Set();
+
+  // Initialize the course
+  function init() {
+    renderLessonList();
+    loadLesson(0);
+    loadProgress();
+  }
+
+  // Render lesson list in sidebar
+  function renderLessonList() {
+    const container = document.getElementById('lessons-container');
+    let currentModule = 0;
+    let html = '';
+
+    lessons.forEach((lesson, index) => {
+      // Module header
+      if (lesson.module !== currentModule) {
+        currentModule = lesson.module;
+        html += `
+          <div class="mb-4 mt-6 first:mt-0">
+            <h3 class="text-xs uppercase tracking-wider font-semibold mb-3" style="color: var(--text-muted);">
+              Module ${lesson.module}: ${lesson.moduleTitle}
+            </h3>
+          </div>
+        `;
+      }
+
+      // Lesson item
+      html += `
+        <div class="lesson-item mb-2 p-3 rounded-lg cursor-pointer transition hover:opacity-80 border border-transparent"
+             onclick="loadLesson(${index})"
+             data-lesson-id="${lesson.id}"
+             style="border-color: var(--border-soft);">
+          <div class="flex items-start gap-3">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium mb-1">${lesson.title}</p>
+              <p class="text-xs" style="color: var(--text-muted);">${lesson.duration}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
+  // Load a specific lesson
+  function loadLesson(index) {
+    if (index < 0 || index >= lessons.length) return;
+
+    currentLessonIndex = index;
+    const lesson = lessons[index];
+
+    // Update active state in sidebar
+    document.querySelectorAll('.lesson-item').forEach((item, i) => {
+      if (i === index) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+
+    // Update lesson content
+    document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+    document.getElementById('lesson-title').textContent = lesson.title;
+    document.getElementById('lesson-description').textContent = lesson.description;
+    
+    // Update video player
+    document.getElementById('video-lesson-title').textContent = lesson.title;
+    document.getElementById('video-lesson-duration').textContent = lesson.duration;
+
+    // Update "In this lesson" list
+    const inThisLessonList = document.getElementById('in-this-lesson-list');
+    inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+      <li class="flex gap-3">
+        <span style="color: var(--accent);">→</span>
+        <span>${item}</span>
+      </li>
+    `).join('');
+
+    // Update key takeaways
+    const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+    keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(item => `
+      <p>${item}</p>
+    `).join('');
+
+    // Update resources
+    const resourcesList = document.getElementById('resources-list');
+    resourcesList.innerHTML = lesson.resources.map(resource => `
+      <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+        <span>→</span>
+        <span>Download: ${resource.name} (${resource.type})</span>
+      </a>
+    `).join('');
+
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-lesson');
+    const nextBtn = document.getElementById('next-lesson');
+
+    if (index === 0) {
+      prevBtn.style.opacity = '0.3';
+      prevBtn.style.pointerEvents = 'none';
+    } else {
+      prevBtn.style.opacity = '1';
+      prevBtn.style.pointerEvents = 'auto';
+      prevBtn.onclick = () => loadLesson(index - 1);
+    }
+
+    if (index === lessons.length - 1) {
+      nextBtn.textContent = 'Complete course →';
+      nextBtn.onclick = () => {
+        markLessonComplete(index);
+        showCompletionModal();
+      };
+    } else {
+      nextBtn.textContent = 'Next lesson →';
+      nextBtn.onclick = () => {
+        markLessonComplete(index);
+        loadLesson(index + 1);
+      };
+    }
+
+    // Scroll to top
+    document.querySelector('main').scrollTo(0, 0);
+  }
+
+  // Mark lesson as complete
+  function markLessonComplete(index) {
+    const lesson = lessons[index];
+    completedLessons.add(lesson.id);
+    
+    const lessonElement = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
+    if (lessonElement) {
+      lessonElement.classList.add('completed');
+    }
+
+    saveProgress();
+
+    // Check if all lessons are complete
+    if (completedLessons.size === lessons.length) {
+      setTimeout(() => showCompletionModal(), 500);
+    }
+  }
+
+  // Show completion modal
+  function showCompletionModal() {
+    document.getElementById('completion-modal').classList.add('active');
+  }
+
+  // Close completion modal
+  function closeCompletionModal() {
+    document.getElementById('completion-modal').classList.remove('active');
+  }
+
+  // Save progress to localStorage
+  function saveProgress() {
+    localStorage.setItem('vocal-production-progress', JSON.stringify({
+      completed: Array.from(completedLessons),
+      lastLesson: currentLessonIndex
+    }));
+  }
+
+  // Load progress from localStorage
+  function loadProgress() {
+    const saved = localStorage.getItem('vocal-production-progress');
+    if (saved) {
+      const data = JSON.parse(saved);
+      completedLessons = new Set(data.completed);
+      
+      // Mark completed lessons in UI
+      completedLessons.forEach(lessonId => {
+        const lessonElement = document.querySelector(`[data-lesson-id="${lessonId}"]`);
+        if (lessonElement) {
+          lessonElement.classList.add('completed');
+        }
+      });
+
+      // Optionally load last viewed lesson
+      // loadLesson(data.lastLesson || 0);
+    }
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && currentLessonIndex > 0) {
+      loadLesson(currentLessonIndex - 1);
+    } else if (e.key === 'ArrowRight' && currentLessonIndex < lessons.length - 1) {
+      markLessonComplete(currentLessonIndex);
+      loadLesson(currentLessonIndex + 1);
+    }
+  });
+
+  // Initialize on load
+  init();
+</script>
+
+</body>
+</html>

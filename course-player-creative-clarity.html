@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Creative Clarity for Producers</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Creative Clarity for Producers',
+      backLink: 'course.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~70 minutes',
+      moduleCount: 3
+    };
+    
+    const lessons = [
+      // Module 1: Recognizing Patterns
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Recognizing Patterns',
+        lesson: 1,
+        title: 'Your default workflow patterns',
+        duration: '7:45',
+        description: 'Understanding the habits you\'ve built and which ones are helping vs. hurting your progress.',
+        inThisLesson: [
+          'Why you repeat the same process every session',
+          'Productive habits vs. avoidance habits',
+          'How to audit your workflow objectively',
+          'Identifying your creative triggers'
+        ],
+        keyTakeaways: [
+          'You have a default workflow—the same actions you take every session without thinking. Some move you forward, some keep you stuck. Know the difference.',
+          'Productive patterns get you closer to done. Avoidance patterns make you feel busy without progress. Example: tweaking EQ for 20 minutes is avoidance.',
+          'Audit your last three sessions. What did you do first? What took the most time? What didn\'t change the track? That\'s your pattern.'
+        ],
+        resources: [
+          { name: 'Workflow audit template', type: 'PDF' },
+          { name: 'Pattern identification worksheet', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Recognizing Patterns',
+        lesson: 2,
+        title: 'When you procrastinate and why',
+        duration: '8:52',
+        description: 'Unpacking the moments where you avoid the work and what that tells you.',
+        inThisLesson: [
+          'The difference between rest and avoidance',
+          'What you\'re actually afraid of',
+          'Common procrastination triggers for producers',
+          'Using resistance as information'
+        ],
+        keyTakeaways: [
+          'You don\'t procrastinate because you\'re lazy. You procrastinate when the next step feels too big, too vague, or too risky. It\'s a signal, not a failure.',
+          'Rest is intentional. Procrastination is avoidance disguised as "I\'ll do it later." If you feel guilty, it\'s probably procrastination.',
+          'When you resist working on a track, ask: What am I avoiding? Usually it\'s making a hard decision, starting from scratch, or accepting the track might not work.'
+        ],
+        resources: [
+          { name: 'Procrastination trigger log', type: 'PDF' },
+          { name: 'Resistance analysis guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Recognizing Patterns',
+        lesson: 3,
+        title: 'The loops that keep you stuck',
+        duration: '9:18',
+        description: 'Breaking free from the cycles that feel productive but don\'t move tracks forward.',
+        inThisLesson: [
+          'The endless tweaking loop',
+          'The "one more sound" trap',
+          'Starting over before finishing',
+          'How to recognize when you\'re looping'
+        ],
+        keyTakeaways: [
+          'Loops feel like work but they\'re not progress. Tweaking the same element, adding sounds you don\'t need, starting a new track when the current one gets hard—all loops.',
+          'You\'re looping when you do the same action repeatedly without the track improving. Two passes of the same tweak? You\'re guessing, not improving.',
+          'Break the loop by naming what you\'re trying to fix in one sentence. If you can\'t, you\'re not fixing anything—you\'re avoiding the real problem.'
+        ],
+        resources: [
+          { name: 'Loop-breaking checklist', type: 'PDF' },
+          { name: 'Progress vs. motion guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Recognizing Patterns',
+        lesson: 4,
+        title: 'What your project folders reveal',
+        duration: '6:35',
+        description: 'Using your past projects as a mirror to see what\'s working and what isn\'t.',
+        inThisLesson: [
+          'The projects you finish vs. the ones you don\'t',
+          'Common patterns in abandoned tracks',
+          'Learning from your own history',
+          'When to revisit old ideas vs. let them go'
+        ],
+        keyTakeaways: [
+          'Your project folder is evidence. Look at the last 20 tracks—how many are finished? Why did the others stall? The pattern is the lesson.',
+          'Abandoned tracks usually fail for the same reason: weak arrangement, unclear idea, or you stopped when it got hard. Fix the pattern, not the individual track.',
+          'Some ideas deserve to be revisited. Most don\'t. If you haven\'t opened it in 6 months and you can\'t remember why you liked it, let it go.'
+        ],
+        resources: [
+          { name: 'Project folder audit guide', type: 'PDF' },
+          { name: 'When to revisit flowchart', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Building Trust
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Building Trust',
+        lesson: 1,
+        title: 'Trusting your ears',
+        duration: '8:25',
+        description: 'Learning to believe what you hear instead of second-guessing every decision.',
+        inThisLesson: [
+          'Why you doubt your ears in the first place',
+          'The analyzer trap: seeing instead of hearing',
+          'Building confidence through repetition',
+          'When external validation hurts progress'
+        ],
+        keyTakeaways: [
+          'You doubt your ears because you compare yourself to professionals with 10+ years of experience. They weren\'t confident on day one either. Trust builds with practice.',
+          'Analyzers (spectrum, meters) are useful for confirmation, not decision-making. If it sounds good but looks wrong, trust your ears. If it sounds bad, no analyzer will fix it.',
+          'The more you finish tracks, the more you trust yourself. Every completed project is evidence that your instincts work. You need that evidence to build confidence.'
+        ],
+        resources: [
+          { name: 'Ear training exercises', type: 'PDF' },
+          { name: 'Trust-building workflow', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Building Trust',
+        lesson: 2,
+        title: 'Trusting your instincts',
+        duration: '7:50',
+        description: 'Why your first idea is often your best idea and how to stop overthinking it.',
+        inThisLesson: [
+          'The first idea vs. the "better" idea',
+          'Why overthinking kills creativity',
+          'Capturing instincts before doubt sets in',
+          'How to tell good instinct from impulse'
+        ],
+        keyTakeaways: [
+          'Your first instinct is usually right because it\'s unfiltered. The "better" idea you spend an hour chasing is often just anxiety disguised as improvement.',
+          'Capture first ideas immediately. Record the vocal line, sketch the melody, bounce the loop. If you wait, you\'ll talk yourself out of it.',
+          'Good instincts feel obvious. Impulses feel exciting but don\'t fit the track. If you have to force it, it\'s probably impulse, not instinct.'
+        ],
+        resources: [
+          { name: 'First idea capture workflow', type: 'PDF' },
+          { name: 'Instinct vs. impulse guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Building Trust',
+        lesson: 3,
+        title: 'When to ignore advice',
+        duration: '9:12',
+        description: 'Filtering feedback and rules so they help instead of paralyze you.',
+        inThisLesson: [
+          'Good advice vs. generic advice',
+          'The "always" and "never" rules that don\'t apply',
+          'Knowing who to listen to',
+          'Using advice without losing your voice'
+        ],
+        keyTakeaways: [
+          'Good advice is specific to your track and your goals. Generic advice ("always high-pass everything") is a starting point, not a law.',
+          'Rules like "never boost with EQ" or "always use reference tracks" work for some people, not everyone. Try them, then decide if they help you.',
+          'Listen to people who make music you respect and who understand your goals. Ignore advice from people who don\'t do what you\'re trying to do.'
+        ],
+        resources: [
+          { name: 'Advice filter framework', type: 'PDF' },
+          { name: 'When rules help vs. hurt', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Building Trust',
+        lesson: 4,
+        title: 'Trusting the process',
+        duration: '8:40',
+        description: 'Building a workflow you believe in so you stop questioning every move.',
+        inThisLesson: [
+          'Why you need a repeatable process',
+          'Building a process that fits your brain',
+          'When process becomes rigid vs. supportive',
+          'Trusting that done beats perfect'
+        ],
+        keyTakeaways: [
+          'A process you trust removes decisions. You don\'t question whether to do the thing—you just do it. That\'s how you build momentum.',
+          'Your process should feel natural, not forced. If it doesn\'t match how you think, you won\'t follow it. Design your process for your brain, not someone else\'s.',
+          'Done beats perfect because perfect never happens. A finished track with flaws is better than an unfinished track that never sees daylight. Trust that.'
+        ],
+        resources: [
+          { name: 'Process design template', type: 'PDF' },
+          { name: 'Workflow refinement guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Decision Frameworks
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Decision Frameworks',
+        lesson: 1,
+        title: 'The 5-minute decision rule',
+        duration: '7:28',
+        description: 'How to make fast, effective decisions without agonizing over every choice.',
+        inThisLesson: [
+          'Why fast decisions beat perfect decisions',
+          'The 5-minute timer: try it, decide, move on',
+          'What to do when you genuinely can\'t decide',
+          'Building decision-making speed over time'
+        ],
+        keyTakeaways: [
+          'Fast decisions keep momentum. Slow decisions feel careful but usually just waste time. Most production decisions are reversible—choose, move forward, fix later if needed.',
+          'Set a timer for 5 minutes. Try the thing. If it\'s better, keep it. If not, undo it. Either way, you made progress. Sitting and thinking isn\'t progress.',
+          'If you can\'t decide after trying both options, it means they\'re equally good. Pick one randomly and move on. The difference doesn\'t matter.'
+        ],
+        resources: [
+          { name: '5-minute decision timer', type: 'PDF' },
+          { name: 'Decision speed training', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Decision Frameworks',
+        lesson: 2,
+        title: 'When to stop tweaking',
+        duration: '8:55',
+        description: 'Creating clear criteria so you know when to stop and move to the next step.',
+        inThisLesson: [
+          'The diminishing returns curve',
+          'Setting "good enough" thresholds before you start',
+          'Three strikes: when changes stop improving',
+          'Recognizing when you\'re making it worse'
+        ],
+        keyTakeaways: [
+          'Tweaking has diminishing returns. The first pass improves the track 50%. The second pass maybe 20%. The fifth pass makes it worse. Know when to stop.',
+          'Before you start tweaking, decide: what does "good enough" look like? If you hit that threshold, stop. Don\'t move the goalpost.',
+          'Three strikes rule: if three consecutive changes don\'t improve the track, you\'re done. The problem isn\'t the sound—it\'s something else.'
+        ],
+        resources: [
+          { name: 'Diminishing returns tracker', type: 'PDF' },
+          { name: 'When to stop checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Decision Frameworks',
+        lesson: 3,
+        title: 'Breaking creative blocks',
+        duration: '9:45',
+        description: 'Practical strategies for moving forward when you feel completely stuck.',
+        inThisLesson: [
+          'Why blocks happen and what they mean',
+          'The constraint method: limiting options to unlock creativity',
+          'Changing the question to change the answer',
+          'When to step away vs. push through'
+        ],
+        keyTakeaways: [
+          'Creative blocks are decision overload. You have too many options and no criteria for choosing. The solution: add constraints. Limit yourself to three sounds, one effect, 10 minutes.',
+          'If you\'re stuck on "what should I do next," change the question. Ask "what would make this track worse?" Then avoid that. Sometimes clarity comes from negatives.',
+          'Step away when you\'re spinning in circles. Push through when you\'re making small progress. The difference: spinning feels frustrating, progress feels hard but productive.'
+        ],
+        resources: [
+          { name: 'Creative block toolkit', type: 'PDF' },
+          { name: 'Constraint exercises', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l4',
+        module: 3,
+        moduleTitle: 'Decision Frameworks',
+        lesson: 4,
+        title: 'Final walkthrough: Clarity in action',
+        duration: '10:50',
+        description: 'Bringing everything together—making clear, confident decisions from start to finish.',
+        inThisLesson: [
+          'Real project from idea to completion',
+          'Recognizing patterns as they happen',
+          'Making decisions quickly and trusting them',
+          'Knowing when to stop and export'
+        ],
+        keyTakeaways: [
+          'This is what creative clarity looks like: recognizing patterns, trusting instincts, making fast decisions. It\'s not magic—it\'s practice.',
+          'The track got finished not because every decision was perfect, but because decisions were made and the process kept moving forward.',
+          'You now have a framework. Use it on your next track. It will feel awkward at first, then natural. That\'s growth.'
+        ],
+        resources: [
+          { name: 'Complete clarity framework', type: 'PDF' },
+          { name: 'Next steps action plan', type: 'PDF' },
+          { name: 'Session recording & notes', type: 'ZIP' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Creative Clarity for Producers</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~70 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Recognizing Patterns</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Your default workflow patterns</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">When you procrastinate and why</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:52</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The loops that keep you stuck</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:18</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What your project folders reveal</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Building Trust</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Trusting your ears</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:25</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Trusting your instincts</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">When to ignore advice</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:12</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Trusting the process</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:40</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Decision Frameworks</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The 5-minute decision rule</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:28</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">When to stop tweaking</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:55</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Breaking creative blocks</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final walkthrough: Clarity in action</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:50</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Your default workflow patterns</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the habits you've built and which ones are helping vs. hurting your progress.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why you repeat the same process every session</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Productive habits vs. avoidance habits</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>How to audit your workflow objectively</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Identifying your creative triggers</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>You have a default workflow—the same actions you take every session without thinking. Some move you forward, some keep you stuck. Know the difference.</p>
+          <p>Productive patterns get you closer to done. Avoidance patterns make you feel busy without progress. Example: tweaking EQ for 20 minutes is avoidance.</p>
+          <p>Audit your last three sessions. What did you do first? What took the most time? What didn't change the track? That's your pattern.</p>
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Workflow audit template (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Pattern identification worksheet (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Creative Clarity for Producers</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        12 lessons · ~70 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>How to recognize and break unproductive workflow patterns</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Building trust in your ears and creative instincts</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Fast decision-making frameworks that maintain momentum</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Practical strategies for breaking through creative blocks</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">Ready to get started?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Get this course for £35
+        </a>
+        <a href="index.html#learn" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

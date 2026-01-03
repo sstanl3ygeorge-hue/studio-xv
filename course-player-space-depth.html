@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Space, Depth & Translation</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    const courseConfig = {
+      title: 'Space, Depth & Translation',
+      backLink: 'course.html',
+      backLinkText: 'Back to Course',
+      totalDuration: '~90 minutes',
+      moduleCount: 4
+    };
+    
+    const lessons = [
+      // Module 1: Spatial Relationships
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Spatial Relationships',
+        lesson: 1,
+        title: 'Understanding the stereo field',
+        duration: '8:45',
+        description: 'How width and placement create space in your mix, and why it matters more than you think.',
+        inThisLesson: [
+          'The stereo field as a mixing canvas',
+          'Left/right placement vs. center weight',
+          'Why mono elements anchor your mix',
+          'Common stereo field mistakes'
+        ],
+        keyTakeaways: [
+          'The stereo field isn\'t just "pan left or right"—it\'s a three-dimensional space where every element needs a home. Center is power, sides are width.',
+          'Most mixes fail because everything competes for the center. Give important elements their own space—bass and kick center, supporting elements sides.',
+          'If your mix feels narrow, the problem isn\'t that things aren\'t panned wide enough—it\'s that too many elements are fighting for the middle.'
+        ],
+        resources: [
+          { name: 'Stereo field visualization guide', type: 'PDF' },
+          { name: 'Panning reference chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Spatial Relationships',
+        lesson: 2,
+        title: 'Strategic panning decisions',
+        duration: '10:22',
+        description: 'A practical framework for deciding what goes where in the stereo field.',
+        inThisLesson: [
+          'The hierarchy of panning: what stays center, what moves',
+          'Symmetrical vs. asymmetrical panning',
+          'Using the LCR (Left-Center-Right) method',
+          'When to break the panning rules'
+        ],
+        keyTakeaways: [
+          'Center: bass, kick, snare, lead vocal. Sides: guitars, synths, percussion, backing vocals. This isn\'t a rule—it\'s a starting point that works.',
+          'Symmetrical panning (guitar left, guitar right) feels balanced but can sound static. Asymmetrical panning (keys 30% left, pad 60% right) creates movement.',
+          'LCR panning means hard left, center, or hard right—nothing in between. It sounds extreme but creates clarity and forces you to make decisions.'
+        ],
+        resources: [
+          { name: 'Panning decision tree', type: 'PDF' },
+          { name: 'LCR vs. full spectrum guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Spatial Relationships',
+        lesson: 3,
+        title: 'Creating width without losing focus',
+        duration: '9:18',
+        description: 'How to make your mix feel wide and open while keeping the core elements powerful.',
+        inThisLesson: [
+          'The width vs. focus tradeoff',
+          'Using stereo widening tools correctly',
+          'Haas effect and why it\'s risky',
+          'Width through doubling and layering'
+        ],
+        keyTakeaways: [
+          'Width comes from contrast. A wide element only feels wide if something else is narrow. Pan backing vocals hard, keep the lead centered—that creates width.',
+          'Stereo widening plugins work by phase manipulation. They can sound huge on headphones and disappear in mono. Use sparingly and always check mono.',
+          'Natural width: double the part, pan each take opposite sides. Fake width: stereo widener. Natural sounds better but takes more effort.'
+        ],
+        resources: [
+          { name: 'Width creation techniques', type: 'PDF' },
+          { name: 'Stereo widening do\'s and don\'ts', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Depth Perception
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Depth Perception',
+        lesson: 1,
+        title: 'Front to back: the depth axis',
+        duration: '11:05',
+        description: 'Understanding how to place elements front, middle, and back in your mix.',
+        inThisLesson: [
+          'The three depth zones: foreground, midground, background',
+          'Tools that create depth: reverb, delay, EQ, volume',
+          'Why depth matters for clarity and emotion',
+          'Arranging elements in 3D space'
+        ],
+        keyTakeaways: [
+          'Depth is the third dimension of mixing. Left/right is panning, up/down is frequency, front/back is depth. Most bedroom producers ignore depth completely.',
+          'Foreground: dry, bright, loud. Background: wet, dark, quiet. Midground: somewhere in between. Place every element deliberately.',
+          'Reverb pushes things back. Dry signal brings them forward. A vocal with no reverb sits in your face. Add reverb and it steps back into the mix.'
+        ],
+        resources: [
+          { name: 'Depth zone placement guide', type: 'PDF' },
+          { name: '3D mixing diagram', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Depth Perception',
+        lesson: 2,
+        title: 'Reverb for space, not wash',
+        duration: '10:48',
+        description: 'Using reverb to create depth and dimension without making everything muddy.',
+        inThisLesson: [
+          'Reverb type selection: room, hall, plate, spring',
+          'Pre-delay for separation and clarity',
+          'High-pass filtering reverb returns',
+          'How much reverb is too much'
+        ],
+        keyTakeaways: [
+          'Reverb type changes the perceived space. Room = intimate, hall = large, plate = smooth, spring = character. Choose based on what the track needs, not what sounds cool.',
+          'Pre-delay creates space between the dry signal and reverb tail. Even 20-30ms makes the source clearer while still adding depth.',
+          'High-pass your reverb returns at 300-500Hz. Reverb in the low end is mud. You want air and space, not bass wash.'
+        ],
+        resources: [
+          { name: 'Reverb selection flowchart', type: 'PDF' },
+          { name: 'Pre-delay & EQ settings guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Depth Perception',
+        lesson: 3,
+        title: 'Delay as a depth tool',
+        duration: '8:52',
+        description: 'Creating depth and movement with delay without cluttering the mix.',
+        inThisLesson: [
+          'Slap delay vs. rhythmic delay vs. ambient delay',
+          'Using delay to place elements in space',
+          'Feedback and filtering for clarity',
+          'When to use delay instead of reverb'
+        ],
+        keyTakeaways: [
+          'Short delays (50-150ms) thicken and push back slightly. Long delays (250ms+) create rhythmic space. Slap delay (80-120ms) adds depth without obvious repetition.',
+          'Delay is more focused than reverb. It adds depth without washing out detail. Use it on vocals, leads, and anything that needs space but clarity.',
+          'Filter delay returns. High-pass to avoid low-end buildup, low-pass to soften the repeats and make them sit in the background.'
+        ],
+        resources: [
+          { name: 'Delay timing reference', type: 'PDF' },
+          { name: 'Delay vs. reverb decision guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Depth Perception',
+        lesson: 4,
+        title: 'Walkthrough: Building a 3D mix',
+        duration: '12:30',
+        description: 'Watch me create depth and dimension in a real mix from scratch.',
+        inThisLesson: [
+          'Analyzing the arrangement for depth opportunities',
+          'Placing elements in foreground, midground, background',
+          'Applying reverb and delay strategically',
+          'Final depth check and adjustments'
+        ],
+        keyTakeaways: [
+          'Notice how little reverb is used in the foreground. Lead vocal and main elements stay mostly dry—depth comes from supporting elements.',
+          'The mix feels bigger not because everything is wet, but because some things are dry and some are wet. Contrast creates dimension.',
+          'Building depth takes 15 minutes, not hours. Make deliberate choices about what sits where, then move on.'
+        ],
+        resources: [
+          { name: 'Session notes from walkthrough', type: 'PDF' },
+          { name: 'Before/after audio examples', type: 'ZIP' }
+        ]
+      },
+      
+      // Module 3: Translation Across Systems
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Translation Across Systems',
+        lesson: 1,
+        title: 'The mono compatibility test',
+        duration: '9:15',
+        description: 'Why your mix needs to work in mono and how to fix issues before they matter.',
+        inThisLesson: [
+          'Why mono still matters in 2025',
+          'Phase cancellation and how to hear it',
+          'Fixing mono compatibility issues',
+          'The instant mono check workflow'
+        ],
+        keyTakeaways: [
+          'Mono matters because phones, laptops, and Bluetooth speakers often sum stereo to mono. If your mix has phase issues, elements disappear.',
+          'Check mono by collapsing to mono in your DAW or monitoring in mono on your interface. Listen for what gets quieter or vanishes—that\'s phase cancellation.',
+          'Fix phase issues by adjusting panning, removing stereo widening, or using phase alignment tools. Prevention is easier than fixing later.'
+        ],
+        resources: [
+          { name: 'Mono check workflow guide', type: 'PDF' },
+          { name: 'Phase cancellation troubleshooting', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Translation Across Systems',
+        lesson: 2,
+        title: 'Checking on different systems',
+        duration: '8:38',
+        description: 'A practical approach to testing your mix on multiple playback systems.',
+        inThisLesson: [
+          'Which systems actually matter',
+          'Car test, phone test, laptop test',
+          'What to listen for on each system',
+          'Knowing when translation is "good enough"'
+        ],
+        keyTakeaways: [
+          'Test on three systems minimum: your monitors, a consumer system (phone or laptop), and a bass-heavy system (car or headphones). Each reveals different problems.',
+          'On a phone: check vocal clarity and overall balance. In a car: check bass and low-end translation. On headphones: check detail and stereo width.',
+          'Good translation doesn\'t mean it sounds identical everywhere—it means the mix still works. Core elements (vocal, bass, kick) should be clear on every system.'
+        ],
+        resources: [
+          { name: 'System test checklist', type: 'PDF' },
+          { name: 'What to listen for guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l3',
+        module: 3,
+        moduleTitle: 'Translation Across Systems',
+        lesson: 3,
+        title: 'Low-end that translates',
+        duration: '10:20',
+        description: 'Making bass and kick work on both big systems and small speakers.',
+        inThisLesson: [
+          'The bass frequency problem: big speakers vs. small speakers',
+          'Adding harmonics for small speaker translation',
+          'The sub vs. mid-bass balance',
+          'Mono bass: why it helps translation'
+        ],
+        keyTakeaways: [
+          'Small speakers can\'t reproduce sub bass (below 80Hz). If your bass lives only in the subs, it disappears on phones. Add harmonics in the 80-200Hz range for translation.',
+          'Use saturation, distortion, or layering to add harmonics. These give small speakers something to latch onto even when the fundamental is missing.',
+          'Keep bass elements mono below 100-120Hz. Stereo bass causes phase issues and weak translation. Mono bass = solid, focused, translates everywhere.'
+        ],
+        resources: [
+          { name: 'Bass translation techniques', type: 'PDF' },
+          { name: 'Harmonic layering guide', type: 'PDF' }
+        ]
+      },
+      
+      // Module 4: Reference Listening
+      {
+        id: 'm4-l1',
+        module: 4,
+        moduleTitle: 'Reference Listening',
+        lesson: 1,
+        title: 'Choosing the right references',
+        duration: '7:40',
+        description: 'How to select reference tracks that actually help your mixing decisions.',
+        inThisLesson: [
+          'Genre matching vs. sonic matching',
+          'Using multiple references, not just one',
+          'Commercial tracks vs. technical references',
+          'Building your reference library'
+        ],
+        keyTakeaways: [
+          'Choose references that match your track\'s vibe and production style, not just genre. An indie pop reference might work better for your track than a generic pop hit.',
+          'Use 2-3 references minimum. One reference might be an outlier. Multiple references show you the common ground—that\'s what you\'re aiming for.',
+          'Have technical references (great bass, great vocals, great depth) and creative references (vibe, energy, arrangement). Different tracks serve different purposes.'
+        ],
+        resources: [
+          { name: 'Reference selection criteria', type: 'PDF' },
+          { name: 'Building a reference library', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l2',
+        module: 4,
+        moduleTitle: 'Reference Listening',
+        lesson: 2,
+        title: 'Active reference listening workflow',
+        duration: '9:28',
+        description: 'How to actually use references during mixing without just copying blindly.',
+        inThisLesson: [
+          'A/B comparison techniques that work',
+          'Matching levels for accurate comparison',
+          'What to analyze: tonal balance, depth, width, dynamics',
+          'Taking actionable notes from references'
+        ],
+        keyTakeaways: [
+          'Match reference levels to your mix (use a loudness meter or just your ears). If the reference is 3dB louder, it will sound better even if it\'s worse. Volume lies.',
+          'Don\'t A/B constantly—it makes you insecure. Listen to the reference once, take mental notes, then work for 20 minutes before checking again.',
+          'Focus on one thing per reference check: "Is my vocal as clear?" or "Does my bass have the same weight?" Specific questions = useful answers.'
+        ],
+        resources: [
+          { name: 'A/B comparison workflow', type: 'PDF' },
+          { name: 'Reference listening checklist', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm4-l3',
+        module: 4,
+        moduleTitle: 'Reference Listening',
+        lesson: 3,
+        title: 'Final walkthrough: Space and translation check',
+        duration: '11:35',
+        description: 'Complete workflow for checking spatial decisions and translation before finalizing.',
+        inThisLesson: [
+          'Spatial check: panning, width, depth',
+          'Mono compatibility verification',
+          'Multi-system translation test',
+          'Final reference comparison and sign-off'
+        ],
+        keyTakeaways: [
+          'The final check is systematic, not emotional. Go through each element: is it in the right place spatially? Does it work in mono? Does it translate?',
+          'If something fails the mono test or translation test, don\'t panic and change everything. Fix the specific problem—usually phase, excessive width, or missing harmonics.',
+          'When your mix passes all tests and sits comfortably next to your references, you\'re done. Stop tweaking and move on to the next track.'
+        ],
+        resources: [
+          { name: 'Final check workflow', type: 'PDF' },
+          { name: 'Translation sign-off checklist', type: 'PDF' },
+          { name: 'Session notes & audio', type: 'ZIP' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+        nextButton.style.opacity = '1';
+        nextButton.style.pointerEvents = 'auto';
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      document.querySelector('main').scrollTop = 0;
+      currentLessonIndex = index;
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="course.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Course</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Space, Depth & Translation</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">4 modules · ~90 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Spatial Relationships</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Understanding the stereo field</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Strategic panning decisions</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:22</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Creating width without losing focus</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:18</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Depth Perception</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Front to back: the depth axis</p>
+              <p class="text-xs" style="color: var(--text-muted);">11:05</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Reverb for space, not wash</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:48</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Delay as a depth tool</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:52</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Walkthrough: Building a 3D mix</p>
+              <p class="text-xs" style="color: var(--text-muted);">12:30</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Translation Across Systems</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The mono compatibility test</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Checking on different systems</p>
+              <p class="text-xs" style="color: var(--text-muted);">8:38</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Low-end that translates</p>
+              <p class="text-xs" style="color: var(--text-muted);">10:20</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 4 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 4</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Reference Listening</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Choosing the right references</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Active reference listening workflow</p>
+              <p class="text-xs" style="color: var(--text-muted);">9:28</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final walkthrough: Space and translation check</p>
+              <p class="text-xs" style="color: var(--text-muted);">11:35</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 max-w-4xl">
+      
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Understanding the stereo field</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          How width and placement create space in your mix, and why it matters more than you think.
+        </p>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The stereo field as a mixing canvas</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Left/right placement vs. center weight</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Why mono elements anchor your mix</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>Common stereo field mistakes</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>The stereo field isn't just "pan left or right"—it's a three-dimensional space where every element needs a home. Center is power, sides are width.</p>
+          <p>Most mixes fail because everything competes for the center. Give important elements their own space—bass and kick center, supporting elements sides.</p>
+          <p>If your mix feels narrow, the problem isn't that things aren't panned wide enough—it's that too many elements are fighting for the middle.</p>
+        </div>
+      </div>
+      
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Stereo field visualization guide (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Panning reference chart (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Space, Depth & Translation</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        13 lessons · ~90 minutes of focused learning
+      </p>
+    </div>
+    
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Strategic panning and stereo field management</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Creating depth with reverb and delay</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Mono compatibility and translation testing</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Active reference listening workflows</span>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">Ready to get started?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Get this course for £35
+        </a>
+        <a href="index.html#learn" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+      </div>
+    </div>
+    
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

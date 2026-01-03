@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ================================================================
+  STUDIO XV COURSE PLAYER TEMPLATE
+  Course 13: Mastering for Producers
+  ================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Player — Mastering for Producers</title>
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316; /* orange */
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        /* LIGHT MODE OVERRIDES */
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .lesson-item.active {
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+    }
+
+    .lesson-item.completed .lesson-check {
+      display: inline;
+    }
+    
+    .lesson-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    /* Completion Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      padding: 3rem;
+      border-radius: 12px;
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+  
+  <script>
+    /* ============================================
+       COURSE CONFIGURATION
+       ============================================ */
+    
+    const courseConfig = {
+      title: 'Mastering for Producers',
+      backLink: 'academy.html',
+      backLinkText: 'Back to Academy',
+      totalDuration: '~50 minutes',
+      moduleCount: 3,
+      price: '£35',
+      stripeLink: 'https://buy.stripe.com/test_28E14neDteada9MaY48g001'
+    };
+    
+    /* ============================================
+       LESSON DATA
+       ============================================ */
+    
+    const lessons = [
+      // Module 1: Mastering Principles
+      {
+        id: 'm1-l1',
+        module: 1,
+        moduleTitle: 'Mastering Principles',
+        lesson: 1,
+        title: 'What Mastering Actually Is',
+        duration: '5:15',
+        description: 'Understanding the purpose of mastering and how it differs from mixing.',
+        inThisLesson: [
+          'The difference between mixing and mastering',
+          'What mastering can and can\'t fix',
+          'When to master your own tracks',
+          'When to hire a mastering engineer'
+        ],
+        keyTakeaways: [
+          'Mastering is the final polish that makes your mix ready for distribution. It\'s not a magic fix for a bad mix.',
+          'Mastering ensures your track sounds consistent with other professional releases and translates well across all playback systems.',
+          'You can master your own tracks for demos and personal releases, but consider hiring a professional for commercial releases.'
+        ],
+        resources: [
+          { name: 'Mastering overview PDF', type: 'PDF' },
+          { name: 'Mixing vs. mastering guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l2',
+        module: 1,
+        moduleTitle: 'Mastering Principles',
+        lesson: 2,
+        title: 'Preparing Your Mix',
+        duration: '4:50',
+        description: 'How to prepare and export your mix for optimal mastering results.',
+        inThisLesson: [
+          'Headroom requirements for mastering',
+          'Export settings and file formats',
+          'What to check before exporting',
+          'Creating reference mixes'
+        ],
+        keyTakeaways: [
+          'Leave at least -6dB of headroom on your master bus. More is better—aim for -6 to -3dB peak levels.',
+          'Export at the same sample rate and bit depth you mixed at. Use WAV or AIFF format, never MP3 for mastering.',
+          'Before exporting, check your mix on multiple systems. Mastering can\'t fix fundamental balance issues.'
+        ],
+        resources: [
+          { name: 'Export checklist', type: 'PDF' },
+          { name: 'Mix preparation guide', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l3',
+        module: 1,
+        moduleTitle: 'Mastering Principles',
+        lesson: 3,
+        title: 'Reference Listening',
+        duration: '5:30',
+        description: 'Using reference tracks to understand where your master should sit tonally and dynamically.',
+        inThisLesson: [
+          'Choosing appropriate reference tracks',
+          'Loading references into your session',
+          'What to listen for in references',
+          'Matching vs. copying'
+        ],
+        keyTakeaways: [
+          'Choose 2-3 reference tracks in your genre that sound great on all systems. Make sure they\'re professionally mastered.',
+          'Use a plugin like Reference to instantly A/B between your track and references at matched volumes.',
+          'Listen for overall tonal balance, stereo width, and loudness. You\'re not trying to copy—you\'re understanding the target.'
+        ],
+        resources: [
+          { name: 'Reference workflow guide', type: 'PDF' },
+          { name: 'Genre reference lists', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm1-l4',
+        module: 1,
+        moduleTitle: 'Mastering Principles',
+        lesson: 4,
+        title: 'The Listening Environment',
+        duration: '4:25',
+        description: 'Setting up your monitoring chain and environment for accurate mastering decisions.',
+        inThisLesson: [
+          'Monitor calibration for mastering',
+          'Room treatment considerations',
+          'Using multiple listening systems',
+          'Avoiding ear fatigue'
+        ],
+        keyTakeaways: [
+          'Accurate monitoring is critical for mastering. If you can\'t trust what you hear, you can\'t make good decisions.',
+          'Check your master on at least three systems: studio monitors, headphones, and consumer speakers (laptop, phone, car).',
+          'Take breaks every 30-40 minutes. Ear fatigue causes you to make progressively worse decisions.'
+        ],
+        resources: [
+          { name: 'Monitoring setup guide', type: 'PDF' },
+          { name: 'Listening checklist', type: 'PDF' }
+        ]
+      },
+      
+      // Module 2: Processing Chain
+      {
+        id: 'm2-l1',
+        module: 2,
+        moduleTitle: 'Processing Chain',
+        lesson: 1,
+        title: 'Mastering EQ',
+        duration: '6:20',
+        description: 'Subtle EQ adjustments to balance the overall frequency spectrum of your track.',
+        inThisLesson: [
+          'Linear phase vs. minimum phase EQ',
+          'Broad strokes vs. surgical cuts',
+          'Common mastering EQ moves',
+          'When to EQ and when to leave it alone'
+        ],
+        keyTakeaways: [
+          'Mastering EQ is about gentle, broad adjustments. You\'re shaping the entire mix, not fixing individual elements.',
+          'Use linear phase EQ when you need transparent corrections. Use minimum phase for musical color and character.',
+          'Common moves: high-pass at 20-30Hz, gentle low-end shelf, slight presence boost around 8-12kHz. But always listen first.'
+        ],
+        resources: [
+          { name: 'Mastering EQ guide', type: 'PDF' },
+          { name: 'EQ plugin recommendations', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l2',
+        module: 2,
+        moduleTitle: 'Processing Chain',
+        lesson: 2,
+        title: 'Mastering Compression',
+        duration: '5:45',
+        description: 'Using compression to glue the mix together and control dynamics without crushing life out of it.',
+        inThisLesson: [
+          'Gentle compression ratios',
+          'Attack and release for transparency',
+          'Multi-band compression basics',
+          'Avoiding over-compression'
+        ],
+        keyTakeaways: [
+          'Mastering compression is subtle—aim for 1-3dB of gain reduction at most. You\'re gluing, not squashing.',
+          'Use slow attack to let transients through. Auto release or medium release (100-300ms) works for most material.',
+          'Multi-band compression gives you more control but is easy to overdo. Start with broadband compression first.'
+        ],
+        resources: [
+          { name: 'Mastering compression guide', type: 'PDF' },
+          { name: 'Compressor settings chart', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l3',
+        module: 2,
+        moduleTitle: 'Processing Chain',
+        lesson: 3,
+        title: 'Stereo Width Enhancement',
+        duration: '4:40',
+        description: 'Carefully widening the stereo image without causing phase issues or losing mono compatibility.',
+        inThisLesson: [
+          'Mid-side processing explained',
+          'When to widen and when to narrow',
+          'Frequency-dependent width',
+          'Checking mono compatibility'
+        ],
+        keyTakeaways: [
+          'Stereo width can make your track sound more spacious and professional, but it\'s easy to overdo and cause phase problems.',
+          'Use mid-side EQ to widen only the high frequencies. Keep everything below 200Hz mono to maintain low end focus.',
+          'Always check your master in mono. If it sounds weak or hollow, you\'ve widened too much.'
+        ],
+        resources: [
+          { name: 'Stereo width guide', type: 'PDF' },
+          { name: 'Mid-side processing tips', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm2-l4',
+        module: 2,
+        moduleTitle: 'Processing Chain',
+        lesson: 4,
+        title: 'Limiting & Loudness',
+        duration: '7:10',
+        description: 'Achieving competitive loudness without sacrificing dynamics and transparency.',
+        inThisLesson: [
+          'How limiters work',
+          'LUFS targets for different platforms',
+          'Transparent vs. aggressive limiting',
+          'Avoiding distortion and pumping'
+        ],
+        keyTakeaways: [
+          'The limiter is the last plugin in your chain. It raises overall loudness by catching and controlling peaks.',
+          'Target -14 LUFS for streaming platforms (Spotify, Apple Music). Going louder just gets turned down automatically.',
+          'Push the limiter until you hear distortion or pumping, then back off. Transparent mastering beats loud but distorted every time.'
+        ],
+        resources: [
+          { name: 'Limiting guide', type: 'PDF' },
+          { name: 'LUFS target chart', type: 'PDF' }
+        ]
+      },
+      
+      // Module 3: Export Standards
+      {
+        id: 'm3-l1',
+        module: 3,
+        moduleTitle: 'Export Standards',
+        lesson: 1,
+        title: 'Final Output Settings',
+        duration: '4:30',
+        description: 'Choosing the right export settings for different distribution platforms.',
+        inThisLesson: [
+          'Sample rate and bit depth explained',
+          'Dithering for 16-bit exports',
+          'File format considerations',
+          'Export level targets'
+        ],
+        keyTakeaways: [
+          'For streaming: 44.1kHz/16-bit WAV with dithering. For archiving: keep your high-res version (48kHz/24-bit or higher).',
+          'Always apply dithering when reducing from 24-bit to 16-bit. This minimizes quantization errors and maintains quality.',
+          'Your final master should peak around -1dBTP (true peak) to prevent distortion during format conversion.'
+        ],
+        resources: [
+          { name: 'Export settings guide', type: 'PDF' },
+          { name: 'Platform specifications', type: 'PDF' }
+        ]
+      },
+      {
+        id: 'm3-l2',
+        module: 3,
+        moduleTitle: 'Export Standards',
+        lesson: 2,
+        title: 'Quality Control Check',
+        duration: '5:20',
+        description: 'Systematic final checks to ensure your master is ready for release.',
+        inThisLesson: [
+          'Pre-export verification checklist',
+          'Listening on multiple systems',
+          'Comparing to references one last time',
+          'Common issues to watch for'
+        ],
+        keyTakeaways: [
+          'Before you export, go through your entire signal chain and verify nothing is clipping or causing artifacts.',
+          'Listen to your master all the way through on at least three different systems. Take notes on what needs adjustment.',
+          'Common issues: too much low end, harsh highs, lack of punch, pumping from over-compression. Fix them before you export.'
+        ],
+        resources: [
+          { name: 'Pre-export checklist', type: 'PDF' },
+          { name: 'Common issues guide', type: 'PDF' }
+        ]
+      }
+    ];
+    
+    let currentLessonIndex = 0;
+    
+    function renderLesson(index) {
+      const lesson = lessons[index];
+      const isFirstLesson = index === 0;
+      const isLastLesson = index === lessons.length - 1;
+      
+      // Update main content
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-description').textContent = lesson.description;
+      
+      // Update "In this lesson"
+      const inThisLessonList = document.getElementById('in-this-lesson-list');
+      inThisLessonList.innerHTML = lesson.inThisLesson.map(item => `
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">→</span>
+          <span>${item}</span>
+        </li>
+      `).join('');
+      
+      // Update key takeaways
+      const keyTakeawaysContent = document.getElementById('key-takeaways-content');
+      keyTakeawaysContent.innerHTML = lesson.keyTakeaways.map(takeaway => `
+        <p>${takeaway}</p>
+      `).join('');
+      
+      // Update resources
+      const resourcesList = document.getElementById('resources-list');
+      resourcesList.innerHTML = lesson.resources.map(resource => `
+        <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+          <span>→</span>
+          <span>Download: ${resource.name} (${resource.type})</span>
+        </a>
+      `).join('');
+      
+      // Update navigation buttons
+      const prevButton = document.getElementById('prev-lesson');
+      const nextButton = document.getElementById('next-lesson');
+      
+      if (isFirstLesson) {
+        prevButton.style.opacity = '0.3';
+        prevButton.style.pointerEvents = 'none';
+      } else {
+        prevButton.style.opacity = '1';
+        prevButton.style.pointerEvents = 'auto';
+      }
+      
+      if (isLastLesson) {
+        nextButton.textContent = 'Complete course →';
+      } else {
+        nextButton.textContent = 'Next lesson →';
+      }
+      
+      // Update sidebar active states
+      document.querySelectorAll('.lesson-item').forEach((item, i) => {
+        item.classList.remove('active');
+        item.classList.remove('completed');
+        
+        if (i === index) {
+          item.classList.add('active');
+        } else if (i < index) {
+          item.classList.add('completed');
+        }
+      });
+      
+      // Scroll to top of main content
+      document.querySelector('main').scrollTop = 0;
+      
+      currentLessonIndex = index;
+      
+      // Save progress to localStorage
+      saveProgress(index);
+    }
+    
+    function saveProgress(lessonIndex) {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const progress = {
+        lessonIndex: lessonIndex,
+        lessonTitle: lessons[lessonIndex].title,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(progressKey, JSON.stringify(progress));
+    }
+    
+    function loadProgress() {
+      const progressKey = `course-progress-${courseConfig.title.replace(/\s+/g, '-').toLowerCase()}`;
+      const saved = localStorage.getItem(progressKey);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      return null;
+    }
+    
+    function showContinuePrompt(progress) {
+      const promptDiv = document.createElement('div');
+      promptDiv.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-slideDown';
+      promptDiv.style.cssText = 'animation: slideDown 0.3s ease;';
+      
+      promptDiv.innerHTML = `
+        <div class="rounded-lg shadow-2xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft); max-width: 400px;">
+          <p class="text-lg font-semibold mb-2">Continue where you left off?</p>
+          <p class="text-sm mb-4" style="color: var(--text-muted);">
+            Last watched: <span style="color: var(--text-main);">${progress.lessonTitle}</span>
+          </p>
+          <div class="flex gap-3">
+            <button onclick="continueFromSaved()" class="flex-1 px-4 py-2 rounded-lg text-white font-semibold transition hover:opacity-90" style="background: var(--accent);">
+              Continue
+            </button>
+            <button onclick="startFromBeginning()" class="flex-1 px-4 py-2 rounded-lg border font-semibold transition hover:opacity-70" style="border-color: var(--border-soft);">
+              Start over
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(promptDiv);
+      
+      // Auto-dismiss after 10 seconds
+      setTimeout(() => {
+        if (promptDiv.parentNode) {
+          promptDiv.remove();
+        }
+      }, 10000);
+    }
+    
+    function continueFromSaved() {
+      const progress = loadProgress();
+      if (progress) {
+        renderLesson(progress.lessonIndex);
+      }
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function startFromBeginning() {
+      renderLesson(0);
+      document.querySelector('.fixed.top-20')?.remove();
+    }
+    
+    function showCompletionModal() {
+      document.getElementById('completion-modal').classList.add('active');
+    }
+    
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.remove('active');
+    }
+    
+    function nextLesson() {
+      if (currentLessonIndex < lessons.length - 1) {
+        renderLesson(currentLessonIndex + 1);
+      } else {
+        // Last lesson - show completion modal
+        showCompletionModal();
+      }
+    }
+    
+    function prevLesson() {
+      if (currentLessonIndex > 0) {
+        renderLesson(currentLessonIndex - 1);
+      }
+    }
+    
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set course header from config
+      document.getElementById('course-title').textContent = courseConfig.title;
+      document.getElementById('course-meta').textContent = `${courseConfig.moduleCount} modules · ${courseConfig.totalDuration}`;
+      document.getElementById('back-link').href = courseConfig.backLink;
+      document.getElementById('back-link-text').textContent = courseConfig.backLinkText;
+      
+      // Check for saved progress
+      const savedProgress = loadProgress();
+      if (savedProgress && savedProgress.lessonIndex > 0) {
+        setTimeout(() => showContinuePrompt(savedProgress), 500);
+        renderLesson(currentLessonIndex);
+      } else {
+        renderLesson(currentLessonIndex);
+      }
+      
+      // Add click handlers to lesson items
+      document.querySelectorAll('.lesson-item').forEach((item, index) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderLesson(index);
+        });
+      });
+      
+      // Add navigation button handlers
+      document.getElementById('prev-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevLesson();
+      });
+      
+      document.getElementById('next-lesson').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextLesson();
+      });
+    });
+  </script>
+</head>
+<body>
+
+<!-- COURSE PLAYER LAYOUT -->
+<div class="flex h-screen">
+  
+  <!-- SIDEBAR - Lesson Navigation -->
+  <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
+    
+    <!-- Header -->
+    <div class="p-6 border-b" style="border-color: var(--border-soft);">
+      <a id="back-link" href="academy.html" class="inline-flex items-center gap-2 text-sm mb-4 transition hover:opacity-70" style="color: var(--text-muted);">
+        <span>←</span>
+        <span id="back-link-text">Back to Academy</span>
+      </a>
+      <h2 id="course-title" class="text-lg font-semibold mb-2">Mastering for Producers</h2>
+      <p id="course-meta" class="text-xs" style="color: var(--text-muted);">3 modules · ~50 minutes</p>
+    </div>
+    
+    <!-- Module 1 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Mastering Principles</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item active flex items-center justify-between p-4 hover:bg-opacity-50 transition">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">What Mastering Actually Is</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:15</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Preparing Your Mix</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Reference Listening</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">The Listening Environment</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:25</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 2 -->
+    <div class="border-b" style="border-color: var(--border-soft);">
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Processing Chain</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Mastering EQ</p>
+              <p class="text-xs" style="color: var(--text-muted);">6:20</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Mastering Compression</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:45</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Stereo Width Enhancement</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Limiting & Loudness</p>
+              <p class="text-xs" style="color: var(--text-muted);">7:10</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Module 3 -->
+    <div>
+      <div class="p-4" style="background: var(--bg-card);">
+        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
+        <p class="text-xs" style="color: var(--text-muted);">Export Standards</p>
+      </div>
+      <div>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Final Output Settings</p>
+              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
+          <div class="flex items-center flex-1">
+            <span class="lesson-check">✓</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium">Quality Control Check</p>
+              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- MAIN CONTENT - Video & Lesson Details -->
+  <main class="flex-1 overflow-y-auto">
+    
+    <!-- Video Player -->
+    <div class="aspect-video bg-black">
+      <div class="w-full h-full flex items-center justify-center text-white" style="background: #1a1a1a;">
+        <div class="text-center">
+          <svg class="w-20 h-20 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          <p class="text-sm opacity-70">Video Player</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lesson Content -->
+    <div class="p-8 max-w-4xl">
+      
+      <!-- Lesson Header -->
+      <div class="mb-8">
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
+        <h1 id="lesson-title" class="text-3xl font-bold mb-4">What Mastering Actually Is</h1>
+        <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
+          Understanding the purpose of mastering and how it differs from mixing.
+        </p>
+      </div>
+      
+      <!-- Lesson Overview -->
+      <div class="mb-8 p-6 rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-4">In this lesson</h3>
+        <ul id="in-this-lesson-list" class="space-y-3 text-base" style="color: var(--text-muted);">
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>The difference between mixing and mastering</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>What mastering can and can't fix</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>When to master your own tracks</span>
+          </li>
+          <li class="flex gap-3">
+            <span style="color: var(--accent);">→</span>
+            <span>When to hire a mastering engineer</span>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Key Takeaways -->
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Key takeaways</h3>
+        <div id="key-takeaways-content" class="space-y-4 text-base leading-relaxed" style="color: var(--text-muted);">
+          <p>
+            Mastering is the final polish that makes your mix ready for distribution. It's not a magic fix for a bad mix.
+          </p>
+          <p>
+            Mastering ensures your track sounds consistent with other professional releases and translates well across all playback systems.
+          </p>
+          <p>
+            You can master your own tracks for demos and personal releases, but consider hiring a professional for commercial releases.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Resources -->
+      <div class="mb-8 p-6 rounded-lg" style="background: var(--bg-soft);">
+        <h3 class="text-lg font-semibold mb-3">Lesson resources</h3>
+        <div id="resources-list" class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Mastering overview PDF (PDF)</span>
+          </a>
+          <a href="#" class="flex items-center gap-2 text-sm hover:opacity-70 transition" style="color: var(--accent);">
+            <span>→</span>
+            <span>Download: Mixing vs. mastering guide (PDF)</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+        <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          ← Previous lesson
+        </a>
+        <a href="#" id="next-lesson" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Next lesson →
+        </a>
+      </div>
+      
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completion-modal" class="modal">
+  <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    
+    <!-- Celebration -->
+    <div class="mb-8">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
+      <p class="text-lg mb-2" style="color: var(--text-muted);">
+        You've finished <span style="color: var(--text-main);">Mastering for Producers</span>
+      </p>
+      <p class="text-sm" style="color: var(--text-muted);">
+        10 lessons · ~50 minutes of focused learning
+      </p>
+    </div>
+    
+    <!-- What You've Learned -->
+    <div class="mb-8 p-6 rounded-lg text-left" style="background: var(--bg-soft);">
+      <h3 class="text-lg font-semibold mb-4">What you've learned</h3>
+      <ul class="space-y-2 text-sm" style="color: var(--text-muted);">
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Understanding mastering principles and when to use them</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Building an effective mastering processing chain</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Achieving competitive loudness without sacrificing quality</span>
+        </li>
+        <li class="flex gap-3">
+          <span style="color: var(--accent);">✓</span>
+          <span>Proper export standards for professional distribution</span>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Next Steps -->
+    <div class="mb-8">
+      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <div class="flex flex-col gap-3">
+        <a href="academy.html" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
+          Back to Academy
+        </a>
+        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Book a feedback session
+        </a>
+      </div>
+    </div>
+    
+    <!-- Close -->
+    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
+      Close and review lessons
+    </button>
+    
+  </div>
+</div>
+
+</body>
+</html>

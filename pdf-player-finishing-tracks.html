@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Reader — Finishing Tracks Without Overthinking</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+      --accent: #f97316;
+      --accent-green: #10b981;
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .main-container {
+      display: flex;
+      height: calc(100vh - 200px);
+      margin-top: 100px;
+      margin-bottom: 100px;
+    }
+
+    /* Left Sidebar - Chapters */
+    .chapters-sidebar {
+      width: 300px;
+      border-right: 1px solid var(--border-soft);
+      background: var(--bg-main);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .module-header {
+      padding: 16px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-soft);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .module-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .module-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .chapter-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background: var(--bg-section);
+      border-bottom: 1px solid var(--border-soft);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .chapter-item:hover {
+      background: var(--bg-soft);
+    }
+
+    .chapter-item.active {
+      background: var(--bg-soft);
+      border-left-color: var(--accent);
+    }
+
+    .chapter-item.completed .chapter-check {
+      display: inline;
+    }
+
+    .chapter-check {
+      display: none;
+      color: var(--accent);
+      margin-right: 12px;
+      font-weight: bold;
+    }
+
+    .chapter-content {
+      flex: 1;
+    }
+
+    .chapter-title {
+      font-weight: 500;
+      font-size: 14px;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .chapter-pages {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    #pdf-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .page-wrapper {
+      transition: opacity 0.3s ease;
+    }
+
+    .page-wrapper.flipping {
+      opacity: 0.3;
+    }
+
+    #pdf-canvas {
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      border-radius: 4px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 340px;
+      border-left: 1px solid var(--border-soft);
+      background: var(--bg-section);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 20px;
+      padding-top: 120px;
+    }
+
+    .sidebar * {
+      word-wrap: break-word;
+      max-width: 100%;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--bg-card);
+      border: 2px solid var(--border-soft);
+      opacity: 0.3;
+      transition: all 0.3s;
+    }
+
+    .badge.earned {
+      opacity: 1;
+      border-color: var(--accent);
+      animation: badgeEarn 0.5s ease;
+    }
+
+    @keyframes badgeEarn {
+      0% { transform: scale(0.8); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Action Items */
+    .action-item {
+      display: flex;
+      align-items: start;
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: var(--bg-card);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-item:hover {
+      background: var(--bg-soft);
+    }
+
+    .action-item.completed {
+      opacity: 0.5;
+    }
+
+    .action-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-soft);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .action-item.completed .action-checkbox {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .quiz-option {
+      padding: 16px;
+      margin-bottom: 12px;
+      background: var(--bg-soft);
+      border: 2px solid var(--border-soft);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .quiz-option.incorrect {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* Notes */
+    .note-input {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 14px;
+      resize: vertical;
+      min-height: 80px;
+      margin-top: 10px;
+    }
+
+    .saved-note {
+      padding: 12px;
+      background: var(--bg-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    /* Buttons */
+    .control-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .control-btn:hover {
+      background: var(--bg-soft);
+      border-color: var(--accent);
+    }
+
+    .control-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="border-b" style="background: var(--bg-main); border-color: var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 py-4">
+    <div class="flex justify-between items-center mb-3">
+      <div>
+        <h1 class="text-xl font-bold">Finishing Tracks Without Overthinking</h1>
+        <p class="text-sm mt-1" style="color: var(--text-muted);">PDF Ebook · 18 pages</p>
+      </div>
+      <a href="course-finishing-tracks-info.html" 
+         class="text-sm transition hover:text-[var(--accent)]"
+         style="color: var(--text-muted);">
+        ← Back to course
+      </a>
+    </div>
+    
+    <!-- Badges -->
+    <div class="flex gap-2 flex-wrap">
+      <div class="badge" id="badge-25">
+        <span>🎯</span>
+        <span>Getting Started</span>
+      </div>
+      <div class="badge" id="badge-50">
+        <span>🚀</span>
+        <span>Halfway There</span>
+      </div>
+      <div class="badge" id="badge-75">
+        <span>⭐</span>
+        <span>Nearly Done</span>
+      </div>
+      <div class="badge" id="badge-100">
+        <span>🏆</span>
+        <span>Track Finisher</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<div class="main-container">
+  
+  <!-- LEFT SIDEBAR - CHAPTERS -->
+  <div class="chapters-sidebar">
+    <div class="module-header">
+      <h3 class="module-title">Contents</h3>
+      <p class="module-subtitle">18 pages · 45-60 min read</p>
+    </div>
+    
+    <div class="chapter-item" data-pages="1-2">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Table of Contents</p>
+        <p class="chapter-pages">Pages 1-2</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="3-4">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Introduction</p>
+        <p class="chapter-pages">Pages 3-4</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="5-7">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Why Unfinished Tracks Aren't a Technical Problem</p>
+        <p class="chapter-pages">Pages 5-7</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="8-10">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Decision Fatigue vs Perfectionism</p>
+        <p class="chapter-pages">Pages 8-10</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="11-12">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Recognising When a Track Is Already Working</p>
+        <p class="chapter-pages">Pages 11-12</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="13-14">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Structural Clarity Before Mix Detail</p>
+        <p class="chapter-pages">Pages 13-14</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="15-16">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">What to Fix First (and What to Ignore)</p>
+        <p class="chapter-pages">Pages 15-16</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="17-18">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Knowing When Not to Change Something</p>
+        <p class="chapter-pages">Pages 17-18</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="19">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Clear Stopping Points</p>
+        <p class="chapter-pages">Page 19</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="20">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Exporting Without Second-Guessing</p>
+        <p class="chapter-pages">Page 20</p>
+      </div>
+    </div>
+    
+    <div class="chapter-item" data-pages="21">
+      <span class="chapter-check">✓</span>
+      <div class="chapter-content">
+        <p class="chapter-title">Closing Notes</p>
+        <p class="chapter-pages">Page 21</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF VIEWER -->
+  <div id="pdf-container">
+    <div class="page-wrapper">
+      <canvas id="pdf-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar">
+    <div class="mb-6">
+      <h3 class="font-bold text-lg mb-3">Action Items</h3>
+      <div id="action-items">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <h3 class="font-bold text-lg mb-3">Your Notes</h3>
+      <textarea class="note-input" id="page-notes" placeholder="Add notes for this page..."></textarea>
+      <button class="control-btn btn-primary mt-2 w-full" id="save-note">Save Note</button>
+      <div id="saved-notes-container" class="mt-4">
+        <!-- Saved notes appear here -->
+      </div>
+    </div>
+
+    <div>
+      <h3 class="font-bold text-lg mb-3">Key Takeaways</h3>
+      <div id="takeaways-container" style="color: var(--text-muted); font-size: 14px;">
+        Complete chapters to unlock takeaways
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<footer class="border-t" style="background: var(--bg-main); border-color: var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 py-4">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      
+      <!-- Navigation -->
+      <div class="flex items-center gap-3">
+        <button id="prev-page" class="control-btn">← Previous</button>
+        <span class="text-sm" style="color: var(--text-muted);">
+          Page <span id="current-page">1</span> of <span id="total-pages">--</span>
+        </span>
+        <button id="next-page" class="control-btn">Next →</button>
+      </div>
+
+      <!-- Interactive Features -->
+      <div class="flex items-center gap-3">
+        <button id="show-quiz" class="control-btn">📝 Quiz</button>
+        <button id="show-exercise" class="control-btn">⏱️ Exercise</button>
+      </div>
+
+      <!-- Zoom Controls -->
+      <div class="flex items-center gap-3">
+        <button id="zoom-out" class="control-btn">−</button>
+        <span class="text-sm" style="color: var(--text-muted);">
+          <span id="zoom-level">100</span>%
+        </span>
+        <button id="zoom-in" class="control-btn">+</button>
+      </div>
+
+      <!-- Progress -->
+      <div class="text-sm" style="color: var(--text-muted);">
+        <span id="progress">0</span>% complete
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+<!-- QUIZ MODAL -->
+<div class="modal" id="quiz-modal">
+  <div class="modal-content">
+    <h2 class="text-2xl font-bold mb-4">Chapter Quiz</h2>
+    <p class="mb-6" style="color: var(--text-muted);">Before moving on, test what you learned:</p>
+    
+    <div id="quiz-content">
+      <!-- Quiz questions dynamically loaded -->
+    </div>
+
+    <button class="control-btn mt-4" id="close-quiz">Close</button>
+  </div>
+</div>
+
+<!-- EXERCISE MODAL -->
+<div class="modal" id="exercise-modal">
+  <div class="modal-content">
+    <h2 class="text-2xl font-bold mb-4">Interactive Exercise</h2>
+    <p class="mb-4" style="color: var(--text-muted);">Pause: Open a track and try this now</p>
+    
+    <div id="exercise-content" class="mb-6">
+      <p class="text-lg mb-4">Open one of your unfinished tracks and identify:</p>
+      <ul class="space-y-2" style="color: var(--text-muted);">
+        <li>• What's making you hesitate to finish it?</li>
+        <li>• What would "good enough" look like?</li>
+        <li>• One thing you can fix in the next 15 minutes</li>
+      </ul>
+    </div>
+
+    <div class="flex gap-3">
+      <button class="control-btn btn-primary flex-1" id="start-timer">Start 15-min Timer</button>
+      <button class="control-btn" id="close-exercise">Skip</button>
+    </div>
+
+    <div id="timer-display" class="text-center text-3xl font-bold mt-6" style="display: none; color: var(--accent);">
+      15:00
+    </div>
+  </div>
+</div>
+
+<script>
+  // PDF.js Configuration
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  // State
+  let pdfDoc = null;
+  let currentPage = 1;
+  let zoomLevel = 1;
+  const canvas = document.getElementById('pdf-canvas');
+  const ctx = canvas.getContext('2d');
+  const pageWrapper = document.querySelector('.page-wrapper');
+
+  // Load saved data
+  const savedData = JSON.parse(localStorage.getItem('finishing-tracks-data') || '{}');
+  let actionItems = savedData.actionItems || {};
+  let notes = savedData.notes || {};
+  let badges = savedData.badges || { 25: false, 50: false, 75: false, 100: false };
+  let quizResults = savedData.quizResults || {};
+
+  // Action items by page
+  const pageActions = {
+    3: ['Identify one unfinished track', 'Write down why it stalled'],
+    5: ['List 3 decisions you keep second-guessing', 'Rate each by importance (1-5)'],
+    8: ['Pick one track and assess its structure', 'Decide if arrangement is working'],
+    12: ['Choose one fix that matters most', 'Implement it in next 30 minutes'],
+    15: ['Set a deadline for one track', 'Define your "done" criteria']
+  };
+
+  // Quizzes by page (after chapters)
+  const pageQuizzes = {
+    7: {
+      question: 'What is the main reason tracks stall?',
+      options: [
+        'Lack of technical skills',
+        'Decision-making becomes unclear',
+        'Not enough plugins',
+        'DAW limitations'
+      ],
+      correct: 1,
+      explanation: 'Most tracks stall because decisions stop feeling clear, not because of technical limitations.'
+    },
+    11: {
+      question: 'When should you focus on arrangement before mixing?',
+      options: [
+        'Never, mix first',
+        'Only for electronic music',
+        'Always - structure comes before details',
+        'Only if you have time'
+      ],
+      correct: 2,
+      explanation: 'Arrangement and structure should be prioritized before detailed mixing work.'
+    }
+  };
+
+  // Key takeaways by page range
+  const pageTakeaways = {
+    7: ['Decision fatigue is the real problem', 'Focus beats options', 'Trust your instincts more'],
+    11: ['Structure reveals problems', 'Fix arrangement before details', 'Listen for what the track needs'],
+    15: ['Done is better than perfect', 'Set clear finish criteria', 'Move forward with confidence']
+  };
+
+  // Load PDF
+  const pdfUrl = 'ebooks/finishing-tracks-without-overthinking.pdf';
+
+  pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+    pdfDoc = pdf;
+    document.getElementById('total-pages').textContent = pdf.numPages;
+    renderPage(currentPage);
+    updateActionItems();
+    updateSavedNotes();
+    checkBadges();
+  }).catch(err => {
+    console.error('Error loading PDF:', err);
+    document.getElementById('pdf-container').innerHTML = 
+      '<div style="text-align: center; padding: 40px; color: var(--text-muted);"><p>Unable to load PDF</p></div>';
+  });
+
+  // Render page
+  function renderPage(num) {
+    if (!pdfDoc) return;
+    
+    pdfDoc.getPage(num).then(page => {
+      const container = document.getElementById('pdf-container');
+      const containerWidth = container.clientWidth - 40;
+      const containerHeight = container.clientHeight - 40;
+      
+      const viewport = page.getViewport({ scale: 1 });
+      
+      // Calculate scale to fit both width and height
+      const scaleWidth = containerWidth / viewport.width;
+      const scaleHeight = containerHeight / viewport.height;
+      const baseScale = Math.min(scaleWidth, scaleHeight) * zoomLevel;
+      
+      const scaledViewport = page.getViewport({ scale: baseScale });
+      canvas.height = scaledViewport.height;
+      canvas.width = scaledViewport.width;
+
+      page.render({
+        canvasContext: ctx,
+        viewport: scaledViewport
+      }).promise.then(() => {
+        updateUI();
+        updateActionItems();
+        updateSavedNotes();
+        updateTakeaways();
+        checkBadges();
+        updateActiveChapter();
+      });
+    });
+  }
+
+  // Update UI
+  function updateUI() {
+    document.getElementById('current-page').textContent = currentPage;
+    document.getElementById('prev-page').disabled = currentPage === 1;
+    document.getElementById('next-page').disabled = !pdfDoc || currentPage === pdfDoc.numPages;
+    
+    const progress = pdfDoc ? Math.round((currentPage / pdfDoc.numPages) * 100) : 0;
+    document.getElementById('progress').textContent = progress;
+    
+    // Enable quiz button if quiz available for this page
+    const quizBtn = document.getElementById('show-quiz');
+    if (pageQuizzes[currentPage]) {
+      quizBtn.style.display = 'inline-block';
+      quizBtn.disabled = false;
+    } else {
+      quizBtn.style.display = 'none';
+      quizBtn.disabled = true;
+    }
+    
+    localStorage.setItem('finishing-tracks-page', currentPage);
+  }
+
+  // Update action items
+  function updateActionItems() {
+    const container = document.getElementById('action-items');
+    const actions = pageActions[currentPage];
+    
+    if (actions) {
+      container.innerHTML = actions.map((action, idx) => {
+        const key = `${currentPage}-${idx}`;
+        const completed = actionItems[key] || false;
+        return `
+          <div class="action-item ${completed ? 'completed' : ''}" data-key="${key}">
+            <div class="action-checkbox">${completed ? '✓' : ''}</div>
+            <div>${action}</div>
+          </div>
+        `;
+      }).join('');
+      
+      // Add click handlers
+      document.querySelectorAll('.action-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const key = item.dataset.key;
+          actionItems[key] = !actionItems[key];
+          saveData();
+          updateActionItems();
+        });
+      });
+    } else {
+      container.innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">No action items for this page</p>';
+    }
+  }
+
+  // Save/load notes
+  document.getElementById('save-note').addEventListener('click', () => {
+    const noteText = document.getElementById('page-notes').value.trim();
+    if (noteText) {
+      notes[currentPage] = noteText;
+      saveData();
+      document.getElementById('page-notes').value = '';
+      updateSavedNotes();
+    }
+  });
+
+  function updateSavedNotes() {
+    const container = document.getElementById('saved-notes-container');
+    const pageNote = notes[currentPage];
+    
+    if (pageNote) {
+      container.innerHTML = `
+        <div class="saved-note">
+          <div style="font-weight: 600; margin-bottom: 8px;">Page ${currentPage} note:</div>
+          <div>${pageNote}</div>
+        </div>
+      `;
+    } else {
+      container.innerHTML = '';
+    }
+  }
+
+  // Update takeaways
+  function updateTakeaways() {
+    const container = document.getElementById('takeaways-container');
+    const takeaways = pageTakeaways[currentPage];
+    
+    if (takeaways) {
+      container.innerHTML = takeaways.map(item => 
+        `<div style="padding: 8px 0; line-height: 1.5;">• ${item}</div>`
+      ).join('');
+      container.style.color = 'var(--text-muted)';
+    } else {
+      container.innerHTML = '<p style="font-size: 14px; color: var(--text-muted);">Complete chapters to unlock takeaways</p>';
+    }
+  }
+
+  // Check and award badges
+  function checkBadges() {
+    if (!pdfDoc) return;
+    
+    const progress = Math.round((currentPage / pdfDoc.numPages) * 100);
+    
+    [[25, 'badge-25'], [50, 'badge-50'], [75, 'badge-75'], [100, 'badge-100']].forEach(([threshold, id]) => {
+      if (progress >= threshold && !badges[threshold]) {
+        badges[threshold] = true;
+        document.getElementById(id).classList.add('earned');
+        saveData();
+      } else if (badges[threshold]) {
+        document.getElementById(id).classList.add('earned');
+      }
+    });
+  }
+
+  // Quiz system
+  document.getElementById('show-quiz').addEventListener('click', () => {
+    const quiz = pageQuizzes[currentPage];
+    if (!quiz) return;
+    
+    const quizContent = document.getElementById('quiz-content');
+    quizContent.innerHTML = `
+      <h3 class="text-lg font-semibold mb-4">${quiz.question}</h3>
+      ${quiz.options.map((option, idx) => `
+        <div class="quiz-option" data-index="${idx}">
+          ${option}
+        </div>
+      `).join('')}
+      <div id="quiz-feedback" style="margin-top: 20px; display: none;"></div>
+    `;
+    
+    document.querySelectorAll('.quiz-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        const selected = parseInt(this.dataset.index);
+        const isCorrect = selected === quiz.correct;
+        
+        document.querySelectorAll('.quiz-option').forEach(o => {
+          o.style.pointerEvents = 'none';
+          if (parseInt(o.dataset.index) === quiz.correct) {
+            o.classList.add('correct');
+          } else if (o === this && !isCorrect) {
+            o.classList.add('incorrect');
+          }
+        });
+        
+        const feedback = document.getElementById('quiz-feedback');
+        feedback.style.display = 'block';
+        feedback.innerHTML = `
+          <div style="color: ${isCorrect ? 'var(--accent-green)' : '#ef4444'}; font-weight: 600; margin-bottom: 8px;">
+            ${isCorrect ? '✓ Correct!' : '✗ Not quite'}
+          </div>
+          <div style="color: var(--text-muted);">${quiz.explanation}</div>
+        `;
+        
+        quizResults[currentPage] = isCorrect;
+        saveData();
+      });
+    });
+    
+    document.getElementById('quiz-modal').classList.add('active');
+  });
+
+  document.getElementById('close-quiz').addEventListener('click', () => {
+    document.getElementById('quiz-modal').classList.remove('active');
+  });
+
+  // Exercise timer
+  let timerInterval = null;
+  document.getElementById('start-timer').addEventListener('click', () => {
+    let timeLeft = 15 * 60;
+    const display = document.getElementById('timer-display');
+    display.style.display = 'block';
+    
+    timerInterval = setInterval(() => {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      display.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        display.textContent = 'Time\'s up! ✓';
+      }
+      timeLeft--;
+    }, 1000);
+  });
+
+  document.getElementById('show-exercise').addEventListener('click', () => {
+    document.getElementById('exercise-modal').classList.add('active');
+  });
+
+  document.getElementById('close-exercise').addEventListener('click', () => {
+    document.getElementById('exercise-modal').classList.remove('active');
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      document.getElementById('timer-display').style.display = 'none';
+    }
+  });
+
+  // Save data
+  function saveData() {
+    localStorage.setItem('finishing-tracks-data', JSON.stringify({
+      actionItems,
+      notes,
+      badges,
+      quizResults
+    }));
+  }
+
+  // Chapter navigation
+  function updateActiveChapter() {
+    document.querySelectorAll('.chapter-item').forEach(item => {
+      const pages = item.dataset.pages;
+      if (pages) {
+        const [start, end] = pages.split('-').map(p => parseInt(p));
+        const endPage = end || start;
+        
+        if (currentPage >= start && currentPage <= endPage) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+        
+        // Mark as completed if user has read past it
+        if (currentPage > endPage) {
+          item.classList.add('completed');
+        }
+      }
+    });
+  }
+
+  // Make chapters clickable
+  document.querySelectorAll('.chapter-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const pages = item.dataset.pages;
+      if (pages) {
+        const startPage = parseInt(pages.split('-')[0]);
+        currentPage = startPage;
+        renderPage(currentPage);
+      }
+    });
+  });
+
+  // Navigation
+  document.getElementById('prev-page').addEventListener('click', () => {
+    if (currentPage > 1) {
+      pageWrapper.classList.add('flipping');
+      setTimeout(() => {
+        currentPage--;
+        renderPage(currentPage);
+        pageWrapper.classList.remove('flipping');
+      }, 150);
+    }
+  });
+
+  document.getElementById('next-page').addEventListener('click', () => {
+    if (pdfDoc && currentPage < pdfDoc.numPages) {
+      pageWrapper.classList.add('flipping');
+      setTimeout(() => {
+        currentPage++;
+        renderPage(currentPage);
+        pageWrapper.classList.remove('flipping');
+      }, 150);
+    }
+  });
+
+  // Zoom controls
+  document.getElementById('zoom-in').addEventListener('click', () => {
+    zoomLevel += 0.25;
+    document.getElementById('zoom-level').textContent = Math.round(zoomLevel * 100);
+    renderPage(currentPage);
+  });
+
+  document.getElementById('zoom-out').addEventListener('click', () => {
+    if (zoomLevel > 0.5) {
+      zoomLevel -= 0.25;
+      document.getElementById('zoom-level').textContent = Math.round(zoomLevel * 100);
+      renderPage(currentPage);
+    }
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && currentPage > 1) {
+      currentPage--;
+      renderPage(currentPage);
+    } else if (e.key === 'ArrowRight' && pdfDoc && currentPage < pdfDoc.numPages) {
+      currentPage++;
+      renderPage(currentPage);
+    }
+  });
+
+  // Restore last page
+  window.addEventListener('load', () => {
+    const savedPage = localStorage.getItem('finishing-tracks-page');
+    if (savedPage && pdfDoc) {
+      currentPage = parseInt(savedPage);
+      renderPage(currentPage);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -53,238 +53,205 @@
 </head>
 <body>
 
-<!-- TOOLS & PLANNERS PAGE -->
-<!-- Practical utilities for music production workflow -->
+<!-- NAVIGATION -->
+<nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 border-b" style="background: var(--bg-main); border-color: var(--border-soft);">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <a href="index.html" class="text-xl font-bold">Studio XV</a>
+    <div class="flex items-center gap-8">
+      <a href="index.html#services" class="text-sm hover:opacity-70 transition">Services</a>
+      <a href="index.html#listen" class="text-sm hover:opacity-70 transition">Listen</a>
+      <a href="index.html#learn" class="text-sm hover:opacity-70 transition">Learn</a>
+      <a href="index.html#booking" class="text-sm hover:opacity-70 transition">Book</a>
+    </div>
+  </div>
+</nav>
 
-<section class="min-h-screen py-20 px-6" style="background: var(--bg-main);">
+<!-- HERO -->
+<section class="pt-32 pb-20 px-6" style="background: var(--bg-main);">
   <div class="max-w-4xl mx-auto">
-    
-    <!-- Page Header -->
-    <div class="mb-12">
-      <div class="flex items-start gap-4 mb-3">
-        <h1 class="text-3xl md:text-4xl font-bold">Tools & planners</h1>
-        <span class="inline-block px-3 py-1 text-xs font-medium rounded border" 
-              style="border-color: var(--border-soft);">
-          Coming soon
-        </span>
-      </div>
-      <p class="text-base opacity-60 max-w-2xl">
-        Practical utilities to support the Studio XV process. Simple tools for better decisions.
-      </p>
-      <a href="index.html#learn" class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline mt-4 inline-block">
-        ← Back to Learn
-      </a>
-    </div>
-
-    <!-- Search & Filter -->
-    <div class="mb-8 space-y-4">
-      <!-- Search Bar -->
-      <div class="relative">
-        <input 
-          type="text" 
-          id="search-input"
-          placeholder="Search tools..." 
-          class="w-full px-4 py-3 pl-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-orange-500"
-          style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
-        />
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-        </svg>
-      </div>
-
-      <!-- Filter Buttons -->
-      <div class="flex flex-wrap gap-2">
-        <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-medium transition" data-filter="all">
-          All
-        </button>
-        <button class="filter-btn px-4 py-2 rounded-lg text-sm font-medium transition" data-filter="coming-soon">
-          Coming soon
-        </button>
-      </div>
-
-      <!-- Results Counter -->
-      <p class="text-sm opacity-60">
-        <span id="results-count">9</span> tools
-      </p>
-    </div>
-    
-    <!-- Tools List -->
-    <div class="space-y-6">
-      
-      <!-- BPM Counter -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="bpm counter find the tempo of any track or loop by tapping along" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">BPM counter</h3>
-        <p class="text-base opacity-70">
-          Find the tempo of any track or loop by tapping along.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Tap Tempo -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="tap tempo match your daw tempo to a reference track by tapping" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Tap tempo</h3>
-        <p class="text-base opacity-70">
-          Match your DAW tempo to a reference track by tapping.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Checklist Generator -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="checklist generator create custom finishing checklists based on your workflow" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Checklist generator</h3>
-        <p class="text-base opacity-70">
-          Create custom finishing checklists based on your workflow.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Session Planner -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="session planner plan focused studio sessions with clear time blocks and goals" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Session planner</h3>
-        <p class="text-base opacity-70">
-          Plan focused studio sessions with clear time blocks and goals.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Arrangement Planner -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="arrangement planner sketch track structures before opening your daw" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Arrangement planner</h3>
-        <p class="text-base opacity-70">
-          Sketch track structures before opening your DAW.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Energy Curve Visualiser -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="energy curve visualiser map the energy flow of your track to identify pacing issues" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Energy curve visualiser</h3>
-        <p class="text-base opacity-70">
-          Map the energy flow of your track to identify pacing issues.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Key Detection -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="key detection identify the key and scale of audio files for harmonic mixing" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Key detection</h3>
-        <p class="text-base opacity-70">
-          Identify the key and scale of audio files for harmonic mixing.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Audio Analysis -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="audio analysis analyze frequency content dynamics and loudness of your tracks" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Audio analysis</h3>
-        <p class="text-base opacity-70">
-          Analyze frequency content, dynamics, and loudness of your tracks.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-      <!-- Mix Comparison -->
-      <div class="tool-item p-6 rounded-xl border" data-status="coming-soon" data-title="mix comparison compare your mix against reference tracks side-by-side" style="background: var(--bg-card); border-color: var(--border-soft);">
-        <h3 class="text-lg font-semibold mb-2">Mix comparison</h3>
-        <p class="text-base opacity-70">
-          Compare your mix against reference tracks side-by-side.
-        </p>
-        <span class="inline-block mt-3 px-2 py-1 text-xs opacity-50" style="border: 1px solid var(--border-soft); border-radius: 4px;">Coming soon</span>
-      </div>
-      
-    </div>
-    
+    <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+      Studio XV Tools
+    </h1>
+    <p class="text-xl mb-8 leading-relaxed" style="color: var(--text-muted);">
+      Practical decision-making tools for finishing music.
+    </p>
+    <p class="text-base leading-relaxed max-w-2xl" style="color: var(--text-muted);">
+      These tools exist to reduce friction, not add complexity.<br>
+      Use them alongside courses, ebooks, or sessions.
+    </p>
   </div>
 </section>
 
-<style>
-  .filter-btn {
-    background: var(--bg-card);
-    border: 1px solid var(--border-soft);
-    color: var(--text-main);
-  }
+<!-- BACK BUTTON -->
+<section class="py-12 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    <a href="index.html#learn" 
+       class="inline-flex items-center gap-2 px-5 py-2 rounded-lg text-sm transition hover:opacity-70"
+       style="border: 1px solid var(--border-soft);">
+      <span>←</span>
+      <span>Back to Learn</span>
+    </a>
+  </div>
+</section>
 
-  .filter-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .filter-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-
-  .tool-item {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .tool-item.hidden {
-    display: none;
-  }
-</style>
-
-<script>
-  // Search and Filter Functionality
-  const searchInput = document.getElementById('search-input');
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  const toolItems = document.querySelectorAll('.tool-item');
-  const resultsCount = document.getElementById('results-count');
-
-  let currentFilter = 'all';
-  let currentSearch = '';
-
-  // Filter button click handlers
-  filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      // Update active state
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
+<!-- DECISION TOOLS -->
+<section class="py-16 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">Decision tools</h2>
+    
+    <div class="space-y-6">
       
-      // Update current filter
-      currentFilter = button.dataset.filter;
+      <!-- Tool 1 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Finish or Fix Checklist</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: PDF</span>
+          <span>·</span>
+          <span>Purpose: Decide whether a track needs work or release</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          A simple checklist to help you stop tweaking unnecessarily.
+        </p>
+      </div>
       
-      // Update display
-      updateDisplay();
-    });
-  });
-
-  // Search input handler
-  searchInput.addEventListener('input', (e) => {
-    currentSearch = e.target.value.toLowerCase();
-    updateDisplay();
-  });
-
-  // Update display based on current filter and search
-  function updateDisplay() {
-    let visibleCount = 0;
-
-    toolItems.forEach(item => {
-      const status = item.dataset.status;
-      const title = item.dataset.title.toLowerCase();
+      <!-- Tool 2 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">"Is This Track Done?" Decision Tree</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: PDF</span>
+          <span>·</span>
+          <span>Purpose: Replace doubt with structure</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Walk through clear yes/no questions instead of guessing.
+        </p>
+      </div>
       
-      // Check filter match
-      const filterMatch = currentFilter === 'all' || status === currentFilter;
+      <!-- Tool 3 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">First Fix Rule</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: Worksheet</span>
+          <span>·</span>
+          <span>Purpose: Identify the one change that matters most</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Helps prevent random adjustments.
+        </p>
+      </div>
       
-      // Check search match
-      const searchMatch = currentSearch === '' || title.includes(currentSearch);
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOW TOOLS -->
+<section class="py-16 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">Workflow tools</h2>
+    
+    <div class="space-y-6">
       
-      // Show/hide item
-      if (filterMatch && searchMatch) {
-        item.classList.remove('hidden');
-        visibleCount++;
-      } else {
-        item.classList.add('hidden');
-      }
-    });
+      <!-- Tool 1 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Session Planner</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: Printable PDF</span>
+          <span>·</span>
+          <span>Purpose: Plan sessions with intention</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Set goals before opening your DAW.
+        </p>
+      </div>
+      
+      <!-- Tool 2 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Export Readiness Checklist</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: PDF</span>
+          <span>·</span>
+          <span>Purpose: Confident final exports</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Ensure nothing important is missed.
+        </p>
+      </div>
+      
+      <!-- Tool 3 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Mix Translation Test Sheet</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: Printable checklist</span>
+          <span>·</span>
+          <span>Purpose: Evaluate mixes across systems</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Structured listening instead of vague notes.
+        </p>
+      </div>
+      
+    </div>
+  </div>
+</section>
 
-    // Update results count
-    resultsCount.textContent = visibleCount;
-  }
+<!-- CREATIVE CONSTRAINT TOOLS -->
+<section class="py-16 px-6 border-t" style="background: var(--bg-section); border-color: var(--border-soft);">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold mb-10">Creative constraint tools</h2>
+    
+    <div class="space-y-6">
+      
+      <!-- Tool 1 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Time-Boxing Framework</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: Worksheet</span>
+          <span>·</span>
+          <span>Purpose: Prevent endless sessions</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Work within limits to maintain momentum.
+        </p>
+      </div>
+      
+      <!-- Tool 2 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">3-Move Rule</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: PDF</span>
+          <span>·</span>
+          <span>Purpose: Reduce over-processing</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Limit decisions to what matters.
+        </p>
+      </div>
+      
+      <!-- Tool 3 -->
+      <div class="p-6 rounded-xl border" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <h3 class="text-lg font-semibold mb-2">Arrangement Reduction Exercise</h3>
+        <div class="flex gap-4 text-sm mb-3" style="color: var(--text-muted);">
+          <span>Format: Worksheet</span>
+          <span>·</span>
+          <span>Purpose: Improve clarity by removing elements</span>
+        </div>
+        <p class="text-base" style="color: var(--text-muted);">
+          Simplify before adding anything new.
+        </p>
+      </div>
+      
+    </div>
+  </div>
+</section>
 
-  // Initialize display
-  updateDisplay();
-</script>
+<!-- FOOTER NOTE -->
+<section class="py-16 px-6" style="background: var(--bg-main);">
+  <div class="max-w-4xl mx-auto text-center">
+    <p class="text-sm" style="color: var(--text-muted);">
+      These tools are referenced throughout Studio XV courses and ebooks, but can be used independently.
+    </p>
+  </div>
+</section>
 
 </body>
 </html>
