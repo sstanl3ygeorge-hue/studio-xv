@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Studio XV booking system",
   "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
     "resend": "^6.6.0",
     "stripe": "^14.25.0"
   }
