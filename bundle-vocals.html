@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocals Bundle — Studio XV</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316;
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed w-full z-50 py-5" style="background: var(--bg-main); border-bottom: 1px solid var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+    
+    <div class="flex items-center gap-8 text-sm font-medium">
+      <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+      <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+      <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+      <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Bundle Details -->
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main); padding-top: 120px;">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Back Link -->
+    <a href="learn-courses.html" class="inline-block text-sm opacity-50 hover:text-orange-500 transition underline-offset-4 hover:underline mb-8">
+      ← Back to Courses
+    </a>
+    
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-block px-4 py-2 rounded-full text-xs font-semibold mb-4" style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+        SPECIALIZED BUNDLE
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Vocals Bundle</h1>
+      <p class="text-xl opacity-70 leading-relaxed mb-6">
+        Get clear, professional vocal production and mixing. This focused bundle covers everything from recording and editing to final mix balance, helping you achieve vocals that sit perfectly in your productions.
+      </p>
+      
+      <!-- Pricing -->
+      <div class="flex items-baseline gap-4 mb-8">
+        <div class="text-4xl font-bold" style="color: var(--accent);">£60</div>
+        <div class="text-lg opacity-60 line-through">£66</div>
+        <div class="text-sm opacity-70 px-3 py-1 rounded-full" style="background: rgba(249, 115, 22, 0.15);">Save £6</div>
+      </div>
+      
+      <!-- CTA Button -->
+      <button class="px-8 py-4 rounded-lg text-base font-semibold transition hover:opacity-90" style="background: var(--accent); color: white;">
+        Get Vocals Bundle
+      </button>
+    </div>
+    
+    <!-- What's Included -->
+    <div class="mb-16 p-8 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-2xl font-bold mb-6">What's Included</h2>
+      <div class="space-y-4">
+        
+        <div class="p-4 rounded-lg" style="background: var(--bg-soft);">
+          <h3 class="text-lg font-semibold mb-2">Vocal Production Essentials</h3>
+          <p class="text-sm opacity-70">Recording, editing, tuning, and processing vocals for clarity, presence, and emotional impact.</p>
+          <div class="text-xs opacity-60 mt-2">£22</div>
+        </div>
+        
+        <div class="p-4 rounded-lg" style="background: var(--bg-soft);">
+          <h3 class="text-lg font-semibold mb-2">Balancing Vocals in the Mix</h3>
+          <p class="text-sm opacity-70">Clear vocal positioning, compression strategies, and making vocals sit perfectly without fighting other elements.</p>
+          <div class="text-xs opacity-60 mt-2">£22</div>
+        </div>
+        
+        <div class="p-4 rounded-lg" style="background: var(--bg-soft);">
+          <h3 class="text-lg font-semibold mb-2">De-Essing & Sibilance Control</h3>
+          <p class="text-sm opacity-70">Controlling harsh sibilance and high-frequency content without losing vocal presence and clarity.</p>
+          <div class="text-xs opacity-60 mt-2">£22</div>
+        </div>
+        
+      </div>
+      
+      <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-soft);">
+        <div class="flex justify-between text-sm opacity-70">
+          <span>Total: 3 specialized courses</span>
+          <span>~170 minutes of focused content</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Why This Bundle -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold mb-6">Why This Bundle?</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Complete Vocal Workflow</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Cover every step from raw recording to final mix balance. No vocal production gaps.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Focused Learning</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Deep dive into the most complained-about mixing challenge: getting vocals to sound professional.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Problem-Solving Approach</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Learn how to fix harsh sibilance, muddy vocals, and inconsistent levels with confidence.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Immediate Results</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Apply these techniques to your current projects and hear the difference right away.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Who This Is For -->
+    <div class="mb-16 p-8 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-2xl font-bold mb-6">Who This Is For</h2>
+      <ul class="space-y-3 text-base opacity-80">
+        <li>✓ Producers working with vocalists and need better vocal mixing skills</li>
+        <li>✓ Singer-songwriters recording and producing their own vocals</li>
+        <li>✓ Anyone struggling with harsh, muddy, or inconsistent vocals</li>
+        <li>✓ Producers who want vocals that compete with commercial releases</li>
+        <li>✓ Engineers looking to refine their vocal production workflow</li>
+      </ul>
+    </div>
+    
+    <!-- Common Problems Solved -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold mb-6">Common Problems You'll Solve</h2>
+      <div class="grid gap-4">
+        <div class="p-4 rounded-lg flex items-start gap-3" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <span class="text-xl">❌</span>
+          <div>
+            <h3 class="font-semibold mb-1">Harsh, sibilant vocals</h3>
+            <p class="text-sm opacity-70">Learn precise de-essing techniques that preserve clarity</p>
+          </div>
+        </div>
+        
+        <div class="p-4 rounded-lg flex items-start gap-3" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <span class="text-xl">❌</span>
+          <div>
+            <h3 class="font-semibold mb-1">Vocals that disappear or overpower the mix</h3>
+            <p class="text-sm opacity-70">Master balance and compression for perfect vocal placement</p>
+          </div>
+        </div>
+        
+        <div class="p-4 rounded-lg flex items-start gap-3" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <span class="text-xl">❌</span>
+          <div>
+            <h3 class="font-semibold mb-1">Inconsistent vocal levels</h3>
+            <p class="text-sm opacity-70">Control dynamics without losing emotion or natural feel</p>
+          </div>
+        </div>
+        
+        <div class="p-4 rounded-lg flex items-start gap-3" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <span class="text-xl">❌</span>
+          <div>
+            <h3 class="font-semibold mb-1">Muddy or thin vocal tone</h3>
+            <p class="text-sm opacity-70">Use EQ and processing to achieve professional vocal clarity</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA -->
+    <div class="text-center p-12 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-3xl font-bold mb-4">Ready for Professional Vocals?</h2>
+      <p class="text-base opacity-70 mb-8 max-w-2xl mx-auto">
+        Get all 3 vocal-focused courses and transform your vocal production workflow.
+      </p>
+      <button class="px-8 py-4 rounded-lg text-base font-semibold transition hover:opacity-90" style="background: var(--accent); color: white;">
+        Get Vocals Bundle for £60
+      </button>
+    </div>
+    
+  </div>
+</section>
+
+</body>
+</html>

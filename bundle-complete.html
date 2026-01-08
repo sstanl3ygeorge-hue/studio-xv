@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Academy — Studio XV</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316;
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed w-full z-50 py-5" style="background: var(--bg-main); border-bottom: 1px solid var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+    
+    <div class="flex items-center gap-8 text-sm font-medium">
+      <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+      <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+      <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Bundle Details -->
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main); padding-top: 120px;">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Back Link -->
+    <a href="learn-courses.html" class="inline-block text-sm opacity-50 hover:text-orange-500 transition underline-offset-4 hover:underline mb-8">
+      ← Back to Courses
+    </a>
+    
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-block px-4 py-2 rounded-full text-xs font-semibold mb-4" style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+        COMPLETE ACCESS
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Complete Academy</h1>
+      <p class="text-xl opacity-70 leading-relaxed mb-6">
+        The complete Studio XV education. All 30 courses across 5 difficulty tiers, covering everything from foundational mixing techniques to professional finishing standards. Build a complete skillset at the best possible value.
+      </p>
+      
+      <!-- Pricing -->
+      <div class="flex items-baseline gap-4 mb-8">
+        <div class="text-4xl font-bold" style="color: var(--accent);">£500</div>
+        <div class="text-lg opacity-60 line-through">£610</div>
+        <div class="text-sm opacity-70 px-3 py-1 rounded-full" style="background: rgba(249, 115, 22, 0.15);">Save £110</div>
+      </div>
+      
+      <!-- CTA Button -->
+      <button class="px-8 py-4 rounded-lg text-base font-semibold transition hover:opacity-90" style="background: var(--accent); color: white;">
+        Get Complete Academy
+      </button>
+    </div>
+    
+    <!-- Value Proposition -->
+    <div class="mb-16 p-8 rounded-xl text-center" style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%); border: 1px solid rgba(249, 115, 22, 0.2);">
+      <h2 class="text-2xl font-bold mb-4">Complete Production Education</h2>
+      <div class="grid md:grid-cols-3 gap-8 mt-8">
+        <div>
+          <div class="text-3xl font-bold mb-2" style="color: var(--accent);">30</div>
+          <div class="text-sm opacity-70">Complete Courses</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold mb-2" style="color: var(--accent);">1300+</div>
+          <div class="text-sm opacity-70">Minutes of Content</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold mb-2" style="color: var(--accent);">£110</div>
+          <div class="text-sm opacity-70">Total Savings</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- What's Included -->
+    <div class="mb-16 p-8 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-2xl font-bold mb-6">Complete Course Structure</h2>
+      <div class="space-y-6">
+        
+        <!-- Tier 1 -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-soft);">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: #3b82f6; color: white;">TIER 1</span>
+            <h3 class="text-lg font-semibold">Foundations</h3>
+          </div>
+          <p class="text-sm opacity-70 mb-2">8 courses · Non-negotiable fundamentals</p>
+          <p class="text-xs opacity-60">Listening environment, EQ, gain staging, compression, reverb, delay, stereo width, headphone mixing</p>
+        </div>
+        
+        <!-- Tier 2 -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-soft);">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: #eab308; color: black;">TIER 2</span>
+            <h3 class="text-lg font-semibold">Control & Dynamics</h3>
+          </div>
+          <p class="text-sm opacity-70 mb-2">7 courses · Movement and energy control</p>
+          <p class="text-xs opacity-60">Automation, dynamics, parallel processing, sidechain, transient shaping, multiband, limiting</p>
+        </div>
+        
+        <!-- Tier 3 -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-soft);">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: #22c55e; color: white;">TIER 3</span>
+            <h3 class="text-lg font-semibold">Vocals & Low End</h3>
+          </div>
+          <p class="text-sm opacity-70 mb-2">5 courses · High-value problem solving</p>
+          <p class="text-xs opacity-60">Vocal production, vocal balance, de-essing, bass management, saturation</p>
+        </div>
+        
+        <!-- Tier 4 -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-soft);">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: #a855f7; color: white;">TIER 4</span>
+            <h3 class="text-lg font-semibold">Creative & Translation</h3>
+          </div>
+          <p class="text-sm opacity-70 mb-2">5 courses · Taste and confidence</p>
+          <p class="text-xs opacity-60">Creative effects, creative clarity, space & translation, genre balance, reference tracks</p>
+        </div>
+        
+        <!-- Tier 5 -->
+        <div class="p-6 rounded-lg" style="background: var(--bg-soft);">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background: #ef4444; color: white;">TIER 5</span>
+            <h3 class="text-lg font-semibold">Finishing & Professionalism</h3>
+          </div>
+          <p class="text-sm opacity-70 mb-2">5 courses · Turn ideas into releases</p>
+          <p class="text-xs opacity-60">Loop to arrangement, drum processing, finishing tracks, export standards, mastering</p>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Learning Path -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold mb-6">Your Learning Path</h2>
+      <div class="space-y-4">
+        
+        <div class="flex items-start gap-4 p-6 rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <div class="text-2xl font-bold opacity-40">1</div>
+          <div>
+            <h3 class="text-lg font-semibold mb-2">Build Your Foundation (Tier 1 & 2)</h3>
+            <p class="text-sm opacity-70">Master the essential tools and techniques. Learn proper gain staging, EQ, compression, and dynamic control.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-4 p-6 rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <div class="text-2xl font-bold opacity-40">2</div>
+          <div>
+            <h3 class="text-lg font-semibold mb-2">Solve High-Value Problems (Tier 3)</h3>
+            <p class="text-sm opacity-70">Get vocals right, control your low end, add warmth with saturation. Address the most common production challenges.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-4 p-6 rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <div class="text-2xl font-bold opacity-40">3</div>
+          <div>
+            <h3 class="text-lg font-semibold mb-2">Develop Your Taste (Tier 4)</h3>
+            <p class="text-sm opacity-70">Build creative confidence, understand translation, learn genre conventions, use reference tracks effectively.</p>
+          </div>
+        </div>
+        
+        <div class="flex items-start gap-4 p-6 rounded-lg" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <div class="text-2xl font-bold opacity-40">4</div>
+          <div>
+            <h3 class="text-lg font-semibold mb-2">Finish & Release (Tier 5)</h3>
+            <p class="text-sm opacity-70">Turn loops into complete tracks, process drums professionally, master finishing decisions, prepare for release.</p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Why Complete Academy -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold mb-6">Why Choose Complete Academy?</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">No Knowledge Gaps</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Complete coverage from beginner to professional. Every essential topic, in the right order.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Best Value</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Save £110 compared to individual courses. Get the entire education at 18% off.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Structured Progression</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Follow the tier system from foundations to finishing. Build skills in the right sequence.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Professional Standards</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Learn the same techniques used in professional studios. No shortcuts, just proven methods.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Lifetime Access</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Learn at your own pace. Revisit courses anytime as your skills develop.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Complete Toolkit</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Every tool, every technique, every decision-making framework you need to finish professional tracks.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Who This Is For -->
+    <div class="mb-16 p-8 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-2xl font-bold mb-6">Who This Is For</h2>
+      <ul class="space-y-3 text-base opacity-80">
+        <li>✓ Serious producers ready to invest in their complete education</li>
+        <li>✓ Self-taught musicians who want structured, comprehensive training</li>
+        <li>✓ Anyone tired of half-finished tracks and inconsistent results</li>
+        <li>✓ Producers who want to sound professional and compete commercially</li>
+        <li>✓ Engineers building a complete production skillset</li>
+        <li>✓ Anyone committed to finishing better tracks, faster</li>
+      </ul>
+    </div>
+    
+    <!-- CTA -->
+    <div class="text-center p-12 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-3xl font-bold mb-4">Get Complete Access</h2>
+      <p class="text-base opacity-70 mb-8 max-w-2xl mx-auto">
+        All 30 courses. Complete production education. Best possible value. Start building professional skills today.
+      </p>
+      <button class="px-8 py-4 rounded-lg text-base font-semibold transition hover:opacity-90 mb-4" style="background: var(--accent); color: white;">
+        Get Complete Academy for £500
+      </button>
+      <p class="text-sm opacity-60">Save £110 · Lifetime access · 30 courses</p>
+    </div>
+    
+  </div>
+</section>
+
+</body>
+</html>

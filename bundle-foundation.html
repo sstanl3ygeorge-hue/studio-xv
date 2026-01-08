@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foundation Bundle — Studio XV</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      /* DARK MODE (DEFAULT) */
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --bg-soft: #181818;
+
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+
+      --accent: #f97316;
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --bg-soft: #eeeeee;
+
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed w-full z-50 py-5" style="background: var(--bg-main); border-bottom: 1px solid var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <a href="index.html" class="text-xl font-semibold tracking-tight hover:opacity-70 transition">Studio XV</a>
+    
+    <div class="flex items-center gap-8 text-sm font-medium">
+      <a href="index.html#services" class="hover:opacity-70 transition">Services</a>
+      <a href="index.html#listen" class="hover:opacity-70 transition">Listen</a>
+      <a href="index.html#learn" class="hover:opacity-70 transition">Learn</a>
+      <a href="index.html#book" class="hover:opacity-70 transition">Book</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Bundle Details -->
+<section class="min-h-screen py-20 px-6" style="background: var(--bg-main); padding-top: 120px;">
+  <div class="max-w-4xl mx-auto">
+    
+    <!-- Back Link -->
+    <a href="learn-courses.html" class="inline-block text-sm opacity-50 hover:text-orange-500 transition underline-offset-4 hover:underline mb-8">
+      ← Back to Courses
+    </a>
+    
+    <!-- Header -->
+    <div class="mb-12">
+      <div class="inline-block px-4 py-2 rounded-full text-xs font-semibold mb-4" style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
+        BUNDLE PACKAGE
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Foundation Bundle</h1>
+      <p class="text-xl opacity-70 leading-relaxed mb-6">
+        Master the essential fundamentals of mixing and production. This bundle combines all Tier 1 and Tier 2 courses, giving you a complete foundation in the tools and techniques that every professional producer needs.
+      </p>
+      
+      <!-- Pricing -->
+      <div class="flex items-baseline gap-4 mb-8">
+        <div class="text-4xl font-bold" style="color: var(--accent);">£240</div>
+        <div class="text-lg opacity-60 line-through">£270</div>
+        <div class="text-sm opacity-70 px-3 py-1 rounded-full" style="background: rgba(249, 115, 22, 0.15);">Save £30</div>
+      </div>
+      
+      <!-- CTA Button -->
+      <button class="px-8 py-4 rounded-lg text-base font-semibold transition hover:opacity-90" style="background: var(--accent); color: white;">
+        Get Foundation Bundle
+      </button>
+    </div>
+    
+    <!-- What's Included -->
+    <div class="mb-16 p-8 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-2xl font-bold mb-6">What's Included</h2>
+      <div class="space-y-6">
+        
+        <!-- Tier 1 -->
+        <div>
+          <h3 class="text-lg font-semibold mb-3" style="color: var(--accent);">Tier 1 — Foundations (8 courses · £15 each)</h3>
+          <ul class="space-y-2 text-base opacity-80">
+            <li>• Listening Environment Setup</li>
+            <li>• EQ Fundamentals for Producers</li>
+            <li>• Gain Staging for Clarity</li>
+            <li>• Compression Without Confusion</li>
+            <li>• Reverb & Space</li>
+            <li>• Delay & Echo</li>
+            <li>• Stereo Width Decisions</li>
+            <li>• Mixing on Headphones</li>
+          </ul>
+        </div>
+        
+        <!-- Tier 2 -->
+        <div>
+          <h3 class="text-lg font-semibold mb-3" style="color: var(--accent);">Tier 2 — Control & Dynamics (7 courses · £18 each)</h3>
+          <ul class="space-y-2 text-base opacity-80">
+            <li>• Automation Essentials</li>
+            <li>• Energy & Dynamics</li>
+            <li>• Parallel Processing</li>
+            <li>• Sidechain Compression</li>
+            <li>• Transient Shaping</li>
+            <li>• Multiband Processing</li>
+            <li>• Limiting Without Crushing</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mt-8 pt-6" style="border-top: 1px solid var(--border-soft);">
+        <div class="flex justify-between text-sm opacity-70">
+          <span>Total: 15 courses</span>
+          <span>~650 minutes of content</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Why This Bundle -->
+    <div class="mb-16">
+      <h2 class="text-2xl font-bold mb-6">Why This Bundle?</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Complete Foundation</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Everything you need to build solid mixing skills from the ground up. No gaps, no guesswork.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Progressive Learning</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Start with core tools (Tier 1), then advance to dynamic control and movement (Tier 2).
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Best Value</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Save £30 compared to buying courses individually. Get the full foundation at a discounted price.
+          </p>
+        </div>
+        
+        <div class="p-6 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+          <h3 class="text-lg font-semibold mb-3">Professional Standard</h3>
+          <p class="text-base opacity-70 leading-relaxed">
+            Learn the techniques used in professional studios. Build confidence in your mixing decisions.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- Who This Is For -->
+    <div class="mb-16 p-8 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-2xl font-bold mb-6">Who This Is For</h2>
+      <ul class="space-y-3 text-base opacity-80">
+        <li>✓ Producers who want to take their mixing seriously</li>
+        <li>✓ Anyone frustrated with muddy, unbalanced mixes</li>
+        <li>✓ Self-taught producers looking to fill knowledge gaps</li>
+        <li>✓ Musicians transitioning to home production</li>
+        <li>✓ Anyone wanting a structured, comprehensive foundation</li>
+      </ul>
+    </div>
+    
+    <!-- CTA -->
+    <div class="text-center p-12 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+      <h2 class="text-3xl font-bold mb-4">Ready to Build Your Foundation?</h2>
+      <p class="text-base opacity-70 mb-8 max-w-2xl mx-auto">
+        Get all 15 foundational courses and start making mixes that translate across any system.
+      </p>
+      <button class="px-8 py-4 rounded-lg text-base font-semibold transition hover:opacity-90" style="background: var(--accent); color: white;">
+        Get Foundation Bundle for £240
+      </button>
+    </div>
+    
+  </div>
+</section>
+
+</body>
+</html>
