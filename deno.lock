@@ -11,7 +11,9 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:stripe@14"
+        "npm:@sendgrid/mail@^8.1.6",
+        "npm:resend@^6.6.0",
+        "npm:stripe@^14.25.0"
       ]
     }
   }

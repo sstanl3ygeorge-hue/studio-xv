@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Courses — Studio XV</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
   
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -49,6 +50,46 @@
     html {
       scroll-behavior: smooth;
     }
+    
+    /* Tier badges */
+    .tier-badge {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    
+    .tier-1 { background: #3b82f6; color: white; }
+    .tier-2 { background: #eab308; color: black; }
+    .tier-3 { background: #22c55e; color: white; }
+    .tier-4 { background: #a855f7; color: white; }
+    .tier-5 { background: #ef4444; color: white; }
+    
+    .tier-section {
+      margin-bottom: 5rem;
+    }
+    
+    .course-card {
+      transition: all 0.3s ease;
+    }
+    
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .tier-section.hidden {
+      display: none;
+    }
+    
+    .course-card.hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -68,135 +109,350 @@
 </nav>
 
 <!-- COURSES PAGE -->
-<!-- Detailed course catalog moved from Learn section -->
+<!-- 30 courses organized by difficulty tiers -->
 
 <section class="min-h-screen py-20 px-6" style="background: var(--bg-main); padding-top: 120px;">
-  <div class="max-w-4xl mx-auto">
+  <div class="max-w-6xl mx-auto">
     
-    <!-- Academy: Courses Index -->
     <!-- Page Header -->
-    <div class="mb-12">
-      <h1 class="text-3xl md:text-4xl font-bold mb-3">Courses</h1>
-      <p class="text-base opacity-60">
-        Practical PDF ebooks that guide you through the Studio XV process.
+    <div class="mb-16 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Studio XV Courses</h1>
+      <p class="text-lg opacity-70 max-w-2xl mx-auto mb-4">
+        30 courses organized by difficulty — Start with Tier 1 and build your way up
       </p>
-      <a href="index.html#learn" class="text-sm opacity-50 hover:opacity-70 transition underline-offset-4 hover:underline mt-4 inline-block">
+      <a href="index.html#learn" class="text-sm opacity-50 hover:text-orange-500 transition underline-offset-4 hover:underline inline-block">
         ← Back to Learn
       </a>
     </div>
     
-    <!-- Search & Filter UI -->
-    <div class="mb-12 space-y-6">
-      <!-- Search Bar -->
-      <div class="relative">
+    <!-- Search Bar -->
+    <div class="mb-12">
+      <div class="relative max-w-2xl mx-auto">
         <input 
           type="text" 
-          id="search-input" 
-          placeholder="Search courses..." 
-          class="w-full px-4 py-3 rounded-lg border focus:outline-none transition"
+          id="course-search" 
+          placeholder="Search courses by name or description..." 
+          class="w-full px-5 py-4 rounded-lg border focus:outline-none transition"
           style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
         />
         <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
       </div>
-      
-      <!-- Filters -->
-      <div class="flex flex-wrap gap-3">
-        <button class="filter-btn active" data-filter="all">
-          All courses
-        </button>
-        <button class="filter-btn" data-filter="available">
-          Available
-        </button>
-        <button class="filter-btn" data-filter="novice">
-          Novice
-        </button>
-        <button class="filter-btn" data-filter="beginner">
-          Beginner
-        </button>
-        <button class="filter-btn" data-filter="intermediate">
-          Intermediate
-        </button>
+      <div id="search-results" class="text-center text-sm opacity-60 mt-3">
+        Showing all 30 courses
       </div>
-      
-      <!-- Results count -->
-      <div id="results-count" class="text-sm opacity-60">
-        Showing <span id="count-number">30</span> courses
+      <div id="no-results" class="text-center text-base opacity-60 mt-8 hidden">
+        No courses found matching your search.
       </div>
     </div>
     
-    <!-- Academy: Course List -->
-    <div class="space-y-12">
-      
-      <!-- Course 1: Finishing Tracks (Available) -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="beginner,intermediate" data-title="Finishing Tracks Without Overthinking" style="border-color: var(--border-soft);">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <h2 class="text-2xl font-semibold">Finishing Tracks Without Overthinking</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
-                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
-            Available
-          </span>
-        </div>
-        
-        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
-          A practical approach to finishing tracks by understanding what slows you down and what moves you forward.
-        </p>
-        
-        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>Video course</span>
-          <span>·</span>
-          <span>~75 minutes</span>
-          <span>·</span>
-          <span>Beginner → Intermediate</span>
-        </div>
-        
-        <a 
-           href="course-finishing-tracks-info.html"
-           class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
-           style="background: var(--accent); color: white;"
-           onmouseover="this.style.opacity='0.9'" 
-           onmouseout="this.style.opacity='1'">
-          View course
+    <!-- TIER 1 — FOUNDATIONS -->
+    <div class="tier-section">
+      <div class="mb-8">
+        <span class="tier-badge tier-1">🟦 TIER 1 — FOUNDATIONS</span>
+        <h2 class="text-3xl font-bold mb-3">Start Here</h2>
+        <p class="text-base opacity-70 mb-2">Non-negotiable fundamentals. Everything else depends on them.</p>
+        <p class="text-sm opacity-60">Foundation Track 1 · £15 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-listening-environment-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">01</div>
+          <h3 class="text-xl font-semibold mb-3">Listening Environment Setup</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Optimizing your room, monitor placement, and acoustic treatment for accurate listening.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-eq-fundamentals-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">02</div>
+          <h3 class="text-xl font-semibold mb-3">EQ Fundamentals for Producers</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Understanding frequency relationships and making intentional EQ decisions.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-gain-staging-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">03</div>
+          <h3 class="text-xl font-semibold mb-3">Gain Staging for Clarity</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Preventing clipping and maintaining headroom throughout your mix.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-compression-basics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">04</div>
+          <h3 class="text-xl font-semibold mb-3">Compression Without Confusion</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Clear explanations of attack, release, ratio, and threshold.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-reverb-space-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">05</div>
+          <h3 class="text-xl font-semibold mb-3">Reverb & Space</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Creating depth and cohesion without muddiness.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-delay-echo-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">06</div>
+          <h3 class="text-xl font-semibold mb-3">Delay & Echo</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Understanding delay types, sync rates, and creative echo techniques.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-stereo-width-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">07</div>
+          <h3 class="text-xl font-semibold mb-3">Stereo Width Decisions</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Mono compatibility, panning strategies, and width processing.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
+        </a>
+
+        <a href="course-headphone-mixing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">08</div>
+          <h3 class="text-xl font-semibold mb-3">Mixing on Headphones</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Achieving balanced mixes when working on headphones.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
       </div>
-      
-      <!-- Course 2: Balancing Vocals -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Balancing Vocals Without Fighting the Mix" style="border-color: var(--border-soft);">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <h2 class="text-2xl font-semibold">Balancing Vocals Without Fighting the Mix</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
-                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
-            Available
-          </span>
-        </div>
-        
-        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
-          Clear vocal positioning and compression strategies for clarity without volume wars.
-        </p>
-        
-        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>Video Course</span>
-          <span>·</span>
-          <span>~65 minutes</span>
-          <span>·</span>
-          <span>11 lessons</span>
-          <span>·</span>
-          <span>Beginner</span>
-        </div>
-        
-        <a 
-           href="course-balancing-vocals-info.html"
-           class="inline-block px-6 py-3 rounded-lg text-base font-medium transition"
-           style="background: var(--accent); color: white;"
-           onmouseover="this.style.opacity='0.9'" 
-           onmouseout="this.style.opacity='1'">
-          View course
+    </div>
+
+    <!-- TIER 2 — CONTROL & DYNAMICS -->
+    <div class="tier-section">
+      <div class="mb-8">
+        <span class="tier-badge tier-2">🟨 TIER 2 — CONTROL & DYNAMICS</span>
+        <h2 class="text-3xl font-bold mb-3">Movement & Energy</h2>
+        <p class="text-base opacity-70 mb-2">Once sound is clean, you teach movement and energy.</p>
+        <p class="text-sm opacity-60">Foundation Track 2 · £18 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-automation-essentials-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">09</div>
+          <h3 class="text-xl font-semibold mb-3">Automation Essentials</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Adding movement, focus, and emotional dynamics to your mixes.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
+        </a>
+
+        <a href="course-energy-dynamics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">10</div>
+          <h3 class="text-xl font-semibold mb-3">Energy & Dynamics</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling emotional dynamics and energy curves.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
+        </a>
+
+        <a href="course-parallel-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">11</div>
+          <h3 class="text-xl font-semibold mb-3">Parallel Processing</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Adding intensity without losing the original signal.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
+        </a>
+
+        <a href="course-sidechain-compression-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">12</div>
+          <h3 class="text-xl font-semibold mb-3">Sidechain Compression</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Creating space, movement, and rhythmic interest.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
+        </a>
+
+        <a href="course-transient-shaping-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">13</div>
+          <h3 class="text-xl font-semibold mb-3">Transient Shaping</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling attack and sustain for punch and clarity.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
+        </a>
+
+        <a href="course-multiband-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">14</div>
+          <h3 class="text-xl font-semibold mb-3">Multiband Processing</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Frequency-specific control and surgical corrections.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
+        </a>
+
+        <a href="course-limiting-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">15</div>
+          <h3 class="text-xl font-semibold mb-3">Limiting Without Crushing</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Preserving dynamics while maximizing levels.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
       </div>
-      
-      <!-- Course 3: Space, Depth & Translation -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="Space, Depth & Translation" style="border-color: var(--border-soft);">
+    </div>
+
+    <!-- TIER 3 — VOCALS & LOW END -->
+    <div class="tier-section">
+      <div class="mb-8">
+        <span class="tier-badge tier-3">🟩 TIER 3 — VOCALS & LOW END</span>
+        <h2 class="text-3xl font-bold mb-3">High Value Problems</h2>
+        <p class="text-base opacity-70 mb-2">These solve the most complained-about problems.</p>
+        <p class="text-sm opacity-60">Premium content · £22 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-vocal-production-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">16</div>
+          <h3 class="text-xl font-semibold mb-3">Vocal Production Essentials</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Recording, editing, tuning, and processing vocals.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
+        </a>
+
+        <a href="course-balancing-vocals-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">17</div>
+          <h3 class="text-xl font-semibold mb-3">Balancing Vocals in the Mix</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Clear vocal positioning and compression strategies.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
+        </a>
+
+        <a href="course-deessing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">18</div>
+          <h3 class="text-xl font-semibold mb-3">De-Essing & Sibilance Control</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling harsh sibilance without losing presence.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
+        </a>
+
+        <a href="course-bass-management-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">19</div>
+          <h3 class="text-xl font-semibold mb-3">Bass & Low End Management</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling bass frequencies and achieving clean low end.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
+        </a>
+
+        <a href="course-saturation-harmonic-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">20</div>
+          <h3 class="text-xl font-semibold mb-3">Saturation & Harmonic Distortion</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Adding warmth, presence, and character.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- TIER 4 — CREATIVE & TRANSLATION -->
+    <div class="tier-section">
+      <div class="mb-8">
+        <span class="tier-badge tier-4">🟪 TIER 4 — CREATIVE & TRANSLATION</span>
+        <h2 class="text-3xl font-bold mb-3">Taste & Confidence</h2>
+        <p class="text-base opacity-70 mb-2">Where taste and confidence appear.</p>
+        <p class="text-sm opacity-60">Advanced content · £25 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-effects-chains-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">21</div>
+          <h3 class="text-xl font-semibold mb-3">Creative Effects Chains</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Intentional effects chains for unique textures.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
+        </a>
+
+        <a href="course-creative-clarity-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">22</div>
+          <h3 class="text-xl font-semibold mb-3">Creative Clarity for Producers</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Building trust in your creative decisions.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
+        </a>
+
+        <a href="course-space-depth-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">23</div>
+          <h3 class="text-xl font-semibold mb-3">Space, Depth & Translation</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Understanding how mixes translate across systems.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
+        </a>
+
+        <a href="course-genre-balance-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">24</div>
+          <h3 class="text-xl font-semibold mb-3">Genre-Specific Mix Balance</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Mix balance conventions across genres.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
+        </a>
+
+        <a href="course-reference-tracks-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">25</div>
+          <h3 class="text-xl font-semibold mb-3">Reference Tracks That Help</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Using reference tracks effectively.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- TIER 5 — FINISHING & PROFESSIONALISM -->
+    <div class="tier-section">
+      <div class="mb-8">
+        <span class="tier-badge tier-5">🟥 TIER 5 — FINISHING & PROFESSIONALISM</span>
+        <h2 class="text-3xl font-bold mb-3">Turn Ideas Into Releases</h2>
+        <p class="text-base opacity-70 mb-2">These turn unfinished ideas into releases.</p>
+        <p class="text-sm opacity-60">Professional tier · £28 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-loop-to-arrangement-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">26</div>
+          <h3 class="text-xl font-semibold mb-3">From Loop to Arrangement</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Turning 8-bar loops into complete arrangements.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
+        </a>
+
+        <a href="course-drum-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">27</div>
+          <h3 class="text-xl font-semibold mb-3">Drum Processing & Layering</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Building powerful drum sounds through layering.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
+        </a>
+
+        <a href="course-finishing-tracks-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">28</div>
+          <h3 class="text-xl font-semibold mb-3">Finishing Tracks Without Overthinking</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">A practical approach to finishing tracks.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
+        </a>
+
+        <a href="course-export-delivery-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">29</div>
+          <h3 class="text-xl font-semibold mb-3">Export & Delivery Standards</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">File formats and delivery requirements.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
+        </a>
+
+        <a href="course-mastering-basics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">30</div>
+          <h3 class="text-xl font-semibold mb-3">Mastering for Producers</h3>
+          <p class="text-sm opacity-70 mb-4 leading-relaxed">Basic mastering principles for your own tracks.</p>
+          <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Bundles -->
+    <div class="pt-16 mt-16" style="border-top: 1px solid var(--border-soft);">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Save with Bundle Packages</h2>
+        <p class="text-base opacity-70">Get complete tracks or specialized bundles at a discount.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-xl font-semibold mb-2">Foundation Bundle</h3>
+          <p class="text-sm opacity-60 mb-4">All 15 Tier 1 + 2 courses</p>
+          <div class="text-2xl font-bold mb-2" style="color: var(--accent);">£240</div>
+          <div class="text-sm opacity-60 line-through mb-4">£270 individually</div>
+          <p class="text-xs opacity-60">Save £30</p>
+        </div>
+
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-xl font-semibold mb-2">Vocals Bundle</h3>
+          <p class="text-sm opacity-60 mb-4">All vocal-focused courses (3 courses)</p>
+          <div class="text-2xl font-bold mb-2" style="color: var(--accent);">£60</div>
+          <div class="text-sm opacity-60 line-through mb-4">£66 individually</div>
+          <p class="text-xs opacity-60">Save £6</p>
+        </div>
+
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-xl font-semibold mb-2">Complete Academy</h3>
+          <p class="text-sm opacity-60 mb-4">All 30 courses</p>
+          <div class="text-2xl font-bold mb-2" style="color: var(--accent);">£500</div>
+          <div class="text-sm opacity-60 line-through mb-4">£610 individually</div>
+          <p class="text-xs opacity-60">Save £110</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bundles -->
+    <div class="pt-16 mt-16" style="border-top: 1px solid var(--border-soft);">
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Space, Depth & Translation</h2>
           <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
@@ -220,83 +476,105 @@
         <a href="course-space-depth-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
       </div>
       
-      <!-- Course 4: Creative Clarity for Producers -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="beginner" data-title="Creative Clarity for Producers" style="border-color: var(--border-soft);">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <h2 class="text-2xl font-semibold">Creative Clarity for Producers</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
-                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
-            Available
-          </span>
-        </div>
-        
-        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
-          Recognizing patterns in your workflow and building trust in your creative decisions.
-        </p>
-        
-        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>Video Course</span>
-          <span>·</span>
-          <span>~70 minutes, 12 lessons</span>
-          <span>·</span>
-          <span>Beginner</span>
-        </div>
-        
-        <a href="course-creative-clarity-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
+    <!-- Bundles -->
+    <div class="pt-16 mt-16" style="border-top: 1px solid var(--border-soft);">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Save with Bundle Packages</h2>
+        <p class="text-base opacity-70">Get complete tracks or specialized bundles at a discount.</p>
       </div>
-      
-      <!-- Course 5: From Loop to Arrangement -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="intermediate" data-title="From Loop to Arrangement" style="border-color: var(--border-soft);">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <h2 class="text-2xl font-semibold">From Loop to Arrangement</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
-                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
-            Available
-          </span>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-xl font-semibold mb-2">Foundation Bundle</h3>
+          <p class="text-sm opacity-60 mb-4">All 15 Tier 1 + 2 courses</p>
+          <div class="text-2xl font-bold mb-2" style="color: var(--accent);">£240</div>
+          <div class="text-sm opacity-60 line-through mb-4">£270 individually</div>
+          <p class="text-xs opacity-60">Save £30</p>
         </div>
-        
-        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
-          Practical strategies for turning 8-bar loops into complete arrangements with flow and structure.
-        </p>
-        
-        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>Video Course</span>
-          <span>·</span>
-          <span>~75 minutes, 12 lessons</span>
-          <span>·</span>
-          <span>Intermediate</span>
+
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-xl font-semibold mb-2">Vocals Bundle</h3>
+          <p class="text-sm opacity-60 mb-4">All vocal-focused courses (3 courses)</p>
+          <div class="text-2xl font-bold mb-2" style="color: var(--accent);">£60</div>
+          <div class="text-sm opacity-60 line-through mb-4">£66 individually</div>
+          <p class="text-xs opacity-60">Save £6</p>
         </div>
-        
-        <a href="course-loop-to-arrangement-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
+
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="text-xl font-semibold mb-2">Complete Academy</h3>
+          <p class="text-sm opacity-60 mb-4">All 30 courses</p>
+          <div class="text-2xl font-bold mb-2" style="color: var(--accent);">£500</div>
+          <div class="text-sm opacity-60 line-through mb-4">£610 individually</div>
+          <p class="text-xs opacity-60">Save £110</p>
+        </div>
       </div>
-      
-      <!-- Course 6: EQ Fundamentals -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="EQ Fundamentals for Producers" style="border-color: var(--border-soft);">
-        <div class="flex items-start justify-between gap-4 mb-4">
-          <h2 class="text-2xl font-semibold">EQ Fundamentals for Producers</h2>
-          <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
-                style="background: rgba(249, 115, 22, 0.15); color: var(--accent); border: 1px solid rgba(249, 115, 22, 0.3);">
-            Available
-          </span>
-        </div>
+    </div>
+    
+  </div>
+</section>
+
+<script>
+  // Course Search Functionality
+  const searchInput = document.getElementById('course-search');
+  const tierSections = document.querySelectorAll('.tier-section');
+  const courseCards = document.querySelectorAll('.course-card');
+  const searchResults = document.getElementById('search-results');
+  const noResults = document.getElementById('no-results');
+
+  searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    let visibleCount = 0;
+    let visibleTiers = 0;
+
+    // If search is empty, show everything
+    if (searchTerm === '') {
+      courseCards.forEach(card => card.classList.remove('hidden'));
+      tierSections.forEach(section => section.classList.remove('hidden'));
+      searchResults.textContent = 'Showing all 30 courses';
+      noResults.classList.add('hidden');
+      return;
+    }
+
+    // Filter courses
+    tierSections.forEach(section => {
+      const cardsInTier = section.querySelectorAll('.course-card');
+      let visibleInTier = 0;
+
+      cardsInTier.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
         
-        <p class="text-base opacity-70 leading-relaxed mb-4 max-w-2xl">
-          Understanding frequency relationships and making intentional EQ decisions that serve the mix.
-        </p>
-        
-        <div class="flex flex-wrap gap-2 text-sm opacity-60 mb-6">
-          <span>Video Course</span>
-          <span>·</span>
-          <span>~55 minutes, 11 lessons</span>
-          <span>·</span>
-          <span>Novice</span>
-        </div>
-        
-        <a href="course-eq-fundamentals-info.html" class="inline-block px-6 py-3 rounded-lg text-base font-medium transition" style="background: var(--accent); color: white;">View course</a>
-      </div>
-      
-      <!-- Course 7: Compression Without Confusion -->
-      <div class="course-item border-b pb-12" data-status="available" data-level="novice" data-title="Compression Without Confusion" style="border-color: var(--border-soft);">
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          card.classList.remove('hidden');
+          visibleInTier++;
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Hide tier section if no visible courses
+      if (visibleInTier > 0) {
+        section.classList.remove('hidden');
+        visibleTiers++;
+      } else {
+        section.classList.add('hidden');
+      }
+    });
+
+    // Update results text
+    if (visibleCount === 0) {
+      searchResults.textContent = '';
+      noResults.classList.remove('hidden');
+    } else {
+      noResults.classList.add('hidden');
+      searchResults.textContent = `Found ${visibleCount} course${visibleCount !== 1 ? 's' : ''} across ${visibleTiers} tier${visibleTiers !== 1 ? 's' : ''}`;
+    }
+  });
+</script>
+
+</body>
+</html>
         <div class="flex items-start justify-between gap-4 mb-4">
           <h2 class="text-2xl font-semibold">Compression Without Confusion</h2>
           <span class="inline-block px-3 py-1 text-xs font-medium rounded" 
@@ -990,6 +1268,66 @@
     });
   });
 })();
+</script>
+
+<script>
+  // Course Search Functionality
+  const searchInput = document.getElementById('course-search');
+  const tierSections = document.querySelectorAll('.tier-section');
+  const courseCards = document.querySelectorAll('.course-card');
+  const searchResults = document.getElementById('search-results');
+  const noResults = document.getElementById('no-results');
+
+  searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase().trim();
+    let visibleCount = 0;
+    let visibleTiers = 0;
+
+    // If search is empty, show everything
+    if (searchTerm === '') {
+      courseCards.forEach(card => card.classList.remove('hidden'));
+      tierSections.forEach(section => section.classList.remove('hidden'));
+      searchResults.textContent = 'Showing all 30 courses';
+      noResults.classList.add('hidden');
+      return;
+    }
+
+    // Filter courses
+    tierSections.forEach(section => {
+      const cardsInTier = section.querySelectorAll('.course-card');
+      let visibleInTier = 0;
+
+      cardsInTier.forEach(card => {
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          card.classList.remove('hidden');
+          visibleInTier++;
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Hide tier section if no visible courses
+      if (visibleInTier > 0) {
+        section.classList.remove('hidden');
+        visibleTiers++;
+      } else {
+        section.classList.add('hidden');
+      }
+    });
+
+    // Update results text
+    if (visibleCount === 0) {
+      searchResults.textContent = '';
+      noResults.classList.remove('hidden');
+    } else {
+      noResults.classList.add('hidden');
+      searchResults.textContent = `Found ${visibleCount} course${visibleCount !== 1 ? 's' : ''} across ${visibleTiers} tier${visibleTiers !== 1 ? 's' : ''}`;
+    }
+  });
 </script>
 
 </body>

@@ -3,42 +3,371 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio XV Academy</title>
+  <title>Studio XV Academy — Courses by Tier</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    :root {
+      --bg-main: #000000;
+      --bg-section: #0d0d0d;
+      --bg-card: #111111;
+      --text-main: #ffffff;
+      --text-muted: #b5b5b5;
+      --accent: #f97316;
+      --border-soft: rgba(255,255,255,0.12);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg-main: #ffffff;
+        --bg-section: #f5f5f5;
+        --bg-card: #ffffff;
+        --text-main: #0b0b0b;
+        --text-muted: #555555;
+        --border-soft: rgba(0,0,0,0.12);
+      }
+    }
+
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .tier-1 { background: #3b82f6; color: white; }
+    .tier-2 { background: #eab308; color: black; }
+    .tier-3 { background: #22c55e; color: white; }
+    .tier-4 { background: #a855f7; color: white; }
+    .tier-5 { background: #ef4444; color: white; }
+
+    .course-card {
+      transition: all 0.3s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent) !important;
+    }
+  </style>
 </head>
 
-<body class="bg-white text-black">
+<body>
 
-<nav>
-  <a href="/index.html">← Back to Studio XV</a>
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur" style="background: var(--bg-main); border-bottom: 1px solid var(--border-soft);">
+  <div class="max-w-7xl mx-auto px-6 py-4">
+    <a href="index.html" class="text-sm hover:text-orange-500 transition">← Back to Studio XV</a>
+  </div>
 </nav>
 
-<main id="academy">
+<main class="pt-24 pb-16">
 
-  <!-- Academy Hero -->
-  <section class="academy-hero">
-    <h1>Learn the process behind finished records.</h1>
-    <p>
-      Decision-focused learning for producers who want clarity, not more plugins.
-    </p>
+  <!-- Hero -->
+  <section class="px-6 py-16 text-center" style="background: var(--bg-main);">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Studio XV Academy</h1>
+      <p class="text-lg opacity-80 mb-4">
+        Decision-focused learning for producers who want clarity, not more plugins.
+      </p>
+      <p class="text-sm opacity-60">
+        30 courses organized by difficulty — Start with Tier 1 and build your way up.
+      </p>
+    </div>
   </section>
 
-  <!-- Filters -->
-  <section class="academy-filters">
-    <!-- added in step 4 -->
+  <!-- TIER 1 — FOUNDATIONS -->
+  <section class="px-6 py-16" style="background: var(--bg-section);">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-12">
+        <span class="tier-badge tier-1 mb-4 inline-block">🟦 TIER 1 — FOUNDATIONS</span>
+        <h2 class="text-3xl font-bold mb-3">Start Here</h2>
+        <p class="text-base opacity-70 mb-2">These are non-negotiable. Everything else depends on them.</p>
+        <p class="text-sm opacity-60">Foundation Track 1 · £15 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-listening-environment-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">01</div>
+          <h3 class="text-lg font-semibold mb-2">Listening Environment Setup</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-eq-fundamentals-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">02</div>
+          <h3 class="text-lg font-semibold mb-2">EQ Fundamentals for Producers</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-gain-staging-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">03</div>
+          <h3 class="text-lg font-semibold mb-2">Gain Staging for Clarity</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-compression-basics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">04</div>
+          <h3 class="text-lg font-semibold mb-2">Compression Without Confusion</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-reverb-space-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">05</div>
+          <h3 class="text-lg font-semibold mb-2">Reverb & Space</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-delay-echo-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">06</div>
+          <h3 class="text-lg font-semibold mb-2">Delay & Echo</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-stereo-width-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">07</div>
+          <h3 class="text-lg font-semibold mb-2">Stereo Width Decisions</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+
+        <a href="course-headphone-mixing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">08</div>
+          <h3 class="text-lg font-semibold mb-2">Mixing on Headphones</h3>
+          <div class="text-sm opacity-70">£15</div>
+        </a>
+      </div>
+    </div>
   </section>
 
-  <!-- Courses -->
-  <section class="academy-courses">
-    <!-- cards only -->
+  <!-- TIER 2 — CONTROL & DYNAMICS -->
+  <section class="px-6 py-16" style="background: var(--bg-main);">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-12">
+        <span class="tier-badge tier-2 mb-4 inline-block">🟨 TIER 2 — CONTROL & DYNAMICS</span>
+        <h2 class="text-3xl font-bold mb-3">Movement & Energy</h2>
+        <p class="text-base opacity-70 mb-2">Once sound is clean, you teach movement and energy.</p>
+        <p class="text-sm opacity-60">Foundation Track 2 · £18 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-automation-essentials-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">09</div>
+          <h3 class="text-lg font-semibold mb-2">Automation Essentials</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+
+        <a href="course-energy-dynamics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">10</div>
+          <h3 class="text-lg font-semibold mb-2">Energy & Dynamics</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+
+        <a href="course-parallel-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">11</div>
+          <h3 class="text-lg font-semibold mb-2">Parallel Processing</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+
+        <a href="course-sidechain-compression-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">12</div>
+          <h3 class="text-lg font-semibold mb-2">Sidechain Compression</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+
+        <a href="course-transient-shaping-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">13</div>
+          <h3 class="text-lg font-semibold mb-2">Transient Shaping</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+
+        <a href="course-multiband-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">14</div>
+          <h3 class="text-lg font-semibold mb-2">Multiband Processing</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+
+        <a href="course-limiting-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">15</div>
+          <h3 class="text-lg font-semibold mb-2">Limiting Without Crushing</h3>
+          <div class="text-sm opacity-70">£18</div>
+        </a>
+      </div>
+    </div>
   </section>
 
-  <!-- Bundles -->
-  <section class="academy-bundles">
-    <!-- cards only -->
+  <!-- TIER 3 — VOCALS & LOW END -->
+  <section class="px-6 py-16" style="background: var(--bg-section);">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-12">
+        <span class="tier-badge tier-3 mb-4 inline-block">🟩 TIER 3 — VOCALS & LOW END</span>
+        <h2 class="text-3xl font-bold mb-3">High Value Problems</h2>
+        <p class="text-base opacity-70 mb-2">These solve the most complained-about problems.</p>
+        <p class="text-sm opacity-60">Premium content · £22 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-vocal-production-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">16</div>
+          <h3 class="text-lg font-semibold mb-2">Vocal Production Essentials</h3>
+          <div class="text-sm opacity-70">£22</div>
+        </a>
+
+        <a href="course-balancing-vocals-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">17</div>
+          <h3 class="text-lg font-semibold mb-2">Balancing Vocals in the Mix</h3>
+          <div class="text-sm opacity-70">£22</div>
+        </a>
+
+        <a href="course-deessing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">18</div>
+          <h3 class="text-lg font-semibold mb-2">De-Essing & Sibilance Control</h3>
+          <div class="text-sm opacity-70">£22</div>
+        </a>
+
+        <a href="course-bass-management-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">19</div>
+          <h3 class="text-lg font-semibold mb-2">Bass & Low End Management</h3>
+          <div class="text-sm opacity-70">£22</div>
+        </a>
+
+        <a href="course-saturation-harmonic-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">20</div>
+          <h3 class="text-lg font-semibold mb-2">Saturation & Harmonic Distortion</h3>
+          <div class="text-sm opacity-70">£22</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIER 4 — CREATIVE & TRANSLATION -->
+  <section class="px-6 py-16" style="background: var(--bg-main);">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-12">
+        <span class="tier-badge tier-4 mb-4 inline-block">🟪 TIER 4 — CREATIVE & TRANSLATION</span>
+        <h2 class="text-3xl font-bold mb-3">Taste & Confidence</h2>
+        <p class="text-base opacity-70 mb-2">This is where taste and confidence appear.</p>
+        <p class="text-sm opacity-60">Advanced content · £25 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-effects-chains-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">21</div>
+          <h3 class="text-lg font-semibold mb-2">Creative Effects Chains</h3>
+          <div class="text-sm opacity-70">£25</div>
+        </a>
+
+        <a href="course-creative-clarity-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">22</div>
+          <h3 class="text-lg font-semibold mb-2">Creative Clarity for Producers</h3>
+          <div class="text-sm opacity-70">£25</div>
+        </a>
+
+        <a href="course-space-depth-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">23</div>
+          <h3 class="text-lg font-semibold mb-2">Space, Depth & Translation</h3>
+          <div class="text-sm opacity-70">£25</div>
+        </a>
+
+        <a href="course-genre-balance-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">24</div>
+          <h3 class="text-lg font-semibold mb-2">Genre-Specific Mix Balance</h3>
+          <div class="text-sm opacity-70">£25</div>
+        </a>
+
+        <a href="course-reference-tracks-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">25</div>
+          <h3 class="text-lg font-semibold mb-2">Reference Tracks That Help</h3>
+          <div class="text-sm opacity-70">£25</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIER 5 — FINISHING & PROFESSIONALISM -->
+  <section class="px-6 py-16" style="background: var(--bg-section);">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-12">
+        <span class="tier-badge tier-5 mb-4 inline-block">🟥 TIER 5 — FINISHING & PROFESSIONALISM</span>
+        <h2 class="text-3xl font-bold mb-3">Turn Ideas Into Releases</h2>
+        <p class="text-base opacity-70 mb-2">These turn unfinished ideas into releases.</p>
+        <p class="text-sm opacity-60">Professional tier · £28 per course</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="course-loop-to-arrangement-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">26</div>
+          <h3 class="text-lg font-semibold mb-2">From Loop to Arrangement</h3>
+          <div class="text-sm opacity-70">£28</div>
+        </a>
+
+        <a href="course-drum-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">27</div>
+          <h3 class="text-lg font-semibold mb-2">Drum Processing & Layering</h3>
+          <div class="text-sm opacity-70">£28</div>
+        </a>
+
+        <a href="course-finishing-tracks-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">28</div>
+          <h3 class="text-lg font-semibold mb-2">Finishing Tracks Without Overthinking</h3>
+          <div class="text-sm opacity-70">£28</div>
+        </a>
+
+        <a href="course-export-delivery-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">29</div>
+          <h3 class="text-lg font-semibold mb-2">Export & Delivery Standards</h3>
+          <div class="text-sm opacity-70">£28</div>
+        </a>
+
+        <a href="course-mastering-basics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <div class="text-xs opacity-60 mb-2">30</div>
+          <h3 class="text-lg font-semibold mb-2">Mastering for Producers</h3>
+          <div class="text-sm opacity-70">£28</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bundles Teaser -->
+  <section class="px-6 py-16 text-center" style="background: var(--bg-main); border-top: 1px solid var(--border-soft);">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold mb-4">Save with Bundle Packages</h2>
+      <p class="text-base opacity-70 mb-8">
+        Get complete Foundation Tracks or specialized bundles at a discount.
+      </p>
+      <div class="grid md:grid-cols-3 gap-6 text-left">
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="font-semibold mb-2">Foundation Bundle</h3>
+          <p class="text-sm opacity-60 mb-3">All 15 Tier 1 + 2 courses</p>
+          <div class="text-lg font-bold text-orange-500">£240 <span class="text-sm opacity-60 line-through">£270</span></div>
+        </div>
+
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="font-semibold mb-2">Vocals Bundle</h3>
+          <p class="text-sm opacity-60 mb-3">All vocal-focused courses</p>
+          <div class="text-lg font-bold text-orange-500">£60 <span class="text-sm opacity-60 line-through">£66</span></div>
+        </div>
+
+        <div class="rounded-xl p-6 border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <h3 class="font-semibold mb-2">Complete Academy</h3>
+          <p class="text-sm opacity-60 mb-3">All 30 courses</p>
+          <div class="text-lg font-bold text-orange-500">£500 <span class="text-sm opacity-60 line-through">£610</span></div>
+        </div>
+      </div>
+    </div>
   </section>
 
 </main>
+
+<footer class="py-12 text-center opacity-70" style="border-top: 1px solid var(--border-soft);">
+  © 2026 Studio XV. All rights reserved.
+</footer>
 
 </body>
 </html>
