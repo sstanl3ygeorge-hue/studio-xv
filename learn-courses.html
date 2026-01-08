@@ -512,6 +512,56 @@
       searchResults.textContent = `Found ${visibleCount} course${visibleCount !== 1 ? 's' : ''} across ${visibleTiers} tier${visibleTiers !== 1 ? 's' : ''}`;
     }
   });
+
+  // Production Coming Soon Override
+  // Hide courses and bundles on production, show normally on localhost
+  (function() {
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.hostname.includes('netlify.app');
+    
+    if (!isLocalhost) {
+      // On production: gray out all courses and bundles, add coming soon badges
+      const allCourseCards = document.querySelectorAll('.course-card');
+      
+      allCourseCards.forEach(card => {
+        // Gray out the card
+        card.style.opacity = '0.5';
+        card.style.pointerEvents = 'none';
+        card.style.cursor = 'not-allowed';
+        
+        // Add coming soon badge if it doesn't already exist
+        if (!card.querySelector('.coming-soon-badge')) {
+          const badge = document.createElement('span');
+          badge.className = 'coming-soon-badge';
+          badge.textContent = 'Coming Soon';
+          badge.style.cssText = `
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-soft);
+            margin-top: 0.5rem;
+          `;
+          
+          // Insert badge at the top of the card
+          const firstElement = card.querySelector('h3, h2, div');
+          if (firstElement) {
+            firstElement.parentNode.insertBefore(badge, firstElement);
+          }
+        }
+      });
+      
+      // Also disable search on production
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.disabled = true;
+        searchInput.placeholder = 'Courses launching soon...';
+      }
+    }
+  })();
 </script>
 
 </body>

@@ -482,15 +482,15 @@
         <ul class="space-y-4 text-sm">
           <li class="flex justify-between">
             <span>Hourly Session</span>
-            <span>£30/hr</span>
+            <span data-price="recording.hourly" data-suffix="/hr"></span>
           </li>
           <li class="flex justify-between">
             <span>Half-Day (4hrs)</span>
-            <span>£140</span>
+            <span data-price="recording.packages.half-day.price"></span>
           </li>
           <li class="flex justify-between">
             <span>Full-Day (8hrs)</span>
-            <span>£260</span>
+            <span data-price="recording.packages.full-day.price"></span>
           </li>
         </ul>
       </div>
@@ -503,15 +503,15 @@
         <ul class="space-y-4 text-sm">
           <li class="flex justify-between">
             <span>Per Track</span>
-            <span>£50</span>
+            <span data-price="mixing.packages.per-track.price"></span>
           </li>
           <li class="flex justify-between">
             <span>Mix + Master</span>
-            <span>£75</span>
+            <span data-price="mixing.packages.mix-master.price"></span>
           </li>
           <li class="flex justify-between">
             <span>EP (4–6 tracks)</span>
-            <span>£280</span>
+            <span data-price="mixing.packages.ep.price"></span>
           </li>
         </ul>
       </div>
@@ -524,15 +524,15 @@
         <ul class="space-y-4 text-sm">
           <li class="flex justify-between">
             <span>Single</span>
-            <span>£35</span>
+            <span data-price="mastering.packages.single.price"></span>
           </li>
           <li class="flex justify-between">
             <span>EP (4–6 tracks)</span>
-            <span>£120</span>
+            <span data-price="mastering.packages.ep.price"></span>
           </li>
           <li class="flex justify-between">
             <span>Album (10+ tracks)</span>
-            <span>£250</span>
+            <span data-price="mastering.packages.album.price"></span>
           </li>
         </ul>
       </div>
@@ -545,15 +545,15 @@
         <ul class="space-y-4 text-sm">
           <li class="flex justify-between">
             <span>Beat Lease</span>
-            <span>£40</span>
+            <span data-price="production.packages.beat-lease.price"></span>
           </li>
           <li class="flex justify-between">
             <span>Exclusive Beat</span>
-            <span>£150</span>
+            <span data-price="production.packages.exclusive.price"></span>
           </li>
           <li class="flex justify-between">
             <span>Custom Production</span>
-            <span>£500</span>
+            <span data-price="production.packages.custom.price"></span>
           </li>
         </ul>
       </div>
@@ -566,15 +566,15 @@
         <ul class="space-y-4 text-sm">
           <li class="flex justify-between">
             <span>Hourly Session</span>
-            <span>£40/hr</span>
+            <span data-price="lessons.hourly" data-suffix="/hr"></span>
           </li>
           <li class="flex justify-between">
             <span>2-Hour Session</span>
-            <span>£80</span>
+            <span data-price="lessons.packages.2-hour.price"></span>
           </li>
           <li class="flex justify-between">
             <span>4-Hour Session</span>
-            <span>£160</span>
+            <span data-price="lessons.packages.4-hour.price"></span>
           </li>
         </ul>
       </div>
@@ -587,15 +587,15 @@
         <ul class="space-y-4 text-sm">
           <li class="flex justify-between">
             <span>Vocal Tuning</span>
-            <span>£25</span>
+            <span data-price="addons.vocalTuning"></span>
           </li>
           <li class="flex justify-between">
             <span>Stems Export</span>
-            <span>£20</span>
+            <span data-price="addons.stems"></span>
           </li>
           <li class="flex justify-between">
             <span>Rush Delivery</span>
-            <span>+50%</span>
+            <span data-price="addons.rush.percentage" data-prefix="+" data-suffix="%"></span>
           </li>
         </ul>
       </div>
@@ -996,7 +996,7 @@
               class="addon-checkbox w-5 h-5"
               value="rush"
             />
-            <span>Rush Delivery — +50%</span>
+            <span>Rush Delivery — +<span data-price="addons.rush.percentage" data-suffix="%"></span></span>
           </label>
         </div>
 
@@ -1203,9 +1203,9 @@
           <div>
             <h3 class="text-xl font-bold mb-2">Pricing</h3>
             <ul class="space-y-2 opacity-80">
-              <li>• Hourly Session — £30/hr</li>
-              <li>• Half-Day (4hrs) — £140</li>
-              <li>• Full-Day (8hrs) — £260</li>
+              <li>• Hourly Session — <span data-price="recording.hourly" data-suffix="/hr"></span></li>
+              <li>• Half-Day (4hrs) — <span data-price="recording.packages.half-day.price"></span></li>
+              <li>• Full-Day (8hrs) — <span data-price="recording.packages.full-day.price"></span></li>
             </ul>
           </div>
 
@@ -1215,7 +1215,7 @@
           </div>
         </div>
 
-        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+        <a href="#booking" onclick="closeServiceModal('recording')" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
           Book Recording Session
         </a>
       `
@@ -1242,9 +1242,9 @@
           <div>
             <h3 class="text-xl font-bold mb-2">Pricing</h3>
             <ul class="space-y-2 opacity-80">
-              <li>• Per Track — £50</li>
-              <li>• Mix + Master — £75</li>
-              <li>• EP (4–6 tracks) — £280</li>
+              <li>• Per Track — <span data-price="mixing.packages.per-track.price"></span></li>
+              <li>• Mix + Master — <span data-price="mixing.packages.mix-master.price"></span></li>
+              <li>• EP (4–6 tracks) — <span data-price="mixing.packages.ep.price"></span></li>
             </ul>
           </div>
 
@@ -1254,7 +1254,7 @@
           </div>
         </div>
 
-        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+        <a href="#booking" onclick="closeServiceModal('mixing')" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
           Book Mixing Service
         </a>
       `
@@ -1281,9 +1281,9 @@
           <div>
             <h3 class="text-xl font-bold mb-2">Pricing</h3>
             <ul class="space-y-2 opacity-80">
-              <li>• Single — £35</li>
-              <li>• EP (4–6 tracks) — £120</li>
-              <li>• Album (10+ tracks) — £250</li>
+              <li>• Single — <span data-price="mastering.packages.single.price"></span></li>
+              <li>• EP (4–6 tracks) — <span data-price="mastering.packages.ep.price"></span></li>
+              <li>• Album (10+ tracks) — <span data-price="mastering.packages.album.price"></span></li>
             </ul>
           </div>
 
@@ -1293,7 +1293,7 @@
           </div>
         </div>
 
-        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+        <a href="#booking" onclick="closeServiceModal('mastering')" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
           Book Mastering Service
         </a>
       `
@@ -1320,9 +1320,9 @@
           <div>
             <h3 class="text-xl font-bold mb-2">Pricing</h3>
             <ul class="space-y-2 opacity-80">
-              <li>• Beat Lease — £40</li>
-              <li>• Exclusive Beat — £150</li>
-              <li>• Custom Production — £500 (based on scope)</li>
+              <li>• Beat Lease — <span data-price="production.packages.beat-lease.price"></span></li>
+              <li>• Exclusive Beat — <span data-price="production.packages.exclusive.price"></span></li>
+              <li>• Custom Production — <span data-price="production.packages.custom.price"></span> (based on scope)</li>
             </ul>
           </div>
 
@@ -1332,7 +1332,7 @@
           </div>
         </div>
 
-        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+        <a href="#booking" onclick="closeServiceModal('production')" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
           Book Production Service
         </a>
       `
@@ -1359,9 +1359,9 @@
           <div>
             <h3 class="text-xl font-bold mb-2">Pricing</h3>
             <ul class="space-y-2 opacity-80">
-              <li>• Hourly Session — £40/hr</li>
-              <li>• 2-Hour Session — £80</li>
-              <li>• 4-Hour Session — £160</li>
+              <li>• Hourly Session — <span data-price="lessons.hourly" data-suffix="/hr"></span></li>
+              <li>• 2-Hour Session — <span data-price="lessons.packages.2-hour.price"></span></li>
+              <li>• 4-Hour Session — <span data-price="lessons.packages.4-hour.price"></span></li>
             </ul>
           </div>
 
@@ -1371,7 +1371,7 @@
           </div>
         </div>
 
-        <a href="#booking" onclick="closeServiceModal()" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+        <a href="#booking" onclick="closeServiceModal('lessons')" class="inline-block px-10 py-4 rounded-lg text-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
           Book a Lesson
         </a>
       `
@@ -1386,17 +1386,17 @@
 
         <div class="space-y-6 mb-8">
           <div>
-            <h3 class="text-xl font-bold mb-2">Vocal Tuning — £25</h3>
+            <h3 class="text-xl font-bold mb-2">Vocal Tuning — <span data-price="addons.vocalTuning"></span></h3>
             <p class="opacity-80">Professional pitch correction and timing adjustments to ensure your vocals sound natural and polished.</p>
           </div>
 
           <div>
-            <h3 class="text-xl font-bold mb-2">Stems Export — £20</h3>
+            <h3 class="text-xl font-bold mb-2">Stems Export — <span data-price="addons.stems"></span></h3>
             <p class="opacity-80">Individual track stems delivered for DJ use, remixes, or archival purposes.</p>
           </div>
 
           <div>
-            <h3 class="text-xl font-bold mb-2">Rush Delivery — +50%</h3>
+            <h3 class="text-xl font-bold mb-2">Rush Delivery — +<span data-price="addons.rush.percentage" data-suffix="%"></span></h3>
             <p class="opacity-80">Expedited turnaround for urgent projects. Your mix or master prioritized and delivered within 24–48 hours.</p>
           </div>
         </div>
@@ -1457,9 +1457,22 @@
   }
 
   // Close modal
-  function closeServiceModal() {
+  function closeServiceModal(service) {
     serviceModal.classList.remove('active');
     document.body.style.overflow = '';
+    
+    // If a service is provided, auto-select it in the booking form
+    if (service) {
+      setTimeout(() => {
+        const serviceSelect = document.getElementById('service-select');
+        if (serviceSelect) {
+          serviceSelect.value = service;
+          // Trigger change event to update form
+          const event = new Event('change', { bubbles: true });
+          serviceSelect.dispatchEvent(event);
+        }
+      }, 100);
+    }
   }
 
   // Close modal on overlay click
@@ -1491,48 +1504,97 @@
     addons: []
   };
 
+  // ========================================
+  // CENTRALIZED PRICING CONFIG
+  // Change prices here and they update everywhere
+  // ========================================
   const pricing = {
     recording: {
-      hourly: 30,
+      hourly: 45,
       packages: {
-        'half-day': { hours: 4, price: 140 },
-        'full-day': { hours: 8, price: 260 }
+        'half-day': { hours: 4, price: 160 },
+        'full-day': { hours: 8, price: 300 }
       }
     },
     mixing: {
       packages: {
-        'per-track': { price: 50, label: 'Per Track — £50' },
-        'mix-master': { price: 75, label: 'Mix + Master — £75' },
-        'ep': { price: 280, label: 'EP (4–6 tracks) — £280' }
+        'per-track': { price: 90, label: 'Per Track — £90' },
+        'mix-master': { price: 120, label: 'Mix + Master — £120' },
+        'ep': { price: 450, label: 'EP (4–6 tracks) — £450' }
       }
     },
     mastering: {
       packages: {
-        'single': { price: 35, label: 'Single — £35' },
-        'ep': { price: 120, label: 'EP (4–6 tracks) — £120' },
-        'album': { price: 250, label: 'Album (10+ tracks) — £250' }
+        'single': { price: 50, label: 'Single — £50' },
+        'ep': { price: 180, label: 'EP (4–6 tracks) — £180' },
+        'album': { price: 350, label: 'Album (10+ tracks) — £350' }
       }
     },
     production: {
       packages: {
-        'beat-lease': { price: 40, label: 'Beat Lease — £40' },
-        'exclusive': { price: 150, label: 'Exclusive Beat — £150' },
-        'custom': { price: 500, label: 'Custom Production — £500' }
+        'beat-lease': { price: 50, label: 'Beat Lease — £50' },
+        'exclusive': { price: 200, label: 'Exclusive Beat — £200' },
+        'custom': { price: 600, label: 'Custom Production — from £600' }
       }
     },
     lessons: {
-      hourly: 40,
+      hourly: 45,
       packages: {
-        '2-hour': { hours: 2, price: 80 },
+        '2-hour': { hours: 2, price: 85 },
         '4-hour': { hours: 4, price: 160 }
       }
     },
     addons: {
-      vocalTuning: 25,
-      stems: 20,
-      rush: 'percentage' // 50% of base price
+      vocalTuning: 35,
+      stems: 30,
+      rush: { percentage: 75 },  // 75% of base price - change this number to update everywhere
+      sameDay: { percentage: 75 } // 75% of base price - not yet implemented
     }
   };
+
+  // ========================================
+  // AUTO-POPULATE PRICES FROM CONFIG
+  // ========================================
+  function populatePrices() {
+    // Find all elements with data-price attribute
+    const priceElements = document.querySelectorAll('[data-price]');
+    
+    priceElements.forEach(element => {
+      const path = element.getAttribute('data-price');
+      const prefix = element.getAttribute('data-prefix') || '';
+      const suffix = element.getAttribute('data-suffix') || '';
+      
+      // Navigate through pricing object using path (e.g., "recording.hourly")
+      const keys = path.split('.');
+      let value = pricing;
+      
+      for (const key of keys) {
+        value = value?.[key];
+      }
+      
+      // Set the text content with price
+      if (value !== undefined && value !== null) {
+        // If suffix is %, it's a percentage - don't add £ symbol
+        if (suffix === '%') {
+          element.textContent = `${prefix}${value}${suffix}`;
+        } else {
+          element.textContent = `${prefix}£${value}${suffix}`;
+        }
+      }
+    });
+  }
+
+  // Populate prices immediately
+  populatePrices();
+  
+  // Also populate when modal opens (for dynamically loaded content)
+  const originalOpenModal = window.openServiceModal;
+  if (originalOpenModal) {
+    window.openServiceModal = function(serviceKey) {
+      originalOpenModal(serviceKey);
+      setTimeout(populatePrices, 10);
+    };
+  }
 
   // Get DOM elements
   const serviceSelect = document.getElementById('service-select');
@@ -1655,11 +1717,13 @@
     const addonDetails = [];
     
     bookingState.addons.forEach(addon => {
-      if (pricing.addons[addon] === 'percentage') {
-        // Rush delivery is 50% of base
-        const rushCost = Math.round(basePrice * 0.5);
-        addonTotal += rushCost;
-        addonDetails.push({ name: 'Rush Delivery', cost: rushCost });
+      if (pricing.addons[addon]?.percentage) {
+        // Percentage-based addon (Rush, Same-Day, etc.)
+        const percentage = pricing.addons[addon].percentage / 100;
+        const addonCost = Math.round(basePrice * percentage);
+        addonTotal += addonCost;
+        const addonName = addon === 'rush' ? 'Rush Delivery' : addon === 'sameDay' ? 'Same-Day Turnaround' : addon;
+        addonDetails.push({ name: addonName, cost: addonCost });
       } else {
         addonTotal += pricing.addons[addon];
         const addonName = addon === 'vocalTuning' ? 'Vocal Tuning' : addon === 'stems' ? 'Stems Export' : addon;
