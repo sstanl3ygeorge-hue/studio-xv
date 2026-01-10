@@ -126,30 +126,46 @@ const EMAIL_TEMPLATES = {
           
           <div class="details">
             <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; color: #111827;">Booking Details</h3>
-            <div class="detail-row">
-              <span class="label">Service</span>
-              <span class="value">${data.service}</span>
-            </div>
-            <div class="detail-row">
-              <span class="label">Package</span>
-              <span class="value">${data.packageName}</span>
-            </div>
-            ${data.durationHours ? `<div class="detail-row"><span class="label">Duration</span><span class="value">${data.durationHours} ${data.durationHours === 1 ? 'hour' : 'hours'}</span></div>` : ''}
-            ${data.sessionDateFormatted ? `<div class="detail-row"><span class="label">Date</span><span class="value">${data.sessionDateFormatted}</span></div>` : ''}
-            ${data.sessionTimeFormatted ? `<div class="detail-row"><span class="label">Time</span><span class="value">${data.sessionTimeFormatted}</span></div>` : ''}
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse: collapse;">
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Service</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.service}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Package</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.packageName}</td>
+              </tr>
+              ${data.durationHours ? `<tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Duration</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.durationHours} ${data.durationHours === 1 ? 'hour' : 'hours'}</td>
+              </tr>` : ''}
+              ${data.sessionDateFormatted ? `<tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Date</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.sessionDateFormatted}</td>
+              </tr>` : ''}
+              ${data.sessionTimeFormatted ? `<tr>
+                <td style="padding: 12px 0; ${data.sessionTimeFormatted ? 'border-bottom: none;' : 'border-bottom: 1px solid #f3f4f6;'} font-size: 14px; font-weight: 400; color: #6b7280;">Time</td>
+                <td style="padding: 12px 0; ${data.sessionTimeFormatted ? 'border-bottom: none;' : 'border-bottom: 1px solid #f3f4f6;'} font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.sessionTimeFormatted}</td>
+              </tr>` : ''}
+            </table>
           </div>
 
           <div class="details">
             <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; color: #111827;">Payment Summary</h3>
-            <div class="detail-row">
-              <span class="label">Total Cost</span>
-              <span class="value">£${data.total}</span>
-            </div>
-            <div class="detail-row">
-              <span class="label">${paymentLabel}</span>
-              <span class="value" style="color: #10b981;">£${data.deposit}</span>
-            </div>
-            ${!isFullPayment ? `<div class="detail-row"><span class="label">${balanceLabel}</span><span class="value" style="color: #f97316;">£${data.balanceDue}</span></div>` : ''}
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse: collapse;">
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Total Cost</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">£${data.total}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; ${!isFullPayment ? 'border-bottom: 1px solid #f3f4f6;' : 'border-bottom: none;'} font-size: 14px; font-weight: 400; color: #6b7280;">${paymentLabel}</td>
+                <td style="padding: 12px 0; ${!isFullPayment ? 'border-bottom: 1px solid #f3f4f6;' : 'border-bottom: none;'} font-size: 15px; font-weight: 600; color: #10b981; text-align: right;">£${data.deposit}</td>
+              </tr>
+              ${!isFullPayment ? `<tr>
+                <td style="padding: 12px 0; border-bottom: none; font-size: 14px; font-weight: 400; color: #6b7280;">${balanceLabel}</td>
+                <td style="padding: 12px 0; border-bottom: none; font-size: 15px; font-weight: 600; color: #f97316; text-align: right;">£${data.balanceDue}</td>
+              </tr>` : ''}
+            </table>
           </div>
 
           ${nextStepsHtml}
