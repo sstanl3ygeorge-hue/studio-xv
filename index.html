@@ -2425,6 +2425,17 @@
       </div>
       
       <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--text-main);">What are you enquiring about? *</label>
+        <select name="service" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--bg-section); color: var(--text-main); font-size: 0.9375rem;">
+          <option value="">Select a service...</option>
+          <option value="recording">Recording / Studio Session</option>
+          <option value="mixing">Mixing or Mastering</option>
+          <option value="beats">Beats / Production</option>
+          <option value="unsure">Not sure yet</option>
+        </select>
+      </div>
+      
+      <div>
         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--text-main);">Project Description *</label>
         <textarea name="project" required rows="5" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--bg-section); color: var(--text-main); font-size: 0.9375rem; resize: vertical;" placeholder="Tell us about your project, what you're looking for, and any questions you have..."></textarea>
       </div>
@@ -2513,6 +2524,7 @@
       const data = {
         name: formData.get('name'),
         email: formData.get('email'),
+        service: formData.get('service'),
         project: formData.get('project'),
         budget: formData.get('budget') || 'Not specified'
       };

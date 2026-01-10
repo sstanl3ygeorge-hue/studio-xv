@@ -653,6 +653,98 @@ Stripe Session ID: ${data.stripeSessionId || 'N/A'}
 ${data.calendarStatus ? `Calendar: ${data.calendarStatus}` : ''}
 `
     };
+  },
+
+  // ENQUIRY AUTO-REPLY (customer confirmation)
+  enquiryAutoReply: (data) => {
+    // Generate smart booking link based on service
+    const serviceParam = {
+      'Recording / Studio Session': 'recording',
+      'Mixing or Mastering': 'mixing',
+      'Beats / Production': 'production'
+    }[data.service] || '';
+    
+    const bookingLink = serviceParam 
+      ? `https://studioxv.co.uk/#booking?service=${serviceParam}`
+      : 'https://studioxv.co.uk/#booking';
+
+    return {
+      subject: `Thanks for your enquiry — ${data.service}`,
+      html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #000; color: #fff; padding: 30px 20px; text-align: center; }
+          .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
+          .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
+          .content { padding: 30px 20px; background: #f9f9f9; }
+          .highlight { background: #fff5e6; padding: 18px; border-left: 4px solid #f97316; margin: 20px 0; line-height: 1.7; }
+          .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="studio">STUDIO</div>
+          <h1>XV</h1>
+        </div>
+        
+        <div class="content">
+          <h2 style="margin-bottom: 0.5rem;">Enquiry Received</h2>
+          <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Hi ${data.customerName || 'there'},</p>
+          <p>Thanks for getting in touch about <strong>${data.service}</strong>.</p>
+          
+          <p>We've received your enquiry and will get back to you within 24 hours with more information about your project.</p>
+
+          <div class="highlight">
+            <strong>What happens next:</strong><br><br>
+            • We'll review your project details<br>
+            • We'll reach out with recommendations and pricing<br>
+            • You can ask any questions before booking
+          </div>
+
+          <p style="margin-top: 20px;">If you'd like to book directly, you can do so at any time:</p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${bookingLink}" style="display: inline-block; background: #f97316; color: #fff !important; padding: 15px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Book Now</a>
+          </div>
+
+          <p style="margin-top: 30px; margin-bottom: 0.5rem;">Questions? Just reply to this email.</p>
+          
+          <p style="margin-top: 2rem; margin-bottom: 0;"><strong>— Studio XV</strong></p>
+        </div>
+
+        <div class="footer">
+          <p><strong>${STUDIO_INFO.name}</strong></p>
+          <p>${STUDIO_INFO.email} · ${STUDIO_INFO.phone}</p>
+        </div>
+      </body>
+      </html>
+    `,
+      text: `
+      Thanks for your enquiry — ${data.service}
+
+      Hi ${data.customerName || 'there'},
+
+      Thanks for getting in touch about ${data.service}.
+
+      We've received your enquiry and will get back to you within 24 hours with more information about your project.
+
+      WHAT HAPPENS NEXT:
+      • We'll review your project details
+      • We'll reach out with recommendations and pricing
+      • You can ask any questions before booking
+
+      If you'd like to book directly, you can do so at any time:
+      ${bookingLink}
+
+      Questions? Just reply to this email.
+
+      — Studio XV
+      ${STUDIO_INFO.email} · ${STUDIO_INFO.phone}
+    `
+    };
   }
 };
 
