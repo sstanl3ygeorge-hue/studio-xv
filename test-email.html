@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Test - Studio XV</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: #111111;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 3rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #f97316;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: #0d0d0d;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #f97316;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 150px;
+      font-family: inherit;
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: #f97316;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      display: none;
+      padding: 1rem;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 8px;
+      color: #22c55e;
+      margin-bottom: 1.5rem;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .form-notes {
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .form-notes strong {
+      color: #f97316;
+    }
+
+    .back-link {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .back-link a {
+      color: #f97316;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Email Test</h1>
+    <p>Test the Netlify Forms email functionality</p>
+
+    <div class="form-notes">
+      <strong>Note:</strong> This will only work when deployed to Netlify. Locally, you can test that the form submits, but emails won't be sent. On Netlify, form submissions will be sent to your configured notification email.
+    </div>
+
+    <div class="success-message" id="success-message">
+      ✓ Test email sent successfully! Check your Netlify dashboard for the form submission.
+    </div>
+
+    <form name="email-test" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="email-test" />
+      <input type="hidden" name="subject" value="Studio XV — Test Email" />
+      
+      <!-- Honeypot -->
+      <p style="display: none;">
+        <label>
+          Don't fill this out:
+          <input name="bot-field" />
+        </label>
+      </p>
+
+      <div>
+        <label for="name">Your Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          required 
+          placeholder="John Doe"
+        />
+      </div>
+
+      <div>
+        <label for="email">Your Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required 
+          placeholder="john@example.com"
+        />
+      </div>
+
+      <div>
+        <label for="message">Test Message</label>
+        <textarea 
+          id="message" 
+          name="message" 
+          required
+          placeholder="This is a test email from the Studio XV form..."
+        ></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">Send Test Email</button>
+    </form>
+
+    <div class="back-link">
+      <a href="index.html">← Back to home</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.querySelector('form[name="email-test"]');
+    const submitBtn = document.getElementById('submit-btn');
+    const successMessage = document.getElementById('success-message');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        // Encode form data
+        const formData = new FormData(form);
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData).toString()
+        });
+
+        if (response.ok) {
+          // Show success message
+          successMessage.classList.add('show');
+          form.reset();
+          submitBtn.textContent = 'Send Test Email';
+          submitBtn.disabled = false;
+
+          // Hide success message after 5 seconds
+          setTimeout(() => {
+            successMessage.classList.remove('show');
+          }, 5000);
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        alert('Error submitting form. This is expected locally. Deploy to Netlify to test email functionality.');
+        submitBtn.textContent = 'Send Test Email';
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

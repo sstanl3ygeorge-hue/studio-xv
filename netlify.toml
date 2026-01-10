@@ -7,5 +7,19 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com https://*.stripe.com https://studioxv-media.b-cdn.net; media-src 'self' blob: https://studioxv-media.b-cdn.net; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self';"
+
 [functions]
   node_bundler = "esbuild"
+
+# Scheduled function - runs every 15 minutes to send booking reminders
+[functions."send-reminders"]
+  schedule = "*/15 * * * *"
+
+# Legacy calendar reminder (keep if still needed, otherwise can remove)
+[functions."scheduled-calendar-reminders"]
+  schedule = "0 9 * * *"

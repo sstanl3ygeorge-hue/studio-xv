@@ -90,6 +90,71 @@
     .course-card.hidden {
       display: none;
     }
+    
+    /* Modal animations */
+    #course-modal {
+      transition: opacity 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    #course-modal.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    #course-modal:not(.hidden) {
+      opacity: 1;
+    }
+    
+    #course-modal .max-w-2xl {
+      transition: transform 150ms cubic-bezier(0.4, 0.0, 0.2, 1), opacity 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    #course-modal.hidden .max-w-2xl {
+      transform: scale(0.98);
+      opacity: 0;
+    }
+    
+    #course-modal:not(.hidden) .max-w-2xl {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    /* Button hover polish */
+    .modal-primary-btn {
+      transition: all 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    .modal-primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+      filter: brightness(1.05);
+    }
+    
+    .modal-secondary-btn {
+      transition: all 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    .modal-secondary-btn:hover {
+      border-color: rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* Bullet point stagger animation */
+    .modal-bullet {
+      opacity: 0;
+      transform: translateX(-4px);
+      animation: slideIn 200ms cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+    }
+    
+    .modal-bullet:nth-child(1) { animation-delay: 0ms; }
+    .modal-bullet:nth-child(2) { animation-delay: 25ms; }
+    .modal-bullet:nth-child(3) { animation-delay: 50ms; }
+    
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
   </style>
 </head>
 <body>
@@ -117,8 +182,11 @@
     <!-- Page Header -->
     <div class="mb-16 text-center">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">Studio XV Courses</h1>
-      <p class="text-lg opacity-70 max-w-2xl mx-auto mb-4">
+      <p class="text-lg opacity-70 max-w-2xl mx-auto mb-2">
         30 courses organized by difficulty — Start with Tier 1 and build your way up
+      </p>
+      <p class="text-sm opacity-50 max-w-xl mx-auto mb-4">
+        All courses are based on real Studio XV sessions and workflows.
       </p>
       <a href="index.html#learn" class="text-sm opacity-50 hover:text-orange-500 transition underline-offset-4 hover:underline inline-block">
         ← Back to Learn
@@ -151,62 +219,62 @@
     <div class="tier-section">
       <div class="mb-8">
         <span class="tier-badge tier-1">🟦 TIER 1 — FOUNDATIONS</span>
-        <h2 class="text-3xl font-bold mb-3">Start Here</h2>
-        <p class="text-base opacity-70 mb-2">Non-negotiable fundamentals. Everything else depends on them.</p>
+        <h2 class="text-3xl font-bold mb-3">Core Foundations</h2>
+        <p class="text-base opacity-70 mb-2">The fundamentals that determine whether your mixes work anywhere.</p>
         <p class="text-sm opacity-60">Foundation Track 1 · £15 per course</p>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="course-listening-environment-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('listening-environment'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">01</div>
           <h3 class="text-xl font-semibold mb-3">Listening Environment Setup</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Optimizing your room, monitor placement, and acoustic treatment for accurate listening.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-eq-fundamentals-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('eq-fundamentals'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">02</div>
           <h3 class="text-xl font-semibold mb-3">EQ Fundamentals for Producers</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Understanding frequency relationships and making intentional EQ decisions.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-gain-staging-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('gain-staging'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">03</div>
           <h3 class="text-xl font-semibold mb-3">Gain Staging for Clarity</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Preventing clipping and maintaining headroom throughout your mix.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-compression-basics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('compression-basics'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">04</div>
           <h3 class="text-xl font-semibold mb-3">Compression Without Confusion</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Clear explanations of attack, release, ratio, and threshold.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-reverb-space-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('reverb-space'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">05</div>
           <h3 class="text-xl font-semibold mb-3">Reverb & Space</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Creating depth and cohesion without muddiness.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-delay-echo-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('delay-echo'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">06</div>
           <h3 class="text-xl font-semibold mb-3">Delay & Echo</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Understanding delay types, sync rates, and creative echo techniques.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-stereo-width-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('stereo-width'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">07</div>
           <h3 class="text-xl font-semibold mb-3">Stereo Width Decisions</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Mono compatibility, panning strategies, and width processing.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£15</div>
         </a>
 
-        <a href="course-headphone-mixing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('headphone-mixing'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">08</div>
           <h3 class="text-xl font-semibold mb-3">Mixing on Headphones</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Achieving balanced mixes when working on headphones.</p>
@@ -225,49 +293,49 @@
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="course-automation-essentials-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('automation-essentials'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">09</div>
           <h3 class="text-xl font-semibold mb-3">Automation Essentials</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Adding movement, focus, and emotional dynamics to your mixes.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
 
-        <a href="course-energy-dynamics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('energy-dynamics'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">10</div>
           <h3 class="text-xl font-semibold mb-3">Energy & Dynamics</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling emotional dynamics and energy curves.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
 
-        <a href="course-parallel-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('parallel-processing'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">11</div>
           <h3 class="text-xl font-semibold mb-3">Parallel Processing</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Adding intensity without losing the original signal.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
 
-        <a href="course-sidechain-compression-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('sidechain-compression'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">12</div>
           <h3 class="text-xl font-semibold mb-3">Sidechain Compression</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Creating space, movement, and rhythmic interest.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
 
-        <a href="course-transient-shaping-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('transient-shaping'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">13</div>
           <h3 class="text-xl font-semibold mb-3">Transient Shaping</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling attack and sustain for punch and clarity.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
 
-        <a href="course-multiband-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('multiband-processing'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">14</div>
           <h3 class="text-xl font-semibold mb-3">Multiband Processing</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Frequency-specific control and surgical corrections.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£18</div>
         </a>
 
-        <a href="course-limiting-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('limiting'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">15</div>
           <h3 class="text-xl font-semibold mb-3">Limiting Without Crushing</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Preserving dynamics while maximizing levels.</p>
@@ -286,35 +354,35 @@
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="course-vocal-production-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('vocal-production'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">16</div>
           <h3 class="text-xl font-semibold mb-3">Vocal Production Essentials</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Recording, editing, tuning, and processing vocals.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
         </a>
 
-        <a href="course-balancing-vocals-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('balancing-vocals'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">17</div>
           <h3 class="text-xl font-semibold mb-3">Balancing Vocals in the Mix</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Clear vocal positioning and compression strategies.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
         </a>
 
-        <a href="course-deessing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('deessing'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">18</div>
           <h3 class="text-xl font-semibold mb-3">De-Essing & Sibilance Control</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling harsh sibilance without losing presence.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
         </a>
 
-        <a href="course-bass-management-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('bass-management'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">19</div>
           <h3 class="text-xl font-semibold mb-3">Bass & Low End Management</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Controlling bass frequencies and achieving clean low end.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£22</div>
         </a>
 
-        <a href="course-saturation-harmonic-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('saturation-harmonic'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">20</div>
           <h3 class="text-xl font-semibold mb-3">Saturation & Harmonic Distortion</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Adding warmth, presence, and character.</p>
@@ -333,35 +401,35 @@
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="course-effects-chains-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('effects-chains'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">21</div>
           <h3 class="text-xl font-semibold mb-3">Creative Effects Chains</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Intentional effects chains for unique textures.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
         </a>
 
-        <a href="course-creative-clarity-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('creative-clarity'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">22</div>
           <h3 class="text-xl font-semibold mb-3">Creative Clarity for Producers</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Building trust in your creative decisions.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
         </a>
 
-        <a href="course-space-depth-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('space-depth'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">23</div>
           <h3 class="text-xl font-semibold mb-3">Space, Depth & Translation</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Understanding how mixes translate across systems.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
         </a>
 
-        <a href="course-genre-balance-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('genre-balance'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">24</div>
           <h3 class="text-xl font-semibold mb-3">Genre-Specific Mix Balance</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Mix balance conventions across genres.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£25</div>
         </a>
 
-        <a href="course-reference-tracks-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('reference-tracks'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">25</div>
           <h3 class="text-xl font-semibold mb-3">Reference Tracks That Help</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Using reference tracks effectively.</p>
@@ -375,40 +443,40 @@
       <div class="mb-8">
         <span class="tier-badge tier-5">🟥 TIER 5 — FINISHING & PROFESSIONALISM</span>
         <h2 class="text-3xl font-bold mb-3">Turn Ideas Into Releases</h2>
-        <p class="text-base opacity-70 mb-2">These turn unfinished ideas into releases.</p>
+        <p class="text-base opacity-70 mb-2">How to finish what you start and release with confidence.</p>
         <p class="text-sm opacity-60">Professional tier · £28 per course</p>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="course-loop-to-arrangement-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('loop-to-arrangement'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">26</div>
           <h3 class="text-xl font-semibold mb-3">From Loop to Arrangement</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Turning 8-bar loops into complete arrangements.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
         </a>
 
-        <a href="course-drum-processing-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('drum-processing'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">27</div>
           <h3 class="text-xl font-semibold mb-3">Drum Processing & Layering</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Building powerful drum sounds through layering.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
         </a>
 
-        <a href="course-finishing-tracks-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('finishing-tracks'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">28</div>
           <h3 class="text-xl font-semibold mb-3">Finishing Tracks Without Overthinking</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">A practical approach to finishing tracks.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
         </a>
 
-        <a href="course-export-delivery-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('export-delivery'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">29</div>
           <h3 class="text-xl font-semibold mb-3">Export & Delivery Standards</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">File formats and delivery requirements.</p>
           <div class="text-sm font-semibold" style="color: var(--accent);">£28</div>
         </a>
 
-        <a href="course-mastering-basics-info.html" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
+        <a href="#" onclick="openCourseModal('mastering-basics'); return false;" class="course-card block rounded-xl p-6 border hover:shadow-xl" style="background: var(--bg-card); border-color: var(--border-soft);">
           <div class="text-xs opacity-60 mb-2">30</div>
           <h3 class="text-xl font-semibold mb-3">Mastering for Producers</h3>
           <p class="text-sm opacity-70 mb-4 leading-relaxed">Basic mastering principles for your own tracks.</p>
@@ -516,11 +584,10 @@
   // Production Coming Soon Override
   // Hide courses and bundles on production, show normally on localhost
   (function() {
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                        window.location.hostname === '127.0.0.1' ||
-                        window.location.hostname.includes('netlify.app');
+    const isProduction = window.location.hostname === 'studioxv.co.uk' ||
+                         window.location.hostname === 'www.studioxv.co.uk';
     
-    if (!isLocalhost) {
+    if (isProduction) {
       // On production: gray out all courses and bundles, add coming soon badges
       const allCourseCards = document.querySelectorAll('.course-card');
       
@@ -562,6 +629,408 @@
       }
     }
   })();
+</script>
+
+<!-- Course Modal -->
+<div id="course-modal" class="fixed inset-0 flex items-center justify-center p-4 z-50 hidden" style="background: rgba(0,0,0,0.85);">
+  <div class="max-w-2xl w-full max-h-[80vh] overflow-y-auto rounded-2xl p-6 relative" style="background: var(--bg-card); border: 1px solid var(--border-soft);">
+    <button id="course-modal-close" class="absolute top-4 right-4 text-2xl opacity-60 hover:opacity-100 transition">×</button>
+    <div id="course-modal-content"></div>
+  </div>
+</div>
+
+<script>
+  // Course Modal System
+  const courseModal = document.getElementById('course-modal');
+  const courseModalContent = document.getElementById('course-modal-content');
+  const courseModalClose = document.getElementById('course-modal-close');
+
+  // Course data object with all 30 courses
+  const courseData = {
+    'listening-environment': {
+      tier: 1,
+      title: 'Listening Environment Setup',
+      duration: '~35 minutes',
+      price: 35,
+      description: 'Optimizing your room, monitor placement, and acoustic treatment for accurate listening.',
+      why: [
+        'Your room is the first link in your signal chain. Bad acoustics lead to bad mixing decisions.',
+        'Most producers fight their room instead of understanding what they\'re hearing.',
+        'A better listening environment changes your workflow more than any plugin.'
+      ],
+      whatYouLearn: [
+        'How room acoustics affect what you hear',
+        'Where to position monitors for accurate imaging',
+        'What acoustic treatment actually does (and what it doesn\'t)',
+        'How to work around room problems without spending a fortune',
+        'Where to prioritize budget when improving your setup'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Real examples from actual studios and bedrooms',
+        'Budget-friendly solutions',
+        'Applicable to any room',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-listening-environment.html',
+      infoPageUrl: 'course-listening-environment-info.html',
+      modules: [
+        { title: 'Room Acoustics Basics', description: 'How your room affects what you hear and why it matters.' },
+        { title: 'Monitor Placement & Setup', description: 'Positioning monitors for accurate listening and imaging.' },
+        { title: 'Practical Treatment & Solutions', description: 'Simple acoustic improvements and working around room problems.' }
+      ]
+    },
+    'eq-fundamentals': {
+      tier: 1,
+      title: 'EQ Fundamentals for Producers',
+      duration: '~40 minutes',
+      price: 35,
+      description: 'Understanding frequency relationships and making intentional EQ decisions.',
+      why: [
+        'EQ is the most powerful tool in mixing — and the easiest to misuse.',
+        'Most producers boost and cut randomly without understanding what they\'re changing.',
+        'Clear frequency relationships are what make a mix feel professional.'
+      ],
+      whatYouLearn: [
+        'How to hear frequency ranges clearly',
+        'When to cut vs. when to boost',
+        'Understanding frequency masking and separation',
+        'How EQ shapes tone and clarity',
+        'Making intentional EQ decisions instead of guessing'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Real examples from actual mixes',
+        'Practical techniques you can use immediately',
+        'Works with any DAW and EQ plugin',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-eq-fundamentals.html',
+      infoPageUrl: 'course-eq-fundamentals-info.html',
+      modules: [
+        { title: 'Frequency Spectrum Overview', description: 'Understanding the frequency spectrum and how to hear it.' },
+        { title: 'Subtractive vs. Additive EQ', description: 'When to cut, when to boost, and why it matters.' },
+        { title: 'Frequency Masking & Separation', description: 'Creating clarity by managing frequency conflicts.' }
+      ]
+    },
+    'gain-staging': {
+      tier: 1,
+      title: 'Gain Staging for Clarity',
+      duration: '~30 minutes',
+      price: 35,
+      description: 'Preventing clipping and maintaining headroom throughout your mix.',
+      why: [
+        'Clipping and distortion ruin mixes before you even start.',
+        'Most producers don\'t understand how signal flow affects their sound.',
+        'Proper gain staging gives you headroom and control.'
+      ],
+      whatYouLearn: [
+        'What gain staging actually is and why it matters',
+        'How to set levels at every stage of your signal chain',
+        'Preventing clipping without losing loudness',
+        'Understanding headroom and dynamic range',
+        'How gain staging affects plugin performance'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Step-by-step walkthrough',
+        'Works with any DAW',
+        'Practical examples',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-gain-staging.html',
+      infoPageUrl: 'course-gain-staging-info.html',
+      modules: [
+        { title: 'Signal Flow Basics', description: 'How audio signal travels through your mix.' },
+        { title: 'Setting Proper Levels', description: 'Establishing good gain structure from the start.' },
+        { title: 'Managing Headroom', description: 'Maintaining dynamic range throughout your mix.' }
+      ]
+    },
+    'compression-basics': {
+      tier: 1,
+      title: 'Compression Without Confusion',
+      duration: '~45 minutes',
+      price: 35,
+      description: 'Clear explanations of attack, release, ratio, and threshold.',
+      why: [
+        'Compression is one of the most misunderstood tools in mixing.',
+        'Most producers use compression randomly without knowing what each parameter does.',
+        'Understanding compression gives you control over dynamics and energy.'
+      ],
+      whatYouLearn: [
+        'What compression actually does to your audio',
+        'Understanding attack, release, ratio, and threshold',
+        'How to hear what compression is changing',
+        'When to use compression (and when not to)',
+        'Different compression types and when to use them'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Clear, practical explanations',
+        'Real-world examples',
+        'Works with any compressor plugin',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-compression-basics.html',
+      infoPageUrl: 'course-compression-basics-info.html',
+      modules: [
+        { title: 'What Compression Does', description: 'Understanding dynamic range control.' },
+        { title: 'Attack, Release, Ratio, Threshold', description: 'Breaking down each parameter clearly.' },
+        { title: 'Compression Types & Applications', description: 'When to use different compressor styles.' }
+      ]
+    },
+    'reverb-space': {
+      tier: 1,
+      title: 'Reverb & Space',
+      duration: '~35 minutes',
+      price: 35,
+      description: 'Creating depth and cohesion without muddiness.',
+      why: [
+        'Reverb can make or break a mix.',
+        'Most producers add too much reverb and end up with muddy mixes.',
+        'Understanding space creates depth and cohesion.'
+      ],
+      whatYouLearn: [
+        'How reverb creates depth and dimension',
+        'Different reverb types and when to use them',
+        'How to prevent muddy, washed-out mixes',
+        'Pre-delay, decay, and damping explained',
+        'Creating cohesive space in your mix'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Practical reverb techniques',
+        'Works with any reverb plugin',
+        'Real-world examples',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-reverb-space.html',
+      infoPageUrl: 'course-reverb-space-info.html',
+      modules: [
+        { title: 'Understanding Space', description: 'How reverb creates depth in your mix.' },
+        { title: 'Reverb Types & Parameters', description: 'Room, hall, plate, spring, and what they do.' },
+        { title: 'Clean Reverb Techniques', description: 'Adding space without muddiness.' }
+      ]
+    },
+    'delay-echo': {
+      tier: 1,
+      title: 'Delay & Echo',
+      duration: '~30 minutes',
+      price: 35,
+      description: 'Understanding delay types, sync rates, and creative echo techniques.',
+      why: [
+        'Delay adds rhythm, space, and character to your mix.',
+        'Most producers don\'t understand the difference between delay types.',
+        'Proper delay usage creates width and movement.'
+      ],
+      whatYouLearn: [
+        'Different delay types and when to use them',
+        'How to sync delay to your track tempo',
+        'Creating width and space with delay',
+        'Feedback, filtering, and modulation',
+        'Stereo delay techniques'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Practical delay techniques',
+        'Works with any delay plugin',
+        'Real-world examples',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-delay-echo.html',
+      infoPageUrl: 'course-delay-echo-info.html',
+      modules: [
+        { title: 'Delay Types Explained', description: 'Digital, analog, tape, and ping-pong delays.' },
+        { title: 'Sync & Timing', description: 'How to match delay to your track tempo.' },
+        { title: 'Creative Delay Techniques', description: 'Using delay for space, rhythm, and width.' }
+      ]
+    },
+    'stereo-width': {
+      tier: 1,
+      title: 'Stereo Width Decisions',
+      duration: '~35 minutes',
+      price: 35,
+      description: 'Mono compatibility, panning strategies, and width processing.',
+      why: [
+        'Wide mixes sound exciting, but they need to work in mono too.',
+        'Most producers add width without checking mono compatibility.',
+        'Understanding stereo creates professional, translatable mixes.'
+      ],
+      whatYouLearn: [
+        'How stereo width works',
+        'Panning strategies for clarity',
+        'Mono compatibility and phase issues',
+        'Width processing techniques',
+        'When to keep things mono'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Practical width techniques',
+        'Works with any DAW',
+        'Real-world examples',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-stereo-width.html',
+      infoPageUrl: 'course-stereo-width-info.html',
+      modules: [
+        { title: 'Understanding Stereo', description: 'How stereo width affects your mix.' },
+        { title: 'Panning & Placement', description: 'Strategic panning for clarity.' },
+        { title: 'Width Processing', description: 'Creating and controlling stereo width.' }
+      ]
+    },
+    'headphone-mixing': {
+      tier: 1,
+      title: 'Mixing on Headphones',
+      duration: '~30 minutes',
+      price: 35,
+      description: 'Achieving balanced mixes when working on headphones.',
+      why: [
+        'Most producers work on headphones, but headphones lie.',
+        'Headphone mixes often don\'t translate to speakers.',
+        'Understanding headphone mixing creates better translation.'
+      ],
+      whatYouLearn: [
+        'How headphones differ from speakers',
+        'Common headphone mixing mistakes',
+        'How to compensate for headphone characteristics',
+        'Reference strategies for headphone mixing',
+        'When to use crossfeed and correction tools'
+      ],
+      howItWorks: [
+        'Video course format',
+        'Practical headphone techniques',
+        'Works with any headphones',
+        'Real-world examples',
+        'Self-paced — watch whenever you want'
+      ],
+      previewUrl: 'course-player-headphone-mixing.html',
+      infoPageUrl: 'course-headphone-mixing-info.html',
+      modules: [
+        { title: 'Headphones vs. Speakers', description: 'Understanding the differences.' },
+        { title: 'Headphone Mix Translation', description: 'Making headphone mixes work everywhere.' },
+        { title: 'Tools & Techniques', description: 'Crossfeed, correction, and reference strategies.' }
+      ]
+    }
+  };
+
+  function openCourseModal(courseId) {
+    const course = courseData[courseId];
+    if (!course) return;
+
+    // Generate tier class and label
+    const tierClass = `tier-${course.tier}`;
+    const tierLabels = {
+      1: '🟦 TIER 1 — FOUNDATIONS',
+      2: '🟨 TIER 2 — CONTROL & DYNAMICS',
+      3: '🟩 TIER 3 — VOCAL PRODUCTION',
+      4: '🟪 TIER 4 — ADVANCED TECHNIQUES',
+      5: '🟥 TIER 5 — PROFESSIONAL POLISH'
+    };
+
+    // Build modal content
+    courseModalContent.innerHTML = `
+      <span class="tier-badge ${tierClass}">${tierLabels[course.tier]}</span>
+      <h2 class="text-3xl font-bold mb-3">${course.title}</h2>
+      <p class="text-base opacity-70 mb-6">${course.description}</p>
+      
+      <div class="flex items-center gap-4 mb-6 text-sm opacity-60">
+        <span>${course.duration}</span>
+        <span>·</span>
+        <span>Lifetime access</span>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-3">What you'll learn:</h3>
+        <ul class="space-y-2 text-sm opacity-80">
+          ${course.whatYouLearn.slice(0, 3).map((item, index) => `<li class="modal-bullet flex items-start gap-2">
+            <span style="color: var(--accent);">→</span>
+            <span>${item}</span>
+          </li>`).join('')}
+        </ul>
+      </div>
+      
+      <p class="text-xs text-center opacity-50 mb-4">
+        These principles are used in real Studio XV sessions.
+      </p>
+
+      <div class="flex gap-3 mb-3">
+        <a href="${course.previewUrl}" id="modal-primary-cta" class="modal-primary-btn flex-1 px-6 py-3 rounded-lg font-semibold text-white text-center transition" style="background: var(--accent);">
+          Watch free preview (Module 1)
+        </a>
+        <a href="${course.infoPageUrl}" class="modal-secondary-btn flex-1 px-6 py-3 rounded-lg font-semibold border text-center transition" style="border-color: var(--border-soft);" onclick="closeCourseModal()">
+          View full course details
+        </a>
+      </div>
+      
+      <p class="text-xs text-center opacity-60">
+        Preview includes the full first module. No payment required.
+      </p>
+    `;
+
+    // Show modal with animation
+    courseModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus primary CTA after animation
+    setTimeout(() => {
+      const primaryCTA = document.getElementById('modal-primary-cta');
+      if (primaryCTA) primaryCTA.focus();
+    }, 200);
+    
+    // Trap focus inside modal
+    trapFocus(courseModal);
+  }
+
+  function closeCourseModal() {
+    document.body.style.overflow = '';
+    courseModal.classList.add('hidden');
+    removeFocusTrap();
+  }
+  
+  // Focus trap implementation
+  let focusTrapHandler = null;
+  
+  function trapFocus(element) {
+    const focusableElements = element.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    
+    focusTrapHandler = function(e) {
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+    
+    document.addEventListener('keydown', focusTrapHandler);
+  }
+  
+  function removeFocusTrap() {
+    if (focusTrapHandler) {
+      document.removeEventListener('keydown', focusTrapHandler);
+      focusTrapHandler = null;
+    }
+  }
+
+  // Modal close handlers
+  courseModalClose.addEventListener('click', closeCourseModal);
+  courseModal.addEventListener('click', (e) => {
+    if (e.target === courseModal) closeCourseModal();
+  });
+  
+  // ESC key to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !courseModal.classList.contains('hidden')) {
+      closeCourseModal();
+    }
+  });
 </script>
 
 </body>

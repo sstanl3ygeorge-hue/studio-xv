@@ -96,7 +96,7 @@
     </svg>
 
     <h1 class="text-4xl md:text-5xl font-bold mb-6">
-      Deposit Confirmed! 🎉
+      Deposit Confirmed
     </h1>
 
     <div class="rounded-2xl p-8 mb-8" style="background: var(--bg-card);">
@@ -112,7 +112,7 @@
         <p class="text-sm">
           ✅ <strong>Deposit paid:</strong> <span id="deposit-amount">—</span><br>
           💰 <strong>Remaining balance:</strong> <span id="remaining-amount">—</span><br>
-          <span class="text-xs opacity-75">Payable on the day of your session</span>
+          <span class="text-xs opacity-75">Payment link will be sent via email</span>
         </p>
       </div>
 
@@ -138,72 +138,111 @@
   </div>
 
   <script>
-    // Retrieve booking data from localStorage
-    const bookingData = JSON.parse(localStorage.getItem('bookingData') || '{}');
+    // Get session ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
 
-    if (bookingData.service) {
+    async function loadBookingDetails() {
       const detailsContainer = document.getElementById('booking-details');
       const depositAmount = document.getElementById('deposit-amount');
       const remainingAmount = document.getElementById('remaining-amount');
 
-      // Build booking summary
-      let html = `
-        <div class="flex justify-between py-2 border-b border-white/10">
-          <span class="font-semibold">Service:</span>
-          <span>${bookingData.service}</span>
-        </div>
-        <div class="flex justify-between py-2 border-b border-white/10">
-          <span class="font-semibold">Package:</span>
-          <span>${bookingData.package}</span>
-        </div>
-      `;
+      if (!sessionId) {
+        detailsContainer.innerHTML = `
+          <p class="text-center opacity-60">
+            No session found. Please check your confirmation email.
+          </p>
+        `;
+        return;
+      }
 
-      if (bookingData.hours) {
-        html += `
+      try {
+        // Fetch booking data from Stripe via Netlify function (uses buildBookingSnapshot)
+        const response = await fetch(`/.netlify/functions/get-booking?session_id=${sessionId}`);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to load booking details');
+        }
+
+        const booking = data.booking;
+
+        // Build booking summary with snapshot values (no calculations)
+        let html = `
           <div class="flex justify-between py-2 border-b border-white/10">
-            <span class="font-semibold">Hours:</span>
-            <span>${bookingData.hours}</span>
+            <span class="font-semibold">Service:</span>
+            <span>${booking.service || '—'}</span>
+          </div>
+          <div class="flex justify-between py-2 border-b border-white/10">
+            <span class="font-semibold">Package:</span>
+            <span>${booking.packageName || '—'}</span>
           </div>
         `;
-      }
 
-      if (bookingData.addons && bookingData.addons.length > 0) {
+        // Use durationLabel from BookingSnapshot (smart display logic)
+        if (booking.durationLabel && booking.durationLabel !== 'Duration to be confirmed') {
+          html += `
+            <div class="flex justify-between py-2 border-b border-white/10">
+              <span class="font-semibold">Duration:</span>
+              <span>${booking.durationLabel}</span>
+            </div>
+          `;
+        }
+        
+        if (booking.sessionDateFormatted && booking.sessionDateFormatted !== '—') {
+          html += `
+            <div class="flex justify-between py-2 border-b border-white/10">
+              <span class="font-semibold">Date:</span>
+              <span>${booking.sessionDateFormatted}</span>
+            </div>
+          `;
+        }
+        
+        if (booking.sessionTimeFormatted && booking.sessionTimeFormatted !== '—') {
+          html += `
+            <div class="flex justify-between py-2 border-b border-white/10">
+              <span class="font-semibold">Time:</span>
+              <span>${booking.sessionTimeFormatted}</span>
+            </div>
+          `;
+        }
+
         html += `
-          <div class="py-2 border-b border-white/10">
-            <span class="font-semibold">Add-ons:</span>
-            <ul class="mt-2 space-y-1 text-sm opacity-80">
-              ${bookingData.addons.map(a => `
-                <li class="flex justify-between">
-                  <span>${a.label}</span>
-                  <span>${typeof a.price === 'number' ? '£' + a.price : a.price}</span>
-                </li>
-              `).join('')}
-            </ul>
+          <div class="flex justify-between py-2 font-bold text-lg">
+            <span>Total Session Price:</span>
+            <span>£${(booking.total || 0).toFixed(2)}</span>
           </div>
         `;
+
+        detailsContainer.innerHTML = html;
+
+        // 🛡️ Update payment amounts directly from snapshot (NO CALCULATIONS)
+        const isSessionService = booking.paymentType !== 'full';
+        
+        if (isSessionService) {
+          // Session service - show deposit and balance
+          // ✅ Use depositDisplayText for smart formatting (handles promo-covered deposits)
+          depositAmount.textContent = booking.depositDisplayText || `£${(booking.deposit || 0).toFixed(2)}`;
+          remainingAmount.textContent = `£${(booking.balanceDue || 0).toFixed(2)}`;
+        } else {
+          // Non-session service (Production) - full payment made
+          depositAmount.parentElement.innerHTML = `✅ <strong>Full payment:</strong> <span id="deposit-amount">£${(booking.total || 0).toFixed(2)}</span>`;
+          remainingAmount.parentElement.style.display = 'none';
+          document.querySelector('.text-xs.opacity-75').style.display = 'none';
+        }
+
+      } catch (error) {
+        console.error('Error loading booking details:', error);
+        detailsContainer.innerHTML = `
+          <p class="text-center opacity-60">
+            Unable to load booking details. Please check your confirmation email.
+          </p>
+        `;
       }
-
-      html += `
-        <div class="flex justify-between py-2 font-bold text-lg">
-          <span>Total Session Price:</span>
-          <span>£${bookingData.total.toFixed(2)}</span>
-        </div>
-      `;
-
-      detailsContainer.innerHTML = html;
-
-      // Update payment amounts
-      depositAmount.textContent = `£${bookingData.deposit.toFixed(2)}`;
-      const remaining = bookingData.total - bookingData.deposit;
-      remainingAmount.textContent = `£${remaining.toFixed(2)}`;
-    } else {
-      // No booking data found
-      document.getElementById('booking-details').innerHTML = `
-        <p class="text-center opacity-60">
-          No booking details found. Please check your confirmation email.
-        </p>
-      `;
     }
+
+    // Load booking details on page load
+    loadBookingDetails();
   </script>
 </body>
 </html>

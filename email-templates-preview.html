@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Templates Preview - Studio XV</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #f97316;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 3rem;
+    }
+
+    .template-selector {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .template-btn {
+      padding: 0.75rem 1.5rem;
+      background: #111111;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.875rem;
+    }
+
+    .template-btn:hover {
+      border-color: #f97316;
+    }
+
+    .template-btn.active {
+      background: #f97316;
+      border-color: #f97316;
+    }
+
+    .email-preview {
+      background: #f5f5f5;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .email-preview iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+    }
+
+    .back-link {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .back-link a {
+      color: #f97316;
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Email Templates Preview</h1>
+    <p class="subtitle">See what your customers receive</p>
+
+    <div class="template-selector">
+      <button class="template-btn active" onclick="showTemplate('booking')">Booking Confirmation</button>
+      <button class="template-btn" onclick="showTemplate('course')">Course Purchase</button>
+      <button class="template-btn" onclick="showTemplate('reminder')">Session Reminder</button>
+      <button class="template-btn" onclick="showTemplate('balance')">Balance Due</button>
+    </div>
+
+    <div class="email-preview">
+      <iframe id="email-frame"></iframe>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html">← Back to home</a>
+    </div>
+  </div>
+
+  <script>
+    const templates = {
+      booking: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #000; color: #fff; padding: 30px 20px; text-align: center; }
+            .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
+            .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
+            .content { padding: 30px 20px; background: #f9f9f9; }
+            .details { background: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+            .detail-row:last-child { border-bottom: none; }
+            .label { font-weight: 600; color: #666; }
+            .value { color: #000; }
+            .highlight { background: #fff5e6; padding: 15px; border-left: 4px solid #f97316; margin: 20px 0; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+            .button { display: inline-block; background: #f97316; color: #fff !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="studio">STUDIO</div>
+            <h1>XV</h1>
+          </div>
+          
+          <div class="content">
+            <h2>Your Session is Confirmed</h2>
+            <p>Hi Sarah,</p>
+            <p>Thank you for booking with Studio XV. Your deposit has been received and your session is confirmed.</p>
+            
+            <div class="details">
+              <h3 style="margin-top: 0;">Session Details</h3>
+              <div class="detail-row">
+                <span class="label">Service:</span>
+                <span class="value">Mixing</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Package:</span>
+                <span class="value">Single Track</span>
+              </div>
+            </div>
+
+            <div class="details">
+              <h3 style="margin-top: 0;">Payment Summary</h3>
+              <div class="detail-row">
+                <span class="label">Total Session Cost:</span>
+                <span class="value">£450</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Deposit Paid:</span>
+                <span class="value" style="color: #10b981;">£225</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Balance Due:</span>
+                <span class="value" style="color: #f97316; font-weight: bold;">£225</span>
+              </div>
+            </div>
+
+            <div class="highlight">
+              <strong>Next Steps:</strong><br>
+              • We'll contact you within 24 hours to schedule your session<br>
+              • The remaining balance of £225 is due on the session day<br>
+              • Please bring any files or references you'd like to work with
+            </div>
+
+            <h3>What to Prepare:</h3>
+            <ul>
+              <li>Session files (stems, tracks, or project files)</li>
+              <li>Reference tracks that inspire your sound</li>
+              <li>Any specific notes or goals for the session</li>
+            </ul>
+
+            <p style="margin-top: 30px;">If you have any questions or need to reschedule, just reply to this email.</p>
+            
+            <p>Looking forward to creating something great together!</p>
+            <p><strong>— Studio XV Team</strong></p>
+          </div>
+
+          <div class="footer">
+            <p><strong>Studio XV</strong></p>
+            <p>bookings@studioxv.co.uk · +44 74 1831 5041</p>
+            <p>London, UK</p>
+          </div>
+        </body>
+        </html>
+      `,
+
+      course: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #000; color: #fff; padding: 30px 20px; text-align: center; }
+            .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
+            .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
+            .content { padding: 30px 20px; background: #f9f9f9; }
+            .button { display: inline-block; background: #f97316; color: #fff !important; padding: 15px 40px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="studio">STUDIO</div>
+            <h1>XV</h1>
+          </div>
+          
+          <div class="content">
+            <h2>Welcome to Listening Environment</h2>
+            <p>Hi Sarah,</p>
+            <p>Your payment has been processed and you now have full access to your course.</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="#" class="button">Access Your Course</a>
+            </div>
+
+            <h3>What's Included:</h3>
+            <ul>
+              <li>Full course video content</li>
+              <li>Lifetime access - watch anytime</li>
+              <li>Course materials and resources</li>
+            </ul>
+
+            <p style="margin-top: 30px;">We hope you enjoy the course! If you have any questions, feel free to reach out.</p>
+            
+            <p><strong>— Studio XV Team</strong></p>
+          </div>
+
+          <div class="footer">
+            <p><strong>Studio XV</strong></p>
+            <p>bookings@studioxv.co.uk</p>
+          </div>
+        </body>
+        </html>
+      `,
+
+      reminder: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #000; color: #fff; padding: 30px 20px; text-align: center; }
+            .content { padding: 30px 20px; }
+            .highlight { background: #fff5e6; padding: 15px; border-left: 4px solid #f97316; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1 style="margin: 0; letter-spacing: 0.3em;">STUDIO XV</h1>
+          </div>
+          
+          <div class="content">
+            <h2>Session Tomorrow</h2>
+            <p>Hi Sarah,</p>
+            <p>Just a friendly reminder that your Mixing session is scheduled for tomorrow at <strong>2:00 PM</strong>.</p>
+            
+            <div class="highlight">
+              <strong>Session Details:</strong><br>
+              When: January 9, 2026 at 2:00 PM<br>
+              Duration: 4 hours<br>
+              Remaining Balance: £225
+            </div>
+
+            <h3>Don't Forget:</h3>
+            <ul>
+              <li>Bring your session files</li>
+              <li>Reference tracks (if any)</li>
+              <li>The remaining balance of £225 is due at the session</li>
+            </ul>
+
+            <p>See you tomorrow!</p>
+            <p><strong>— Studio XV Team</strong></p>
+          </div>
+        </body>
+        </html>
+      `,
+
+      balance: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+            .content { padding: 30px 20px; }
+            .button { display: inline-block; background: #f97316; color: #fff !important; padding: 15px 40px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <div class="content">
+            <h2>Balance Due for Your Session</h2>
+            <p>Hi Sarah,</p>
+            <p>Thank you for your recent session at Studio XV! The remaining balance of <strong>£225</strong> is now due.</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="#" class="button">Pay Balance (£225)</a>
+            </div>
+
+            <p>Once payment is received, we'll send you your final files.</p>
+            <p>If you have any questions, just reply to this email.</p>
+            
+            <p><strong>— Studio XV Team</strong></p>
+          </div>
+        </body>
+        </html>
+      `
+    };
+
+    function showTemplate(type) {
+      // Update button states
+      document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Load template into iframe
+      const iframe = document.getElementById('email-frame');
+      iframe.srcdoc = templates[type];
+    }
+
+    // Load booking template by default
+    window.onload = () => {
+      showTemplate('booking');
+    };
+  </script>
+</body>
+</html>

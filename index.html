@@ -216,6 +216,61 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
+    .addons-deemphasized {
+      opacity: 0.4;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .addons-emphasized {
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Subtle reveal animations for form sections */
+    @keyframes subtleReveal {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-section-reveal {
+      animation: subtleReveal 0.3s ease-out;
+    }
+
+    #package-wrapper:not(.hidden),
+    #hours-wrapper:not(.hidden),
+    #time-slot-wrapper:not(.hidden) {
+      animation: subtleReveal 0.3s ease-out;
+    }
+
+    /* Price summary smooth transitions */
+    #payment-clarification {
+      transition: opacity 0.3s ease;
+    }
+
+    #total-display,
+    #deposit-display {
+      transition: opacity 0.2s ease;
+    }
+
+    /* Accessibility: disable animations for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
     /* Light mode form input styling */
     @media (prefers-color-scheme: light) {
       input:not([type="file"]):not([type="checkbox"]),
@@ -238,6 +293,47 @@
     @media (max-width: 768px) {
       #booking .space-y-8 > * + * {
         margin-top: 2rem;
+      }
+
+      /* Sticky price summary on mobile for better visibility */
+      #mobile-price-summary {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        margin-bottom: 1.5rem;
+        background: var(--bg-card);
+        border: 2px solid var(--border-soft);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Larger tap targets for radio buttons */
+      input[type="radio"] {
+        min-width: 20px !important;
+        min-height: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+      }
+
+      /* More spacing between radio button labels */
+      input[type="radio"] + span {
+        padding: 0.5rem 0;
+      }
+
+      /* Larger CTA button on mobile */
+      #booking-submit {
+        height: 4rem !important; /* 64px */
+        font-size: 1.125rem; /* 18px */
+      }
+
+      /* Increase vertical spacing for better tap accuracy */
+      #time-slots-grid {
+        gap: 0.75rem !important;
+      }
+
+      /* Better touch targets for checkboxes */
+      input[type="checkbox"] {
+        min-width: 20px;
+        min-height: 20px;
       }
 
       #booking input:not([type="file"]):not([type="checkbox"]),
@@ -413,12 +509,9 @@
     </a>
 
     <div class="space-y-6 max-w-2xl mx-auto">
-      <h1 class="text-3xl md:text-4xl font-bold leading-tight">A studio that helps you create your best work.</h1>
+      <h1 class="text-3xl md:text-4xl font-bold leading-tight">A studio for artists who want their music finished properly.</h1>
       <!-- Homepage orientation: clarifying purpose -->
-      <p class="text-base opacity-60" style="color: var(--text-muted);">
-        A dedicated studio for recording, mixing, mastering, production support, and learning available from any location.
-      </p>
-      <p class="text-lg md:text-xl opacity-80 leading-relaxed">From recording and mixing to beats, mastering, and one‑to‑one guidance all accessible remotely or in‑person.</p>
+      <p class="text-lg md:text-xl opacity-80 leading-relaxed">Recording, mixing, mastering, production support, and learning — available remotely or in person.</p>
     </div>
 
     <a href="#services"
@@ -432,19 +525,19 @@
       <p class="text-sm uppercase tracking-wider opacity-50 mb-8">What are you working on?</p>
       
       <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-base">
-        <a href="javascript:void(0)" onclick="openServiceModal('recording')"
+        <a href="#services"
            class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Recording
         </a>
-        <a href="javascript:void(0)" onclick="openServiceModal('mixing')"
+        <a href="#services"
            class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Mixing
         </a>
-        <a href="javascript:void(0)" onclick="openServiceModal('mastering')"
+        <a href="#services"
            class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Mastering
         </a>
-        <a href="javascript:void(0)" onclick="openServiceModal('production')"
+        <a href="#services"
            class="hover:text-orange-500 transition underline-offset-4 hover:underline cursor-pointer">
           Beats & Production
         </a>
@@ -620,6 +713,7 @@
               <span class="font-semibold">City Lights</span>
               <span class="text-xs opacity-70">Afro House</span>
             </div>
+            <p class="text-xs opacity-60 mb-2">Client project · Independent artist</p>
             <div class="badges mb-2">
               <span class="badge">Produced</span>
               <span class="badge">Mixed</span>
@@ -637,7 +731,7 @@
               </div>
             </div>
             <p class="text-xs opacity-60 mt-3">
-              Like this sound? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
+              Like this sound? <a href="#booking" onclick="preselectService('mixing')" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
             </p>
           </div>
           <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
@@ -645,6 +739,7 @@
               <span class="font-semibold">Midnight Drive</span>
               <span class="text-xs opacity-70">Trap</span>
             </div>
+            <p class="text-xs opacity-60 mb-2">Client project · Independent artist</p>
             <div class="badges mb-2">
               <span class="badge">Mastered</span>
             </div>
@@ -660,7 +755,7 @@
               </div>
             </div>
             <p class="text-xs opacity-60 mt-3">
-              Like this sound? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
+              Like this sound? <a href="#booking" onclick="preselectService('mixing')" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
             </p>
           </div>
           <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
@@ -668,6 +763,7 @@
               <span class="font-semibold">Elevation</span>
               <span class="text-xs opacity-70">Afrobeats</span>
             </div>
+            <p class="text-xs opacity-60 mb-2">Client project · Independent artist</p>
             <div class="badges mb-2">
               <span class="badge">Mixed</span>
               <span class="badge">Mastered</span>
@@ -684,7 +780,7 @@
               </div>
             </div>
             <p class="text-xs opacity-60 mt-3">
-              Like this sound? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
+              Like this sound? <a href="#booking" onclick="preselectService('mixing')" class="text-orange-500 font-semibold hover:underline">Book a mixing session →</a>
             </p>
           </div>
         </div>
@@ -707,7 +803,7 @@
             </div>
             <div class="text-xs opacity-80 mt-2">Available for lease or exclusive</div>
             <p class="text-xs opacity-60 mt-3">
-              Want to record on this beat? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
+              Want to record on this beat? <a href="#booking" onclick="preselectService('production')" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
             </p>
           </div>
           <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
@@ -724,7 +820,7 @@
             </div>
             <div class="text-xs opacity-80 mt-2">Available for lease or exclusive</div>
             <p class="text-xs opacity-60 mt-3">
-              Want to record on this beat? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
+              Want to record on this beat? <a href="#booking" onclick="preselectService('production')" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
             </p>
           </div>
           <div class="rounded-xl p-6 border border-white/10" style="background: var(--bg-card);">
@@ -741,7 +837,7 @@
             </div>
             <div class="text-xs opacity-80 mt-2">Available for lease or exclusive</div>
             <p class="text-xs opacity-60 mt-3">
-              Want to record on this beat? <a href="#booking" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
+              Want to record on this beat? <a href="#booking" onclick="preselectService('production')" class="text-orange-500 font-semibold hover:underline">Start a session →</a>
             </p>
           </div>
         </div>
@@ -768,9 +864,9 @@
     
     <!-- LOCKED: Page header and framing copy -->
     <div class="mb-16 max-w-2xl">
-      <h2 class="text-4xl md:text-5xl font-bold mb-4">Learn the process</h2>
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">Finish your tracks</h2>
       <p class="text-base opacity-70">
-        Resources for producers who want to finish tracks with clarity and confidence.
+        Clarity, structure, and momentum for unfinished music.
       </p>
     </div>
 
@@ -779,14 +875,13 @@
     <!-- DO NOT modify steps or order -->
     <!-- ========================================== -->
     <div class="mb-12 pb-12 border-b" style="border-color: var(--border-soft);">
-      <h3 class="text-xl font-semibold mb-6">Start here</h3>
-      
-      <ol class="space-y-3 text-base max-w-xl">
-        <li>1. Read the ebook</li>
-        <li>2. Take a mini course</li>
-        <li>3. Apply the process</li>
-        <li>4. Book a session when ready</li>
-      </ol>
+      <ul class="space-y-3 text-base max-w-xl">
+        <li><strong>Book a session</strong> — 1-on-1 guidance to move your project forward</li>
+        <li><strong>Courses</strong> — 30 mini courses organized by difficulty</li>
+        <li><strong>Ebooks</strong> — Step-by-step guides for finishing tracks</li>
+        <li><strong>Tools & Templates</strong> — Checklists and reference materials</li>
+      </ul>
+      <p class="text-sm opacity-60 mt-6 max-w-xl">Start anywhere — most producers combine more than one</p>
     </div>
     <!-- END: Start here roadmap -->
     <!-- ========================================== -->
@@ -857,7 +952,7 @@
       </div>
       
       <p class="text-sm opacity-60 pt-2">
-        For producers with unfinished tracks who keep tweaking endlessly
+        For producers with unfinished tracks who keep tweaking endlessly. Often taken before or alongside a mixing session.
       </p>
     </div>
     
@@ -885,7 +980,7 @@
     <div class="rounded-2xl p-10 shadow-xl" style="background: var(--bg-soft);">
 
       <p class="text-xs uppercase tracking-wider opacity-50 mb-4 text-center font-semibold">
-        Step 1 of 3 — Session details
+        Session details
       </p>
 
       <p id="booking-status" class="text-sm opacity-0 mb-6 text-center transition-opacity duration-300">
@@ -932,19 +1027,31 @@
             style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
           >
             <option value="">Select a service…</option>
-            <option value="recording">Recording</option>
-            <option value="mixing">Mixing</option>
-            <option value="mastering">Mastering</option>
-            <option value="production">Production</option>
-            <option value="lessons">Lessons</option>
+            <option value="recording">Recording (from £45/hr)</option>
+            <option value="mixing">Mixing (from £85)</option>
+            <option value="mastering">Mastering (from £50)</option>
+            <option value="production">Production (Beats & Licensing) (from £50)</option>
+            <option value="lessons">Lessons (from £45/hr)</option>
           </select>
+          <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-muted); opacity: 0.7;">Not sure? Choose the closest match — you can change this at any time.</p>
+          <p id="service-guidance" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-muted); opacity: 0; transition: opacity 0.3s ease;"></p>
+          <a href="#" id="service-helper-toggle" style="margin-top: 0.5rem; display: block; font-size: 0.8125rem; color: var(--accent); opacity: 0.8; text-decoration: underline; cursor: pointer;">Not sure what to book?</a>
+          <div id="service-helper" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: 8px; font-size: 0.8125rem; color: var(--text-muted);">
+            <ul style="list-style: none; padding: 0; margin: 0; space-y: 0.5rem;">
+              <li style="margin-bottom: 0.5rem;"><strong>Recording</strong> → Studio time for vocals and instruments</li>
+              <li style="margin-bottom: 0.5rem;"><strong>Mixing</strong> → Balance your recorded tracks</li>
+              <li style="margin-bottom: 0.5rem;"><strong>Mastering</strong> → Final polish for release</li>
+              <li style="margin-bottom: 0.5rem;"><strong>Production</strong> → Beats and custom tracks</li>
+              <li><strong>Lessons</strong> → One-to-one training</li>
+            </ul>
+          </div>
         </div>
         <!-- Secondary input: shown contextually below -->
         <div id="secondary-input-wrapper" class="mt-4"></div>
 
         <!-- Package selector -->
         <section id="package-wrapper" class="hidden">
-          <label class="text-sm opacity-70 mb-2 block">Package</label>
+          <label class="block mb-2 font-semibold">Package</label>
           <select
             id="package-select"
             class="w-full px-4 py-3 rounded-lg border"
@@ -952,6 +1059,7 @@
           >
             <option value="">Choose a package…</option>
           </select>
+          <p id="package-guidance" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-muted); opacity: 0; transition: opacity 0.3s ease;"></p>
         </section>
 
         <!-- Hours (shown for hourly services only) -->
@@ -969,35 +1077,68 @@
         </div>
 
         <!-- Add-Ons -->
-        <div id="addons-wrapper" class="space-y-3">
+        <div id="addons-wrapper" class="space-y-3 addons-deemphasized">
           <label class="block font-semibold">Add-Ons (optional)</label>
+          <p style="margin-top: 0.25rem; margin-bottom: 0.75rem; font-size: 0.875rem; color: var(--text-muted); opacity: 0.7;">Optional extras — only select what you actually need.</p>
           
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              class="addon-checkbox w-5 h-5"
-              value="vocalTuning"
-            />
-            <span>Vocal Tuning — £25</span>
-          </label>
+          <div>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                class="addon-checkbox w-5 h-5"
+                value="vocalTuning"
+              />
+              <span>Vocal Tuning — £25</span>
+            </label>
+            <p style="margin-left: 2rem; margin-top: 0.25rem; font-size: 0.8125rem; color: var(--text-muted); opacity: 0.6;">Professional pitch correction for polished vocals.</p>
+          </div>
 
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              class="addon-checkbox w-5 h-5"
-              value="stems"
-            />
-            <span>Stems Export — £20</span>
-          </label>
+          <div>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                class="addon-checkbox w-5 h-5"
+                value="stems"
+              />
+              <span>Stems Export — £20</span>
+            </label>
+            <p style="margin-left: 2rem; margin-top: 0.25rem; font-size: 0.8125rem; color: var(--text-muted); opacity: 0.6;">Individual track files for remixing or further editing.</p>
+          </div>
 
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              class="addon-checkbox w-5 h-5"
-              value="rush"
-            />
-            <span>Rush Delivery — +<span data-price="addons.rush.percentage" data-suffix="%"></span></span>
-          </label>
+          <div>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                class="addon-checkbox w-5 h-5"
+                value="rush"
+              />
+              <span>Rush Delivery — +<span data-price="addons.rush.percentage" data-suffix="%"></span></span>
+            </label>
+            <p style="margin-left: 2rem; margin-top: 0.25rem; font-size: 0.8125rem; color: var(--text-muted); opacity: 0.6;">Recommended for tight deadlines.</p>
+          </div>
+        </div>
+
+        <!-- Date & Time Selection -->
+        <div>
+          <label class="block mb-2 font-semibold">Preferred Date</label>
+          <input
+            type="date"
+            id="session-date"
+            name="preferred-date"
+            required
+            class="w-full px-4 py-3 rounded-lg border"
+            style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main); color-scheme: dark;"
+          />
+          <p style="margin-top: 0.5rem; font-size: 0.8125rem; color: var(--text-muted); opacity: 0.7;">Sessions are typically available within 3–5 days.</p>
+        </div>
+
+        <!-- Time Slot Picker (shows after date selected) -->
+        <div id="time-slot-wrapper" class="hidden">
+          <label class="block mb-2 font-semibold">Preferred Time</label>
+          <p id="availability-status" class="text-sm opacity-70 mb-3">Checking availability...</p>
+          <div id="time-slots-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+          <input type="hidden" id="session-time" name="session-time" />
+          <p style="margin-top: 0.75rem; font-size: 0.875rem; color: var(--text-muted); opacity: 0.7;">We'll confirm availability and reach out if any adjustments are needed.</p>
         </div>
 
         <!-- Your details -->
@@ -1028,81 +1169,126 @@
           style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
         />
 
-        <input
-          type="date"
-          name="preferred-date"
-          class="w-full px-4 py-3 rounded-lg border"
-          style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main); color-scheme: dark;"
-        />
+        <!-- Price Summary (moved above optional details for mobile visibility) -->
+        <div id="mobile-price-summary" class="rounded-xl p-5 border space-y-2" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <!-- Placeholder when nothing selected -->
+          <p id="price-placeholder" class="text-center text-sm" style="color: var(--text-muted); opacity: 0.7; padding: 1rem 0;">Select a package to see pricing.</p>
+          
+          <!-- Price breakdown (hidden until package selected) -->
+          <div id="price-breakdown" style="display: none;">
+            <!-- Scan-friendly single line price display -->
+            <p id="price-summary-line" class="font-medium" style="font-size: 1rem; line-height: 1.5;"></p>
 
-        <!-- File upload -->
-        <div>
-          <label class="block mb-2 font-semibold">
-            Upload audio / stems (optional)
-          </label>
-          <input
-            type="file"
-            name="audio"
-            accept=".mp3,.wav,.zip,.aiff"
-            multiple
-            class="w-full text-sm
-              file:bg-orange-600 file:text-white
-              file:border-none file:px-4 file:py-2
-              file:rounded-lg file:cursor-pointer
-              hover:file:bg-orange-500"
-          />
-          <p class="text-xs opacity-60 mt-2">Upload one or more files. For stems, select all files at once. WAV or AIFF preferred. For large sessions, a cloud link may be faster.</p>
-        </div>
+            <div id="summary-addons" class="space-y-1 mt-2" style="font-size: 0.875rem; opacity: 0.75;"></div>
 
-        <!-- Cloud Storage Link -->
-        <div>
-          <label class="block mb-2 font-semibold">
-            Or provide a cloud storage link (optional)
-          </label>
-          <input
-            type="url"
-            name="cloud-link"
-            placeholder="Dropbox, Google Drive, WeTransfer, etc."
-            class="w-full px-4 py-3 rounded-lg border focus:outline-none"
-            style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
-          />
-          <p id="upload-hint" class="text-xs opacity-60 mt-2" style="display: none;"></p>
-        </div>
-
-        <!-- Notes -->
-        <textarea
-          name="details"
-          rows="4"
-          placeholder="Tell us about your project…"
-          class="w-full px-4 py-3 rounded-lg border"
-          style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
-        ></textarea>
-
-        <!-- Price Summary -->
-        <div class="rounded-xl p-5 border space-y-2" style="background: var(--bg-card); border-color: var(--border-soft);">
-          <div class="flex justify-between">
-            <span>Total session price</span>
-            <span class="font-semibold">£<span id="total-display">0</span></span>
+            <p id="payment-helper" class="text-xs mt-3" style="color: var(--text-muted); opacity: 0.6;"></p>
           </div>
+        </div>
 
-          <div id="summary-addons" class="space-y-1"></div>
+        <!-- Optional Details Accordion -->
+        <details class="rounded-lg border" style="background: var(--bg-card); border-color: var(--border-soft);">
+          <summary class="px-4 py-3 font-semibold cursor-pointer select-none" style="color: var(--text-main);">
+            Add details (optional)
+          </summary>
+          <div class="px-4 pb-4 space-y-6 pt-2">
+            <!-- File upload -->
+            <div>
+              <label class="block mb-2 font-semibold">
+                Upload audio / stems
+              </label>
+              <input
+                type="file"
+                name="audio"
+                accept=".mp3,.wav,.zip,.aiff"
+                multiple
+                class="w-full text-sm
+                  file:bg-orange-600 file:text-white
+                  file:border-none file:px-4 file:py-2
+                  file:rounded-lg file:cursor-pointer
+                  hover:file:bg-orange-500"
+              />
+              <p class="text-xs opacity-60 mt-2">Upload one or more files. For stems, select all files at once. WAV or AIFF preferred. For large sessions, a cloud link may be faster.</p>
+            </div>
 
-          <div class="flex justify-between text-orange-500 font-semibold">
-            <span>Deposit due today (50%)</span>
-            <span>£<span id="deposit-display">0</span></span>
+            <!-- Cloud Storage Link -->
+            <div>
+              <label class="block mb-2 font-semibold">
+                Or provide a cloud storage link
+              </label>
+              <input
+                type="url"
+                name="cloud-link"
+                placeholder="Dropbox, Google Drive, WeTransfer, etc."
+                class="w-full px-4 py-3 rounded-lg border focus:outline-none"
+                style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
+              />
+              <p id="upload-hint" class="text-xs opacity-60 mt-2" style="display: none;"></p>
+            </div>
+
+            <!-- Reference Tracks -->
+            <div>
+              <label class="block mb-2 font-semibold">
+                Reference tracks
+              </label>
+              <input
+                type="text"
+                name="reference-tracks"
+                placeholder="Spotify / YouTube links"
+                class="w-full px-4 py-3 rounded-lg border"
+                style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
+              />
+              <p class="text-xs opacity-60 mt-2">Share tracks that inspire your sound.</p>
+            </div>
+
+            <!-- Session Goals -->
+            <div>
+              <label class="block mb-3 font-semibold">Session goals</label>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                  <input type="radio" name="session-goal" value="record-vocals" style="width: 16px; height: 16px;" />
+                  <span style="font-size: 0.875rem; color: var(--text-muted);">Record vocals</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                  <input type="radio" name="session-goal" value="finish-track" style="width: 16px; height: 16px;" />
+                  <span style="font-size: 0.875rem; color: var(--text-muted);">Finish a track</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                  <input type="radio" name="session-goal" value="get-feedback" style="width: 16px; height: 16px;" />
+                  <span style="font-size: 0.875rem; color: var(--text-muted);">Get feedback</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                  <input type="radio" name="session-goal" value="unsure" style="width: 16px; height: 16px;" />
+                  <span style="font-size: 0.875rem; color: var(--text-muted);">Unsure</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label class="block mb-2 font-semibold">
+                Project notes
+              </label>
+              <textarea
+                name="details"
+                rows="4"
+                placeholder="Tell us about your project…"
+                class="w-full px-4 py-3 rounded-lg border"
+                style="background: var(--bg-card); border-color: var(--border-soft); color: var(--text-main);"
+              ></textarea>
+            </div>
           </div>
+        </details>
 
-          <p class="text-xs opacity-60 mt-2">
-            The remaining balance is payable on the session day.
-          </p>
-          <p class="text-xs opacity-60">
-            Custom Production projects are quoted individually based on scope and timeline.
+        <!-- Promo Code Info -->
+        <div class="rounded-lg p-4 border" style="background: var(--bg-soft); border-color: var(--border-soft);">
+          <p class="text-sm" style="color: var(--text-muted);">
+            💳 <strong>Promo codes</strong> can be applied securely on the Stripe payment page in the next step.
           </p>
         </div>
 
-        <!-- Trust Message -->
-        <p class="text-center text-sm opacity-70">
-          🔒 Secure booking · No payment taken until your session is confirmed
+        <!-- Trust Messages -->
+        <p class="text-center text-sm font-medium" style="color: var(--text-muted);">
+          Secure checkout powered by Stripe.
         </p>
 
         <!-- Submit -->
@@ -1110,12 +1296,13 @@
           type="submit"
           id="booking-submit"
           class="w-full h-14 rounded-lg bg-orange-600 font-bold text-lg hover:bg-orange-500 transition"
+          style="box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);"
         >
           Book & Pay Deposit
         </button>
 
-        <p class="text-center text-sm opacity-60">
-          You'll be redirected to secure payment via Stripe.
+        <p class="text-center text-sm" style="color: var(--text-muted); opacity: 0.7;">
+          You'll receive a confirmation email immediately after payment.
         </p>
 
         <div data-netlify-recaptcha="true"></div>
@@ -1145,11 +1332,11 @@
   © 2026 Studio XV. All rights reserved.
 </footer>
 
-<!-- RESTORED FROM LIVE SITE — WaveSurfer.js CDN -->
-<script src="https://unpkg.com/wavesurfer.js@7"></script>
+<!-- WaveSurfer.js (local) -->
+<script src="/js/wavesurfer.min.js"></script>
 
 <!-- RESTORED FROM LIVE SITE — Portfolio player controls -->
-<script src="js/portfolio-player.js"></script>
+<script src="/js/portfolio-player.js"></script>
 
 <!-- Service Modal & Mobile Menu JavaScript -->
 <script>
@@ -1246,6 +1433,7 @@
               <li>• Mix + Master — <span data-price="mixing.packages.mix-master.price"></span></li>
               <li>• EP (4–6 tracks) — <span data-price="mixing.packages.ep.price"></span></li>
             </ul>
+            <p class="text-sm opacity-60 mt-2">Includes revisions</p>
           </div>
 
           <div>
@@ -1342,7 +1530,7 @@
       content: `
         <h2 class="text-3xl md:text-4xl font-bold mb-6">Production Lessons</h2>
         <p class="text-lg opacity-80 leading-relaxed mb-8">
-          One-to-one Zoom sessions focused on your specific production challenges and goals.
+          One-to-one sessions focused on your specific production challenges and goals. Available via Zoom or in-studio.
         </p>
 
         <div class="space-y-6 mb-8">
@@ -1586,6 +1774,38 @@
 
   // Populate prices immediately
   populatePrices();
+
+  // ========================================
+  // SERVICE HELPER TOGGLE
+  // ========================================
+  const serviceHelperToggle = document.getElementById('service-helper-toggle');
+  const serviceHelper = document.getElementById('service-helper');
+  
+  if (serviceHelperToggle && serviceHelper) {
+    serviceHelperToggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (serviceHelper.style.display === 'none') {
+        serviceHelper.style.display = 'block';
+        serviceHelperToggle.textContent = 'Hide service guide';
+      } else {
+        serviceHelper.style.display = 'none';
+        serviceHelperToggle.textContent = 'Not sure what to book?';
+      }
+    });
+  }
+
+  // ========================================
+  // HANDLE URL PARAMETERS FOR SERVICE PRE-SELECTION
+  // ========================================
+  const urlParams = new URLSearchParams(window.location.search);
+  const preselectedService = urlParams.get('service');
+  
+  if (preselectedService && serviceSelect) {
+    // Set the service dropdown value
+    serviceSelect.value = preselectedService;
+    // Trigger change event to show appropriate package options
+    serviceSelect.dispatchEvent(new Event('change'));
+  }
   
   // Also populate when modal opens (for dynamically loaded content)
   const originalOpenModal = window.openServiceModal;
@@ -1606,6 +1826,18 @@
   const depositDisplay = document.getElementById('deposit-display');
   const summaryAddons = document.getElementById('summary-addons');
   const addonCheckboxes = document.querySelectorAll('.addon-checkbox');
+  const sessionDateInput = document.getElementById('session-date');
+  const sessionDateWrapper = sessionDateInput?.closest('div'); // Parent div
+  const sessionTimeInput = document.getElementById('session-time'); // ✅ Hidden input for selected time
+  const timeSlotWrapper = document.getElementById('time-slot-wrapper');
+
+  // 🎯 SERVICE RULES - Define session vs non-session services
+  const SESSION_SERVICES = ['recording', 'mixing', 'mastering', 'lessons'];
+  
+  // Helper: Check if service requires session date/time
+  function isSessionService(service) {
+    return SESSION_SERVICES.includes(service);
+  }
 
   // Service selection handler
   serviceSelect.addEventListener('change', function() {
@@ -1613,10 +1845,57 @@
     bookingState.service = service;
     bookingState.package = '';
     
+    // Update service guidance text
+    const serviceGuidance = document.getElementById('service-guidance');
+    const guidanceText = {
+      'recording': 'Professional studio time for vocals and instruments. Book by the hour or choose a package.',
+      'mixing': 'Balance and refine your recorded tracks. Bring stems or individual files.',
+      'mastering': 'Final polish for release-ready sound. Perfect for singles, EPs, and albums.',
+      'lessons': 'One-to-one production training. Tailored to your current skill level.',
+      'production': 'Beats, custom production, and collaboration. No studio session required.'
+    };
+    
+    if (service && guidanceText[service]) {
+      serviceGuidance.textContent = guidanceText[service];
+      serviceGuidance.style.opacity = '1';
+    } else {
+      serviceGuidance.style.opacity = '0';
+    }
+    
+    // Update package guidance text
+    const packageGuidance = document.getElementById('package-guidance');
+    const packageGuidanceText = {
+      'recording': 'Most artists choose Half Day for vocals or Full Day for full tracks.',
+      'mixing': 'Single Track is ideal for one song. EP and Album are best for cohesive projects.',
+      'mastering': 'Choose Single Track for releases, EP or Album for consistent sound.',
+      'lessons': 'Sessions are tailored to your level — beginners welcome.',
+      'production': 'Licensing and custom options are confirmed after checkout.'
+    };
+    
+    if (service && packageGuidanceText[service]) {
+      packageGuidance.textContent = packageGuidanceText[service];
+      packageGuidance.style.opacity = '1';
+    } else {
+      packageGuidance.style.opacity = '0';
+    }
+    
     // Reset displays
     hoursWrapper.classList.add('hidden');
     packageWrapper.classList.add('hidden');
     packageSelect.innerHTML = '<option value="">Choose a package…</option>';
+    
+    // 🎯 Show/hide date/time based on service type
+    if (sessionDateWrapper) {
+      if (isSessionService(service)) {
+        sessionDateWrapper.classList.remove('hidden');
+        sessionDateInput.required = true;
+      } else {
+        sessionDateWrapper.classList.add('hidden');
+        timeSlotWrapper?.classList.add('hidden');
+        sessionDateInput.required = false;
+        sessionDateInput.value = '';
+      }
+    }
     
     if (!service) {
       calculateTotal();
@@ -1664,6 +1943,13 @@
   packageSelect.addEventListener('change', function() {
     bookingState.package = this.value;
     
+    // Emphasize add-ons section when package is selected
+    const addonsWrapper = document.getElementById('addons-wrapper');
+    if (this.value && addonsWrapper) {
+      addonsWrapper.classList.remove('addons-deemphasized');
+      addonsWrapper.classList.add('addons-emphasized');
+    }
+    
     // Show/hide hours input based on package selection
     if (bookingState.package === 'hourly' && (bookingState.service === 'recording' || bookingState.service === 'lessons')) {
       hoursWrapper.classList.remove('hidden');
@@ -1700,8 +1986,8 @@
     const service = bookingState.service;
     const pkg = bookingState.package;
     
-    if (!service) {
-      updatePriceDisplay(0);
+    if (!service || !pkg) {
+      updatePriceDisplay(0, 0, [], false);
       return;
     }
     
@@ -1732,35 +2018,266 @@
     });
     
     const total = basePrice + addonTotal;
-    updatePriceDisplay(total, addonDetails);
+    
+    // 🎯 Calculate deposit based on service type
+    const deposit = isSessionService(service) ? Math.round(total * 0.5) : total;
+    
+    updatePriceDisplay(total, deposit, addonDetails, true);
   }
 
   // Update price display
-  function updatePriceDisplay(total, addonDetails = []) {
-    totalDisplay.textContent = total;
-    const deposit = Math.round(total * 0.5);
-    depositDisplay.textContent = deposit;
+  function updatePriceDisplay(total, deposit, addonDetails = [], hasPackage = false) {
+    const pricePlaceholder = document.getElementById('price-placeholder');
+    const priceBreakdown = document.getElementById('price-breakdown');
+    const priceSummaryLine = document.getElementById('price-summary-line');
+    const paymentHelper = document.getElementById('payment-helper');
+    
+    // Show placeholder or breakdown
+    if (!hasPackage) {
+      pricePlaceholder.style.display = 'block';
+      priceBreakdown.style.display = 'none';
+      return;
+    }
+    
+    pricePlaceholder.style.display = 'none';
+    priceBreakdown.style.display = 'block';
+    
+    const service = bookingState.service;
+    const isSession = isSessionService(service);
+    
+    // Build scan-friendly price line
+    if (isSession) {
+      // Deposit-based session services: "Total: £X | Paying today: £Y | Balance later: £Z"
+      const balance = total - deposit;
+      priceSummaryLine.innerHTML = `Total: £${total} <span style="opacity: 0.4; margin: 0 0.5rem;">|</span> Paying today: £${deposit} <span style="opacity: 0.4; margin: 0 0.5rem;">|</span> Balance later: £${balance}`;
+      paymentHelper.textContent = 'Balance due at session start.';
+    } else {
+      // Full-payment services: "Paying today: £X (paid in full)"
+      priceSummaryLine.innerHTML = `Paying today: £${total} <span style="opacity: 0.6;">(paid in full)</span>`;
+      paymentHelper.textContent = 'Payment is taken in full today.';
+    }
     
     // Update addon summary
     summaryAddons.innerHTML = '';
     addonDetails.forEach(addon => {
       const addonLine = document.createElement('div');
-      addonLine.className = 'flex justify-between text-sm opacity-70';
+      addonLine.className = 'flex justify-between text-sm';
       addonLine.innerHTML = `<span>+ ${addon.name}</span><span>£${addon.cost}</span>`;
       summaryAddons.appendChild(addonLine);
     });
     
+    // Update button text based on payment type
+    const bookingSubmitBtn = document.getElementById('booking-submit');
+    if (bookingSubmitBtn) {
+      if (isSession) {
+        bookingSubmitBtn.textContent = 'Book & Pay Deposit';
+      } else {
+        bookingSubmitBtn.textContent = 'Pay & Confirm Booking';
+      }
+    }
+    
     // Add animation
-    depositDisplay.classList.add('updating');
-    setTimeout(() => depositDisplay.classList.remove('updating'), 400);
+    priceSummaryLine.classList.add('updating');
+    setTimeout(() => priceSummaryLine.classList.remove('updating'), 400);
   }
 
   // Initialize
   calculateTotal();
 
+  // ========================================
+  // TIME SLOT AVAILABILITY SYSTEM
+  // ========================================
+  // sessionDateInput, sessionTimeInput, timeSlotWrapper declared above
+  const timeSlotsGrid = document.getElementById('time-slots-grid');
+  const availabilityStatus = document.getElementById('availability-status');
+
+  // Business hours: 9:00 - 22:00 (Europe/London)
+  const BUSINESS_START = 9;
+  const BUSINESS_END = 22;
+
+  // Track selected time slot
+  let selectedTimeSlot = null;
+
+  // Get session duration in hours
+  function getSessionDuration() {
+    const service = bookingState.service;
+    const pkg = bookingState.package;
+    
+    if (!service || !pkg) return 2; // Default 2 hours
+    
+    // If hourly package, use hours input
+    if (pkg === 'hourly') {
+      return bookingState.hours;
+    }
+    
+    // If package, get hours from package definition
+    if (pricing[service]?.packages?.[pkg]?.hours) {
+      return pricing[service].packages[pkg].hours;
+    }
+    
+    return 2; // Default
+  }
+
+  // Populate time slots from available slots returned by backend
+  function populateTimeSlots(availableSlots = []) {
+    const duration = getSessionDuration();
+    timeSlotsGrid.innerHTML = '';
+    
+    console.log(`📋 Populating ${availableSlots.length} available time slots (${duration}hr session)`);
+    
+    if (availableSlots.length === 0) {
+      timeSlotsGrid.innerHTML = '<p class=\"col-span-full text-center opacity-60\">No available slots for this date. Please choose another date.</p>';
+      return;
+    }
+    
+    // Display each available slot
+    availableSlots.forEach(startTime => {
+      const [hour] = startTime.split(':').map(Number);
+      const endHour = hour + duration;
+      const endTime = `${endHour.toString().padStart(2, '0')}:00`;
+      
+      // Create time slot button
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'px-4 py-3 rounded-lg text-sm font-medium transition hover:bg-orange-600 hover:text-white cursor-pointer';
+      button.style.cssText = `
+        background: var(--bg-card);
+        border: 1px solid var(--border-soft);
+        color: var(--text-main);
+      `;
+      button.textContent = `${startTime} - ${endTime}`;
+      
+      button.addEventListener('click', function() {
+        selectTimeSlot(this, startTime);
+      });
+      
+      timeSlotsGrid.appendChild(button);
+    });
+  }
+
+  // Select a time slot
+  function selectTimeSlot(button, time) {
+    // Remove previous selection
+    const buttons = timeSlotsGrid.querySelectorAll('button');
+    buttons.forEach(btn => {
+      btn.style.background = 'var(--bg-card)';
+      btn.style.color = 'var(--text-main)';
+      btn.style.borderColor = 'var(--border-soft)';
+    });
+    
+    // Highlight selected
+    button.style.background = 'var(--accent)';
+    button.style.color = '#ffffff';
+    button.style.borderColor = 'var(--accent)';
+    
+    selectedTimeSlot = time;
+    
+    // ✅ Safely set hidden input value (guard against null)
+    if (sessionTimeInput) {
+      sessionTimeInput.value = time;
+    }
+    
+    console.log('✅ Selected time:', time);
+  }
+
+  // Fetch availability from server
+  async function checkAvailability(date) {
+    try {
+      console.log('🔍 Checking availability for:', date);
+      
+      availabilityStatus.textContent = 'Checking availability...';
+      availabilityStatus.style.color = 'var(--text-muted)';
+      
+      const response = await fetch(`/.netlify/functions/check-availability?date=${date}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to check availability');
+      }
+      
+      const data = await response.json();
+      
+      console.log('✅ Availability response:', data);
+      console.log(`📊 Available slots: ${data.availableSlots?.length || 0}`);
+      
+      // Update status message
+      if (data.availableSlots && data.availableSlots.length > 0) {
+        availabilityStatus.textContent = `${data.availableSlots.length} slot(s) available`;
+        availabilityStatus.style.color = 'var(--accent)';
+      } else {
+        availabilityStatus.textContent = 'No availability for this date';
+        availabilityStatus.style.color = '#ef4444';
+      }
+      
+      // Populate time slots from available slots
+      populateTimeSlots(data.availableSlots || []);
+      
+    } catch (error) {
+      console.error('❌ Availability check error:', error);
+      availabilityStatus.textContent = 'Unable to check availability. Please try again.';
+      availabilityStatus.style.color = '#ef4444';
+      
+      // Show empty state
+      populateTimeSlots([]);
+    }
+  }
+
+  // Date selection handler
+  if (sessionDateInput) {
+    sessionDateInput.addEventListener('change', function() {
+      const selectedDate = this.value;
+      
+      if (!selectedDate) {
+        timeSlotWrapper.classList.add('hidden');
+        return;
+      }
+      
+      // Ensure service and package are selected
+      if (!bookingState.service || !bookingState.package) {
+        alert('Please select a service and package first');
+        this.value = '';
+        return;
+      }
+      
+      console.log('📅 Date selected:', selectedDate);
+      
+      // 🎯 BYPASS: Non-session services don't need time slots
+      if (!isSessionService(bookingState.service)) {
+        console.log('⏭️ Bypassing availability check - non-session service');
+        timeSlotWrapper.classList.add('hidden');
+        return;
+      }
+      
+      // Show time slot picker
+      timeSlotWrapper.classList.remove('hidden');
+      
+      // Reset selected time
+      selectedTimeSlot = null;
+      
+      // ✅ Safely reset hidden input (guard against null)
+      if (sessionTimeInput) {
+        sessionTimeInput.value = '';
+      }
+      
+      // Check availability
+      checkAvailability(selectedDate);
+    });
+  }
+
   // Handle form submission with Stripe checkout
   const bookingForm = document.querySelector('form[name="booking"]');
   const bookingSubmit = document.getElementById('booking-submit');
+  
+  // ========================================
+  // PRESELECT SERVICE HELPER FOR PORTFOLIO LINKS
+  // ========================================
+  function preselectService(service) {
+    setTimeout(() => {
+      if (serviceSelect) {
+        serviceSelect.value = service;
+        serviceSelect.dispatchEvent(new Event('change'));
+      }
+    }, 100);
+  }
   
   bookingForm.addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -1768,13 +2285,6 @@
     // Validate form
     if (!bookingState.service || !bookingState.package) {
       alert('Please select a service and package');
-      return;
-    }
-    
-    // Check if this is a custom production (no immediate checkout)
-    if (bookingState.service === 'production' && bookingState.package !== 'hourly') {
-      // Submit form normally for custom production quotes
-      bookingForm.submit();
       return;
     }
     
@@ -1797,9 +2307,12 @@
       // Calculate addon costs
       const addonsList = [];
       bookingState.addons.forEach(addon => {
-        if (pricing.addons[addon] === 'percentage') {
-          const rushCost = Math.round(basePrice * 0.5);
-          addonsList.push({ label: 'Rush Delivery (+50%)', price: rushCost });
+        if (pricing.addons[addon]?.percentage) {
+          // Percentage-based addon (Rush, Same-Day, etc.)
+          const percentage = pricing.addons[addon].percentage / 100;
+          const addonCost = Math.round(basePrice * percentage);
+          const addonName = addon === 'rush' ? 'Rush Delivery' : addon === 'sameDay' ? 'Same-Day Turnaround' : addon;
+          addonsList.push({ label: `${addonName} (+${pricing.addons[addon].percentage}%)`, price: addonCost });
         } else {
           const addonName = addon === 'vocalTuning' ? 'Vocal Tuning' : addon === 'stems' ? 'Stems Export' : addon;
           addonsList.push({ label: addonName, price: pricing.addons[addon] });
@@ -1814,7 +2327,24 @@
       if (pkg === 'hourly') {
         packageName = `Hourly (${bookingState.hours}hrs)`;
       } else if (pricing[service].packages[pkg]) {
-        packageName = pricing[service].packages[pkg].name;
+        // Use .label if available, otherwise use formatted pkg name
+        packageName = pricing[service].packages[pkg].label || pkg.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
+      
+      // Get customer info from form
+      const customerName = document.querySelector('input[name="name"]')?.value || '';
+      const customerEmail = document.querySelector('input[name="email"]')?.value || '';
+      
+      // 🎯 Get session date/time ONLY for session services
+      const sessionDate = isSessionService(service) ? (document.getElementById('session-date')?.value || '') : '';
+      const sessionTime = isSessionService(service) ? (document.getElementById('session-time')?.value || '') : '';
+      
+      // Validate session services require date/time
+      if (isSessionService(service) && (!sessionDate || !sessionTime)) {
+        alert('Please select a date and time for your session');
+        bookingSubmit.disabled = false;
+        bookingSubmit.textContent = 'Submit Booking Request';
+        return;
       }
       
       // Call Netlify function to create Stripe checkout
@@ -1829,7 +2359,11 @@
           hours: pkg === 'hourly' ? bookingState.hours : null,
           addons: addonsList,
           total: total,
-          deposit: deposit
+          deposit: deposit,
+          sessionDate: sessionDate,
+          sessionTime: sessionTime,
+          customerName: customerName,
+          customerEmail: customerEmail
         })
       });
       

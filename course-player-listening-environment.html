@@ -4,6 +4,11 @@
   ================================================================
   STUDIO XV COURSE PLAYER
   Course: Listening Environment
+  
+  ACCESS CONTROL:
+  - Preview mode (default): Shows Module 1 only, Modules 2-9 locked
+  - Full access: Add ?access=purchased to URL to unlock all modules
+  - Example: course-player-listening-environment.html?access=purchased
   ================================================================
 -->
 <head>
@@ -57,9 +62,34 @@
       scroll-behavior: smooth;
     }
 
+    .lesson-item {
+      padding: 0.875rem 1.25rem;
+      cursor: pointer;
+      transition: all 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      opacity: 0.65;
+    }
+    
+    .lesson-item:hover {
+      background: rgba(255,255,255,0.03);
+      color: var(--text-main);
+      opacity: 0.85;
+      transform: translateX(2px);
+    }
+    
+    .lesson-item + .lesson-item {
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    
     .lesson-item.active {
       background: var(--bg-soft);
-      border-left: 3px solid var(--accent);
+      border-left: 4px solid var(--accent);
+      font-weight: 600;
+      color: var(--text-main);
+      padding-left: calc(1.25rem - 4px);
+      opacity: 1;
     }
 
     .lesson-item.completed .lesson-check {
@@ -71,6 +101,86 @@
       color: var(--accent);
       margin-right: 8px;
       font-weight: bold;
+    }
+    
+    /* Module collapse/expand */
+    .course-module {
+      margin-bottom: 0.5rem;
+    }
+    
+    .module-header {
+      padding: 1.125rem 1.25rem;
+      cursor: pointer;
+      transition: all 150ms cubic-bezier(0.4, 0.0, 0.2, 1);
+      user-select: none;
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+    
+    .module-header:hover {
+      background: rgba(255,255,255,0.04);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    
+    .module-toggle {
+      display: inline-block;
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+      transition: transform 150ms ease;
+    }
+    
+    .course-module.collapsed .module-toggle {
+      transform: rotate(0deg);
+    }
+    
+    .course-module:not(.collapsed) .module-toggle {
+      transform: rotate(90deg);
+    }
+    
+    .module-lessons {
+      max-height: 1000px;
+      overflow: hidden;
+      transition: max-height 200ms ease;
+      padding-left: 1rem;
+    }
+    
+    .course-module.collapsed .module-lessons {
+      max-height: 0;
+    }
+    
+    /* Locked Module Styles */
+    .module-locked {
+      opacity: 0.5;
+      pointer-events: none;
+      position: relative;
+    }
+    
+    .module-locked::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(2px);
+    }
+    
+    .locked-overlay {
+      position: relative;
+      z-index: 10;
+      padding: 2rem;
+      text-align: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      margin: 1rem;
+    }
+    
+    .lock-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      opacity: 0.6;
     }
     
     /* Completion Modal */
@@ -133,8 +243,8 @@
       title: 'Listening Environment',
       backLink: 'learn-courses.html',
       backLinkText: 'Back to Courses',
-      totalDuration: '~50 minutes',
-      moduleCount: 3
+      totalDuration: '~35 minutes',
+      moduleCount: 9
     };
     
     /* ============================================
@@ -142,249 +252,95 @@
        ============================================ */
     
     const lessons = [
-      // Module 1: Room Fundamentals
-      {
-        id: 'm1-l1',
-        module: 1,
-        moduleTitle: 'Room Fundamentals',
-        lesson: 1,
-        title: 'Why your room matters more than your monitors',
-        duration: '5:20',
-        description: 'Understanding how room acoustics affect everything you hear and mix.',
-        inThisLesson: [
-          'The biggest mixing mistake: trusting untreated rooms',
-          'How reflections distort frequency response',
-          'Why expensive monitors sound bad in bad rooms',
-          'Room modes and frequency buildup'
-        ],
-        keyTakeaways: [
-          'Your room shapes everything you hear. Even $5,000 monitors will lie to you in an untreated room. Reflections, room modes, and standing waves color your perception and lead to poor mix decisions.',
-          'Monitors are the last thing to upgrade. Fix your room first, then your monitoring position, then acoustic treatment. Only after all of that should you consider better speakers.',
-          'An untreated room creates frequency buildups and dips that make you over-compensate in your mix. You add bass because your room eats it, or cut highs because your room reflects them.'
-        ],
-        resources: [
-          { name: 'Room acoustics fundamentals', type: 'PDF' },
-          { name: 'Frequency response problems', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm1-l2',
-        module: 1,
-        moduleTitle: 'Room Fundamentals',
-        lesson: 2,
-        title: 'Understanding room modes',
-        duration: '6:10',
-        description: 'How standing waves create false bass response and ruin low-end decisions.',
-        inThisLesson: [
-          'What room modes are and why they happen',
-          'Axial, tangential, and oblique modes',
-          'Finding your room\'s problem frequencies',
-          'How modes affect mixing decisions'
-        ],
-        keyTakeaways: [
-          'Room modes are standing waves that occur at specific frequencies based on your room\'s dimensions. These frequencies either build up (too loud) or cancel out (too quiet), making it impossible to judge bass accurately.',
-          'Small rooms have more severe mode issues. The smaller your space, the higher the problem frequencies, and the harder it is to fix with positioning alone.',
-          'You can calculate your room modes using simple formulas (speed of sound ÷ room dimension), but you\'ll feel them more than measure them: certain bass notes will boom, others will disappear.'
-        ],
-        resources: [
-          { name: 'Room mode calculator', type: 'PDF' },
-          { name: 'Modal frequency chart', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm1-l3',
-        module: 1,
-        moduleTitle: 'Room Fundamentals',
-        lesson: 3,
-        title: 'First reflections and phantom imaging',
-        duration: '4:50',
-        description: 'How early reflections blur stereo image and ruin clarity.',
-        inThisLesson: [
-          'What first reflections are',
-          'How reflections affect stereo imaging',
-          'The mirror test for identifying reflection points',
-          'Priority reflection zones to treat'
-        ],
-        keyTakeaways: [
-          'First reflections are the sound bouncing off your walls, ceiling, and desk before reaching your ears. These reflections arrive milliseconds after the direct sound, blurring stereo image and clarity.',
-          'Treating first reflections is the single most effective acoustic improvement. Absorbing reflections from your side walls, ceiling, and desk dramatically improves imaging and detail.',
-          'Use the mirror test: sit in your mixing position and have someone move a mirror along your walls. Wherever you see your monitor\'s reflection is a critical reflection point to treat.'
-        ],
-        resources: [
-          { name: 'First reflection guide', type: 'PDF' },
-          { name: 'Mirror test instructions', type: 'PDF' }
-        ]
-      },
-      // Module 2: Monitor Setup
-      {
-        id: 'm2-l1',
-        module: 2,
-        moduleTitle: 'Monitor Setup',
-        lesson: 1,
-        title: 'The equilateral triangle rule',
-        duration: '4:40',
-        description: 'Proper speaker placement for accurate stereo imaging and balance.',
-        inThisLesson: [
-          'Why the equilateral triangle matters',
-          'Measuring and setting up the triangle',
-          'Tweeter height and ear level',
-          'Angling monitors correctly'
-        ],
-        keyTakeaways: [
-          'Your listening position and monitors should form an equilateral triangle (all three sides equal). This ensures balanced stereo imaging and a centered phantom center image.',
-          'Tweeters should be at ear height when seated. If your monitors are too high or too low, the frequency response and imaging suffer.',
-          'Angle your monitors so they point directly at your head (or slightly behind). This focuses the sweet spot on your listening position and reduces room reflections.'
-        ],
-        resources: [
-          { name: 'Monitor placement guide', type: 'PDF' },
-          { name: 'Setup measurement worksheet', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm2-l2',
-        module: 2,
-        moduleTitle: 'Monitor Setup',
-        lesson: 2,
-        title: 'Distance from walls and corners',
-        duration: '5:30',
-        description: 'How monitor placement relative to walls affects bass response.',
-        inThisLesson: [
-          'Why corners and walls boost bass',
-          'The 38% rule for monitor distance',
-          'Symmetry and room balance',
-          'When to break the rules'
-        ],
-        keyTakeaways: [
-          'Placing monitors close to walls or in corners artificially boosts bass. This makes you think your mix has enough low-end, so you undercompensate and your mix sounds thin everywhere else.',
-          'The 38% rule: place monitors at 38% of the room\'s length from the front wall. This minimizes the worst room mode buildups and creates the most balanced frequency response.',
-          'Keep your setup symmetrical. If one monitor is closer to a wall than the other, your stereo image and frequency response will be unbalanced.'
-        ],
-        resources: [
-          { name: 'Wall distance calculator', type: 'PDF' },
-          { name: 'Room positioning diagrams', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm2-l3',
-        module: 2,
-        moduleTitle: 'Monitor Setup',
-        lesson: 3,
-        title: 'Monitor isolation and decoupling',
-        duration: '4:20',
-        description: 'Preventing desk vibrations from coloring your low-end.',
-        inThisLesson: [
-          'Why desk coupling creates false bass',
-          'Isolation pads vs. monitor stands',
-          'How vibrations affect frequency response',
-          'Budget vs. premium solutions'
-        ],
-        keyTakeaways: [
-          'When monitors sit directly on your desk, vibrations transfer into the desk surface, creating resonances that boost or color bass frequencies. You\'re hearing your desk as much as your monitors.',
-          'Isolation pads (foam or isolation stands) decouple monitors from the desk, reducing vibration transfer and cleaning up bass response. Even cheap pads make a noticeable difference.',
-          'Monitor stands are the best solution if you can afford them. They eliminate desk coupling entirely and allow for better positioning (height, angle, distance).'
-        ],
-        resources: [
-          { name: 'Monitor isolation guide', type: 'PDF' },
-          { name: 'Decoupling solutions comparison', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm2-l4',
-        module: 2,
-        moduleTitle: 'Monitor Setup',
-        lesson: 4,
-        title: 'Listening position and sweet spot',
-        duration: '3:50',
-        description: 'Where to sit for the most accurate monitoring.',
-        inThisLesson: [
-          'Finding the optimal listening position',
-          'Avoiding room nulls and peaks',
-          'How far back to sit',
-          'Checking your setup with measurement'
-        ],
-        keyTakeaways: [
-          'Don\'t sit too close to the back wall. This creates comb filtering and bass buildup. Aim for at least 3 feet (1 meter) of space behind you.',
-          'Your listening position should be centered in the room (side-to-side) to maintain stereo balance. Off-center listening creates uneven frequency response and imaging.',
-          'The sweet spot is small. Moving your head even a few inches changes what you hear. Once you find the right position, stay there when making critical mix decisions.'
-        ],
-        resources: [
-          { name: 'Listening position guide', type: 'PDF' },
-          { name: 'Sweet spot testing method', type: 'PDF' }
-        ]
-      },
-      // Module 3: Acoustic Treatment
-      {
-        id: 'm3-l1',
-        module: 3,
-        moduleTitle: 'Acoustic Treatment',
-        lesson: 1,
-        title: 'Absorption vs. diffusion',
-        duration: '4:40',
-        description: 'Understanding the two main types of acoustic treatment.',
-        inThisLesson: [
-          'What absorption does and when to use it',
-          'What diffusion does and when to use it',
-          'Balancing a dead vs. live room',
-          'Common treatment mistakes'
-        ],
-        keyTakeaways: [
-          'Absorption soaks up sound energy, reducing reflections and flutter echoes. Use it for first reflections, corners, and controlling mid/high frequencies.',
-          'Diffusion scatters sound in multiple directions, preserving energy while reducing focused reflections. Use it sparingly to keep the room from sounding too dead.',
-          'Most home studios need more absorption than diffusion. A too-live room creates more problems than a slightly dead room. Start with absorption, add diffusion if needed.'
-        ],
-        resources: [
-          { name: 'Absorption vs. diffusion guide', type: 'PDF' },
-          { name: 'Treatment placement strategies', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm3-l2',
-        module: 3,
-        moduleTitle: 'Acoustic Treatment',
-        lesson: 2,
-        title: 'Bass traps and low-frequency control',
-        duration: '5:50',
-        description: 'Taming room modes and bass buildup with corner treatment.',
-        inThisLesson: [
-          'Why low frequencies need thick traps',
-          'Corner placement for maximum effect',
-          'DIY vs. commercial bass traps',
-          'How much treatment is enough'
-        ],
-        keyTakeaways: [
-          'Bass traps absorb low frequencies, which build up in room corners due to boundary reinforcement. Placing thick absorbers (at least 4 inches) in corners is the most effective way to control bass.',
-          'Low frequencies have long wavelengths and need thick, dense material to absorb. Thin foam does nothing for bass—only mid and high frequencies.',
-          'Treat all four vertical corners if possible, prioritizing the corners behind your monitors and behind your listening position. More bass trapping is almost always better.'
-        ],
-        resources: [
-          { name: 'Bass trap placement guide', type: 'PDF' },
-          { name: 'DIY bass trap instructions', type: 'PDF' }
-        ]
-      },
-      {
-        id: 'm3-l3',
-        module: 3,
-        moduleTitle: 'Acoustic Treatment',
-        lesson: 3,
-        title: 'Treating first reflection points',
-        duration: '4:30',
-        description: 'Placing acoustic panels for clarity and imaging.',
-        inThisLesson: [
-          'Identifying reflection points (mirror test)',
-          'Side wall treatment',
-          'Ceiling reflection treatment',
-          'How many panels you need'
-        ],
-        keyTakeaways: [
-          'First reflections from your side walls and ceiling are the biggest killers of stereo imaging. Treating these points with 2–4 inch panels dramatically improves clarity and detail.',
-          'Start with side walls: place one panel on each side where you see your monitor in a mirror. This is the highest-priority treatment after bass traps.',
-          'Ceiling reflections matter too. If you can, place a panel (or cloud) above your listening position to absorb ceiling bounce. This is especially important in rooms with low ceilings.'
-        ],
-        resources: [
-          { name: 'First reflection panel placement', type: 'PDF' },
-          { name: 'Panel sizing and quantity guide', type: 'PDF' }
-        ]
-      }
+      // Module 1: Why Listening Environment Matters
+      { id: 'm1-l1', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 1, title: 'Introduction', duration: '0:30', description: 'Your listening environment shapes every decision you make. If you cannot hear accurately, you cannot mix accurately. This course starts with the most important foundation.', inThisLesson: ['Why listening environment matters', 'The foundation of mixing'], keyTakeaways: ['Your listening environment shapes every decision you make.'], resources: [] },
+      { id: 'm1-l2', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 2, title: 'The Illusion of Accuracy', duration: '0:30', description: 'A mix can sound good in one room and fail elsewhere. This is not talent. It is environment.', inThisLesson: ['Why mixes sound different in different rooms', 'Environment vs. skill'], keyTakeaways: ['A mix can sound good in one room and fail elsewhere. This is environment.'], resources: [] },
+      { id: 'm1-l3', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 3, title: 'What Producers Actually Hear', duration: '0:30', description: 'You do not hear sound alone. You hear sound plus the room. The room always participates.', inThisLesson: ['How rooms color what you hear', 'Room participation'], keyTakeaways: ['You hear sound plus the room. The room always participates.'], resources: [] },
+      { id: 'm1-l4', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 4, title: 'Translation Problems', duration: '0:30', description: 'If mixes fall apart on other systems, the environment is often the cause. This course helps prevent that.', inThisLesson: ['Why mixes fail on other systems', 'Preventing translation issues'], keyTakeaways: ['If mixes fall apart on other systems, the environment is often the cause.'], resources: [] },
+      { id: 'm1-l5', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 5, title: 'Gear Is Not the Fix', duration: '0:30', description: 'New plugins do not fix listening issues. Better hearing does.', inThisLesson: ['Why gear cannot fix environment', 'Hearing vs. equipment'], keyTakeaways: ['New plugins do not fix listening issues. Better hearing does.'], resources: [] },
+      { id: 'm1-l6', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 6, title: 'Awareness First', duration: '0:30', description: 'You do not need a perfect room. You need understanding.', inThisLesson: ['Understanding over perfection', 'Practical awareness'], keyTakeaways: ['You do not need a perfect room. You need understanding.'], resources: [] },
+      { id: 'm1-l7', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 7, title: 'Mindset Shift', duration: '0:30', description: 'Mixing is decision-making. Decisions depend on what you hear.', inThisLesson: ['How hearing affects decisions', 'The mindset shift'], keyTakeaways: ['Mixing is decision-making. Decisions depend on what you hear.'], resources: [] },
+      { id: 'm1-l8', module: 1, moduleTitle: 'Why Listening Environment Matters', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, we break down the listening chain.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: The Listening Chain.'], resources: [] },
+      
+      // Module 2: The Listening Chain
+      { id: 'm2-l1', module: 2, moduleTitle: 'The Listening Chain', lesson: 1, title: 'What Is the Listening Chain', duration: '0:30', description: 'Sound travels through a chain. Room, speakers, ears, brain. Every link matters.', inThisLesson: ['The four links in the chain', 'Why every link matters'], keyTakeaways: ['Sound travels through room, speakers, ears, brain. Every link matters.'], resources: [] },
+      { id: 'm2-l2', module: 2, moduleTitle: 'The Listening Chain', lesson: 2, title: 'Speakers vs Room', duration: '0:30', description: 'Speakers do not exist alone. Rooms change their sound.', inThisLesson: ['How rooms affect speakers', 'The speaker-room relationship'], keyTakeaways: ['Speakers do not exist alone. Rooms change their sound.'], resources: [] },
+      { id: 'm2-l3', module: 2, moduleTitle: 'The Listening Chain', lesson: 3, title: 'Listener Position', duration: '0:30', description: 'Where you sit affects what you hear. Small movements change balance.', inThisLesson: ['Why position matters', 'How movement affects perception'], keyTakeaways: ['Where you sit affects what you hear. Small movements change balance.'], resources: [] },
+      { id: 'm2-l4', module: 2, moduleTitle: 'The Listening Chain', lesson: 4, title: 'Ears and Fatigue', duration: '0:30', description: 'Ears change over time. Fatigue reduces accuracy.', inThisLesson: ['How fatigue affects hearing', 'Protecting your accuracy'], keyTakeaways: ['Ears change over time. Fatigue reduces accuracy.'], resources: [] },
+      { id: 'm2-l5', module: 2, moduleTitle: 'The Listening Chain', lesson: 5, title: 'Brain Compensation', duration: '0:30', description: 'Your brain adapts to flaws. This can help or mislead.', inThisLesson: ['How brains adapt', 'When adaptation misleads'], keyTakeaways: ['Your brain adapts to flaws. This can help or mislead.'], resources: [] },
+      { id: 'm2-l6', module: 2, moduleTitle: 'The Listening Chain', lesson: 6, title: 'Consistency Matters', duration: '0:30', description: 'A consistent setup improves judgment.', inThisLesson: ['Why consistency works', 'Building reliable judgment'], keyTakeaways: ['A consistent setup improves judgment.'], resources: [] },
+      { id: 'm2-l7', module: 2, moduleTitle: 'The Listening Chain', lesson: 7, title: 'Simple Awareness', duration: '0:30', description: 'Knowing your chain improves mixes.', inThisLesson: ['Awareness as a tool', 'Practical application'], keyTakeaways: ['Knowing your chain improves mixes.'], resources: [] },
+      { id: 'm2-l8', module: 2, moduleTitle: 'The Listening Chain', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, we focus on room behaviour.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Room Basics.'], resources: [] },
+      
+      // Module 3: Room Basics (No Acoustics Degree)
+      { id: 'm3-l1', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 1, title: 'Rooms Affect Sound', duration: '0:30', description: 'Rooms reflect sound. Reflections change balance.', inThisLesson: ['How rooms reflect sound', 'Why reflections matter'], keyTakeaways: ['Rooms reflect sound. Reflections change balance.'], resources: [] },
+      { id: 'm3-l2', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 2, title: 'Small Rooms Reality', duration: '0:30', description: 'Most producers work in small rooms. This is normal.', inThisLesson: ['Small room challenges', 'Working with limitations'], keyTakeaways: ['Most producers work in small rooms. This is normal.'], resources: [] },
+      { id: 'm3-l3', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 3, title: 'Reflections and Buildup', duration: '0:30', description: 'Low frequencies build up easily. Corners exaggerate bass.', inThisLesson: ['Bass buildup', 'Corner effects'], keyTakeaways: ['Low frequencies build up easily. Corners exaggerate bass.'], resources: [] },
+      { id: 'm3-l4', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 4, title: 'Why Perfect Rooms Are Rare', duration: '0:30', description: 'You do not need perfection. You need awareness.', inThisLesson: ['Why perfection is unrealistic', 'Practical expectations'], keyTakeaways: ['You do not need perfection. You need awareness.'], resources: [] },
+      { id: 'm3-l5', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 5, title: 'Position Over Treatment', duration: '0:30', description: 'Placement matters before treatment.', inThisLesson: ['Why position comes first', 'Free improvements'], keyTakeaways: ['Placement matters before treatment.'], resources: [] },
+      { id: 'm3-l6', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 6, title: 'Simple Improvements', duration: '0:30', description: 'Small changes improve clarity.', inThisLesson: ['Quick wins', 'Practical adjustments'], keyTakeaways: ['Small changes improve clarity.'], resources: [] },
+      { id: 'm3-l7', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 7, title: 'Expectations Reset', duration: '0:30', description: 'Rooms will always have flaws.', inThisLesson: ['Managing expectations', 'Working with reality'], keyTakeaways: ['Rooms will always have flaws.'], resources: [] },
+      { id: 'm3-l8', module: 3, moduleTitle: 'Room Basics (No Acoustics Degree)', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, speaker placement.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Speaker Placement.'], resources: [] },
+      
+      // Module 4: Speaker Placement Essentials
+      { id: 'm4-l1', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 1, title: 'Why Placement Matters', duration: '0:30', description: 'Speaker placement changes frequency balance.', inThisLesson: ['How position affects sound', 'The importance of placement'], keyTakeaways: ['Speaker placement changes frequency balance.'], resources: [] },
+      { id: 'm4-l2', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 2, title: 'Distance and Height', duration: '0:30', description: 'Speakers should match ear height. Distance affects stereo image.', inThisLesson: ['Proper height', 'Distance principles'], keyTakeaways: ['Speakers should match ear height. Distance affects stereo image.'], resources: [] },
+      { id: 'm4-l3', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 3, title: 'Triangle Concept', duration: '0:30', description: 'Listener and speakers form a triangle. This improves imaging.', inThisLesson: ['The equilateral triangle', 'Why geometry matters'], keyTakeaways: ['Listener and speakers form a triangle. This improves imaging.'], resources: [] },
+      { id: 'm4-l4', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 4, title: 'Wall Distance', duration: '0:30', description: 'Speakers near walls boost bass. This may mislead decisions.', inThisLesson: ['Wall proximity effects', 'Bass exaggeration'], keyTakeaways: ['Speakers near walls boost bass. This may mislead decisions.'], resources: [] },
+      { id: 'm4-l5', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 5, title: 'Symmetry', duration: '0:30', description: 'Symmetry improves balance.', inThisLesson: ['Why symmetry matters', 'Balanced listening'], keyTakeaways: ['Symmetry improves balance.'], resources: [] },
+      { id: 'm4-l6', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 6, title: 'Practical Setup', duration: '0:30', description: 'Use what space allows. Adjust carefully.', inThisLesson: ['Working with constraints', 'Practical adjustments'], keyTakeaways: ['Use what space allows. Adjust carefully.'], resources: [] },
+      { id: 'm4-l7', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 7, title: 'Trust Over Perfection', duration: '0:30', description: 'Reliable beats perfect.', inThisLesson: ['Consistency over ideals', 'Building trust'], keyTakeaways: ['Reliable beats perfect.'], resources: [] },
+      { id: 'm4-l8', module: 4, moduleTitle: 'Speaker Placement Essentials', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, monitoring levels.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Monitoring Volume.'], resources: [] },
+      
+      // Module 5: Monitoring Volume & Levels
+      { id: 'm5-l1', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 1, title: 'Louder Is Not Better', duration: '0:30', description: 'Loud listening hides problems.', inThisLesson: ['Why loud misleads', 'Volume perception'], keyTakeaways: ['Loud listening hides problems.'], resources: [] },
+      { id: 'm5-l2', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 2, title: 'Safe Listening', duration: '0:30', description: 'Protect your ears. Fatigue affects judgment.', inThisLesson: ['Hearing protection', 'Long-term care'], keyTakeaways: ['Protect your ears. Fatigue affects judgment.'], resources: [] },
+      { id: 'm5-l3', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 3, title: 'Consistent Volume', duration: '0:30', description: 'Consistency builds accuracy.', inThisLesson: ['Why consistency matters', 'Building calibration'], keyTakeaways: ['Consistency builds accuracy.'], resources: [] },
+      { id: 'm5-l4', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 4, title: 'Low Volume Checks', duration: '0:30', description: 'Low levels reveal balance.', inThisLesson: ['What quiet reveals', 'Balance checking'], keyTakeaways: ['Low levels reveal balance.'], resources: [] },
+      { id: 'm5-l5', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 5, title: 'High Volume Checks', duration: '0:30', description: 'Short checks only. Avoid long exposure.', inThisLesson: ['When to check loud', 'Avoiding damage'], keyTakeaways: ['Short checks only. Avoid long exposure.'], resources: [] },
+      { id: 'm5-l6', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 6, title: 'Decision Making', duration: '0:30', description: 'Most decisions happen quietly.', inThisLesson: ['Optimal decision volume', 'Working levels'], keyTakeaways: ['Most decisions happen quietly.'], resources: [] },
+      { id: 'm5-l7', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 7, title: 'Habit Building', duration: '0:30', description: 'Volume habits matter.', inThisLesson: ['Developing discipline', 'Consistent practice'], keyTakeaways: ['Volume habits matter.'], resources: [] },
+      { id: 'm5-l8', module: 5, moduleTitle: 'Monitoring Volume & Levels', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, headphones.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Headphones.'], resources: [] },
+      
+      // Module 6: Mixing on Headphones (Realistic Approach)
+      { id: 'm6-l1', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 1, title: 'Headphones Reality', duration: '0:30', description: 'Many producers rely on headphones. This is valid.', inThisLesson: ['Headphone validity', 'Modern reality'], keyTakeaways: ['Many producers rely on headphones. This is valid.'], resources: [] },
+      { id: 'm6-l2', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 2, title: 'Strengths', duration: '0:30', description: 'Headphones reveal detail.', inThisLesson: ['What headphones do well', 'Detail advantage'], keyTakeaways: ['Headphones reveal detail.'], resources: [] },
+      { id: 'm6-l3', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 3, title: 'Weaknesses', duration: '0:30', description: 'Stereo image can mislead. Low end feels different.', inThisLesson: ['Headphone limitations', 'What to watch for'], keyTakeaways: ['Stereo image can mislead. Low end feels different.'], resources: [] },
+      { id: 'm6-l4', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 4, title: 'Cross-Checking', duration: '0:30', description: 'Use headphones and speakers. Balance both.', inThisLesson: ['Cross-checking workflow', 'Balanced approach'], keyTakeaways: ['Use headphones and speakers. Balance both.'], resources: [] },
+      { id: 'm6-l5', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 5, title: 'Listening Fatigue', duration: '0:30', description: 'Take breaks.', inThisLesson: ['Headphone fatigue', 'Break discipline'], keyTakeaways: ['Take breaks.'], resources: [] },
+      { id: 'm6-l6', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 6, title: 'Calibration Tools', duration: '0:30', description: 'Tools can help. They do not replace judgment.', inThisLesson: ['Available tools', 'Tool limitations'], keyTakeaways: ['Tools can help. They do not replace judgment.'], resources: [] },
+      { id: 'm6-l7', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 7, title: 'Awareness', duration: '0:30', description: 'Know what headphones exaggerate.', inThisLesson: ['Knowing your headphones', 'Compensation strategies'], keyTakeaways: ['Know what headphones exaggerate.'], resources: [] },
+      { id: 'm6-l8', module: 6, moduleTitle: 'Mixing on Headphones (Realistic Approach)', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, reference listening.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Reference Tracks.'], resources: [] },
+      
+      // Module 7: Using Reference Tracks Correctly
+      { id: 'm7-l1', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 1, title: 'Why Reference Tracks Matter', duration: '0:30', description: 'References reset perception.', inThisLesson: ['The power of references', 'Perception calibration'], keyTakeaways: ['References reset perception.'], resources: [] },
+      { id: 'm7-l2', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 2, title: 'Choosing References', duration: '0:30', description: 'Choose similar style and energy.', inThisLesson: ['Selecting references', 'Style matching'], keyTakeaways: ['Choose similar style and energy.'], resources: [] },
+      { id: 'm7-l3', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 3, title: 'Level Matching', duration: '0:30', description: 'Volume must match. Louder always sounds better.', inThisLesson: ['Why level matching matters', 'Fair comparison'], keyTakeaways: ['Volume must match. Louder always sounds better.'], resources: [] },
+      { id: 'm7-l4', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 4, title: 'What to Listen For', duration: '0:30', description: 'Focus on balance, not loudness.', inThisLesson: ['Key listening points', 'What to analyze'], keyTakeaways: ['Focus on balance, not loudness.'], resources: [] },
+      { id: 'm7-l5', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 5, title: 'Switching Often', duration: '0:30', description: 'Switch regularly. Avoid tunnel vision.', inThisLesson: ['Switching discipline', 'Avoiding fixation'], keyTakeaways: ['Switch regularly. Avoid tunnel vision.'], resources: [] },
+      { id: 'm7-l6', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 6, title: 'Learning Your Room', duration: '0:30', description: 'References teach room behaviour.', inThisLesson: ['Room calibration', 'Understanding your space'], keyTakeaways: ['References teach room behaviour.'], resources: [] },
+      { id: 'm7-l7', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 7, title: 'Confidence', duration: '0:30', description: 'Trust comparisons.', inThisLesson: ['Building confidence', 'Trusting the process'], keyTakeaways: ['Trust comparisons.'], resources: [] },
+      { id: 'm7-l8', module: 7, moduleTitle: 'Using Reference Tracks Correctly', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Next, translation.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Translation.'], resources: [] },
+      
+      // Module 8: Translation & Real-World Checks
+      { id: 'm8-l1', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 1, title: 'What Translation Means', duration: '0:30', description: 'Translation is consistency across systems.', inThisLesson: ['Defining translation', 'Why it matters'], keyTakeaways: ['Translation is consistency across systems.'], resources: [] },
+      { id: 'm8-l2', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 2, title: 'Common Playback Systems', duration: '0:30', description: 'Cars, phones, earbuds, speakers.', inThisLesson: ['Testing systems', 'Real-world playback'], keyTakeaways: ['Cars, phones, earbuds, speakers.'], resources: [] },
+      { id: 'm8-l3', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 3, title: 'Patterns, Not Perfection', duration: '0:30', description: 'Look for repeated issues.', inThisLesson: ['Finding patterns', 'Systematic analysis'], keyTakeaways: ['Look for repeated issues.'], resources: [] },
+      { id: 'm8-l4', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 4, title: 'Fixing Patterns', duration: '0:30', description: 'Adjust environment expectations.', inThisLesson: ['Making corrections', 'Adaptive mixing'], keyTakeaways: ['Adjust environment expectations.'], resources: [] },
+      { id: 'm8-l5', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 5, title: 'Note-Taking', duration: '0:30', description: 'Track what changes.', inThisLesson: ['Documentation habits', 'Learning from feedback'], keyTakeaways: ['Track what changes.'], resources: [] },
+      { id: 'm8-l6', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 6, title: 'Iteration', duration: '0:30', description: 'Translation improves over time.', inThisLesson: ['Progressive improvement', 'Building skill'], keyTakeaways: ['Translation improves over time.'], resources: [] },
+      { id: 'm8-l7', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 7, title: 'Confidence Growth', duration: '0:30', description: 'Experience builds trust.', inThisLesson: ['Developing confidence', 'Trusting experience'], keyTakeaways: ['Experience builds trust.'], resources: [] },
+      { id: 'm8-l8', module: 8, moduleTitle: 'Translation & Real-World Checks', lesson: 8, title: 'Lesson Close', duration: '0:20', description: 'Final lesson: mindset.', inThisLesson: ['Summary and next steps'], keyTakeaways: ['Module complete. Next: Listening Mindset.'], resources: [] },
+      
+      // Module 9: Listening Mindset
+      { id: 'm9-l1', module: 9, moduleTitle: 'Listening Mindset', lesson: 1, title: 'Acceptance', duration: '0:30', description: 'No room is perfect.', inThisLesson: ['Accepting limitations', 'Working with reality'], keyTakeaways: ['No room is perfect.'], resources: [] },
+      { id: 'm9-l2', module: 9, moduleTitle: 'Listening Mindset', lesson: 2, title: 'Decision Confidence', duration: '0:30', description: 'Trust informed choices.', inThisLesson: ['Building confidence', 'Decision-making'], keyTakeaways: ['Trust informed choices.'], resources: [] },
+      { id: 'm9-l3', module: 9, moduleTitle: 'Listening Mindset', lesson: 3, title: 'Breaks Matter', duration: '0:30', description: 'Rest improves hearing.', inThisLesson: ['The power of breaks', 'Fresh ears'], keyTakeaways: ['Rest improves hearing.'], resources: [] },
+      { id: 'm9-l4', module: 9, moduleTitle: 'Listening Mindset', lesson: 4, title: 'Long-Term Skill', duration: '0:30', description: 'Listening improves with time.', inThisLesson: ['Skill development', 'Patience and practice'], keyTakeaways: ['Listening improves with time.'], resources: [] },
+      { id: 'm9-l5', module: 9, moduleTitle: 'Listening Mindset', lesson: 5, title: 'Avoid Overthinking', duration: '0:30', description: 'Do not chase perfection.', inThisLesson: ['Avoiding paralysis', 'Done over perfect'], keyTakeaways: ['Do not chase perfection.'], resources: [] },
+      { id: 'm9-l6', module: 9, moduleTitle: 'Listening Mindset', lesson: 6, title: 'Consistency Wins', duration: '0:30', description: 'Reliable setups beat ideal ones.', inThisLesson: ['Why consistency matters', 'Practical wins'], keyTakeaways: ['Reliable setups beat ideal ones.'], resources: [] },
+      { id: 'm9-l7', module: 9, moduleTitle: 'Listening Mindset', lesson: 7, title: 'Progress Over Gear', duration: '0:30', description: 'Skill beats equipment.', inThisLesson: ['Skill development', 'Priorities'], keyTakeaways: ['Skill beats equipment.'], resources: [] },
+      { id: 'm9-l8', module: 9, moduleTitle: 'Listening Mindset', lesson: 8, title: 'Course Close', duration: '0:20', description: 'Your environment is now an ally.', inThisLesson: ['Course completion', 'Next steps'], keyTakeaways: ['Your environment is now an ally.'], resources: [] }
     ];
     
     /* ============================================
@@ -394,12 +350,24 @@
     let currentLessonIndex = 0;
     const completedLessons = new Set();
     
+    // Load lesson by ID
+    function loadLesson(lessonId) {
+      const index = lessons.findIndex(l => l.id === lessonId);
+      if (index !== -1) {
+        renderLesson(index);
+      }
+    }
+    
     function renderLesson(index) {
       currentLessonIndex = index;
       const lesson = lessons[index];
       
-      // Update main content
-      document.getElementById('lesson-module').textContent = `Module ${lesson.module} · Lesson ${lesson.lesson}`;
+      // Calculate lessons in current module
+      const moduleLessons = lessons.filter(l => l.module === lesson.module);
+      const lessonInModule = moduleLessons.findIndex(l => l.id === lesson.id) + 1;
+      
+      // Update main content with progress indicator
+      document.getElementById('lesson-module').textContent = `Module ${lesson.module} of 9 · Lesson ${lessonInModule} of ${moduleLessons.length}`;
       document.getElementById('lesson-title').textContent = lesson.title;
       document.getElementById('lesson-description').textContent = lesson.description;
       
@@ -481,6 +449,102 @@
     
     // Initialize on load
     document.addEventListener('DOMContentLoaded', () => {
+      // Module collapse/expand functionality
+      const moduleHeaders = document.querySelectorAll('.module-header');
+      moduleHeaders.forEach(header => {
+        header.addEventListener('click', (e) => {
+          const module = header.closest('.course-module');
+          module.classList.toggle('collapsed');
+        });
+      });
+      
+      // Lesson click handler - auto-expand current module
+      const lessonItems = document.querySelectorAll('.lesson-item');
+      lessonItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Remove active class from all lessons
+          document.querySelectorAll('.lesson-item').forEach(l => l.classList.remove('active'));
+          
+          // Add active class to clicked lesson
+          item.classList.add('active');
+          
+          // Find the parent module
+          const currentModule = item.closest('.course-module');
+          
+          // Collapse all other modules
+          document.querySelectorAll('.course-module').forEach(module => {
+            if (module !== currentModule) {
+              module.classList.add('collapsed');
+            }
+          });
+          
+          // Expand current module
+          currentModule.classList.remove('collapsed');
+          
+          // Load lesson (existing functionality continues below)
+          const lessonId = item.dataset.lessonId;
+          loadLesson(lessonId);
+        });
+      });
+      
+      // Auto-expand Module 1 and activate first lesson on load
+      const firstModule = document.querySelector('.course-module');
+      if (firstModule) {
+        firstModule.classList.remove('collapsed');
+      }
+      const firstLesson = document.querySelector('.lesson-item');
+      if (firstLesson) {
+        firstLesson.classList.add('active');
+      }
+      
+      // Check access level
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasAccess = true; // Temporarily unlocked for development
+      
+      // If no access, lock modules 2 and 3
+      if (!hasAccess) {
+        const modules = document.querySelectorAll('.course-module');
+        
+        // Lock Module 2 (index 1)
+        if (modules[1]) {
+          modules[1].classList.add('module-locked');
+          const lockOverlay = document.createElement('div');
+          lockOverlay.className = 'locked-overlay';
+          lockOverlay.innerHTML = `
+            <div class="lock-icon">🔒</div>
+            <h3 class="text-xl font-bold mb-2">Module 2 Locked</h3>
+            <p class="opacity-70 mb-4">Purchase the full course to unlock this module</p>
+            <a href="course-listening-environment-info.html#pricing" class="inline-block px-6 py-3 rounded-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+              Get full access — £35
+            </a>
+          `;
+          modules[1].querySelector('div:last-child').appendChild(lockOverlay);
+        }
+        
+        // Lock Module 3 (index 2)
+        if (modules[2]) {
+          modules[2].classList.add('module-locked');
+          const lockOverlay = document.createElement('div');
+          lockOverlay.className = 'locked-overlay';
+          lockOverlay.innerHTML = `
+            <div class="lock-icon">🔒</div>
+            <h3 class="text-xl font-bold mb-2">Module 3 Locked</h3>
+            <p class="opacity-70 mb-4">Purchase the full course to unlock this module</p>
+            <a href="course-listening-environment-info.html#pricing" class="inline-block px-6 py-3 rounded-lg font-semibold text-white transition hover:opacity-90" style="background: var(--accent);">
+              Get full access — £35
+            </a>
+          `;
+          modules[2].querySelector('div:last-child').appendChild(lockOverlay);
+        }
+        
+        // Limit lessons array to Module 1 only
+        const module1Lessons = lessons.filter(l => l.module === 1);
+        lessons.length = 0;
+        lessons.push(...module1Lessons);
+      }
+      
       // Render first lesson
       renderLesson(0);
       
@@ -495,13 +559,8 @@
         prevLesson();
       });
       
-      // Setup lesson clicks in sidebar
-      document.querySelectorAll('.lesson-item').forEach((el, index) => {
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
-          renderLesson(index);
-        });
-      });
+      // Setup lesson clicks in sidebar (merged with collapse/expand above)
+      // Lesson navigation handled by renderLesson() calls
     });
   </script>
 </head>
@@ -518,7 +577,7 @@
     </div>
     <div class="text-right">
       <p class="text-sm font-medium">Listening Environment</p>
-      <p class="text-xs" style="color: var(--text-muted);">~50 minutes · 10 lessons</p>
+      <p class="text-xs" style="color: var(--text-muted);">9 focused modules · Short lessons</p>
     </div>
   </div>
 </header>
@@ -529,127 +588,171 @@
   <aside class="w-80 border-r overflow-y-auto" style="background: var(--bg-section); border-color: var(--border-soft);">
     
     <div class="p-6 border-b" style="border-color: var(--border-soft);">
-      <h2 class="text-lg font-bold mb-1">Course outline</h2>
-      <p class="text-sm" style="color: var(--text-muted);">10 lessons · 3 modules</p>
+      <h2 class="text-lg font-bold mb-2">Course outline</h2>
+      <p class="text-sm mb-3" style="color: var(--text-muted);">9 focused modules · Short lessons</p>
+      <p class="text-xs mb-2" style="color: var(--text-muted);">Designed to complete in one sitting<br>Watch at your own pace</p>
+      <p class="text-xs opacity-60" style="color: var(--text-muted); font-size: 0.7rem;">Content reflects the same listening process used in real Studio XV sessions.</p>
     </div>
     
     <!-- Module 1 -->
-    <div class="border-b" style="border-color: var(--border-soft);">
-      <div class="p-4 bg-opacity-50" style="background: var(--bg-soft);">
-        <h3 class="text-sm font-semibold mb-1">Module 1</h3>
-        <p class="text-xs" style="color: var(--text-muted);">Room Fundamentals</p>
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 1 — Why Listening Environment Matters</span>
       </div>
-      <div>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Why your room matters more than your monitors</p>
-              <p class="text-xs" style="color: var(--text-muted);">5:20</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Understanding room modes</p>
-              <p class="text-xs" style="color: var(--text-muted);">6:10</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">First reflections and phantom imaging</p>
-              <p class="text-xs" style="color: var(--text-muted);">4:50</p>
-            </div>
-          </div>
-        </a>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m1-l1"><span class="text-sm">• Introduction</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l2"><span class="text-sm">• The Illusion of Accuracy</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l3"><span class="text-sm">• What Producers Actually Hear</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l4"><span class="text-sm">• Translation Problems</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l5"><span class="text-sm">• Gear Is Not the Fix</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l6"><span class="text-sm">• Awareness First</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l7"><span class="text-sm">• Mindset Shift</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m1-l8"><span class="text-sm">• Module Close</span></a>
       </div>
     </div>
     
     <!-- Module 2 -->
-    <div class="border-b" style="border-color: var(--border-soft);">
-      <div class="p-4 bg-opacity-50" style="background: var(--bg-soft);">
-        <h3 class="text-sm font-semibold mb-1">Module 2</h3>
-        <p class="text-xs" style="color: var(--text-muted);">Monitor Setup</p>
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 2 — The Listening Chain</span>
       </div>
-      <div>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">The equilateral triangle rule</p>
-              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Distance from walls and corners</p>
-              <p class="text-xs" style="color: var(--text-muted);">5:30</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Monitor isolation and decoupling</p>
-              <p class="text-xs" style="color: var(--text-muted);">4:20</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Listening position and sweet spot</p>
-              <p class="text-xs" style="color: var(--text-muted);">3:50</p>
-            </div>
-          </div>
-        </a>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m2-l1"><span class="text-sm">• What Is the Listening Chain</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l2"><span class="text-sm">• Speakers vs Room</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l3"><span class="text-sm">• Listener Position</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l4"><span class="text-sm">• Ears and Fatigue</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l5"><span class="text-sm">• Brain Compensation</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l6"><span class="text-sm">• Consistency Matters</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l7"><span class="text-sm">• Simple Awareness</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m2-l8"><span class="text-sm">• Module Close</span></a>
       </div>
     </div>
     
     <!-- Module 3 -->
-    <div class="border-b" style="border-color: var(--border-soft);">
-      <div class="p-4 bg-opacity-50" style="background: var(--bg-soft);">
-        <h3 class="text-sm font-semibold mb-1">Module 3</h3>
-        <p class="text-xs" style="color: var(--text-muted);">Acoustic Treatment</p>
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 3 — Room Basics (No Acoustics Degree)</span>
       </div>
-      <div>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Absorption vs. diffusion</p>
-              <p class="text-xs" style="color: var(--text-muted);">4:40</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Bass traps and low-frequency control</p>
-              <p class="text-xs" style="color: var(--text-muted);">5:50</p>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="lesson-item flex items-center justify-between p-4 hover:bg-opacity-50 transition" style="background: var(--bg-section);">
-          <div class="flex items-center flex-1">
-            <span class="lesson-check">✓</span>
-            <div class="flex-1">
-              <p class="text-sm font-medium">Treating first reflection points</p>
-              <p class="text-xs" style="color: var(--text-muted);">4:30</p>
-            </div>
-          </div>
-        </a>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m3-l1"><span class="text-sm">• Rooms Affect Sound</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l2"><span class="text-sm">• Small Rooms Reality</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l3"><span class="text-sm">• Reflections and Buildup</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l4"><span class="text-sm">• Why Perfect Rooms Are Rare</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l5"><span class="text-sm">• Position Over Treatment</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l6"><span class="text-sm">• Simple Improvements</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l7"><span class="text-sm">• Expectations Reset</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m3-l8"><span class="text-sm">• Module Close</span></a>
+      </div>
+    </div>
+    
+    <!-- Module 4 -->
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 4 — Speaker Placement Essentials</span>
+      </div>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m4-l1"><span class="text-sm">• Why Placement Matters</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l2"><span class="text-sm">• Distance and Height</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l3"><span class="text-sm">• Triangle Concept</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l4"><span class="text-sm">• Wall Distance</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l5"><span class="text-sm">• Symmetry</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l6"><span class="text-sm">• Practical Setup</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l7"><span class="text-sm">• Trust Over Perfection</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m4-l8"><span class="text-sm">• Module Close</span></a>
+      </div>
+    </div>
+    
+    <!-- Module 5 -->
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 5 — Monitoring Volume & Levels</span>
+      </div>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m5-l1"><span class="text-sm">• Louder Is Not Better</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l2"><span class="text-sm">• Safe Listening</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l3"><span class="text-sm">• Consistent Volume</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l4"><span class="text-sm">• Low Volume Checks</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l5"><span class="text-sm">• High Volume Checks</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l6"><span class="text-sm">• Decision Making</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l7"><span class="text-sm">• Habit Building</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m5-l8"><span class="text-sm">• Module Close</span></a>
+      </div>
+    </div>
+    
+    <!-- Module 6 -->
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 6 — Mixing on Headphones</span>
+      </div>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m6-l1"><span class="text-sm">• Headphones Reality</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l2"><span class="text-sm">• Strengths</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l3"><span class="text-sm">• Weaknesses</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l4"><span class="text-sm">• Cross-Checking</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l5"><span class="text-sm">• Listening Fatigue</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l6"><span class="text-sm">• Calibration Tools</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l7"><span class="text-sm">• Awareness</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m6-l8"><span class="text-sm">• Module Close</span></a>
+      </div>
+    </div>
+    
+    <!-- Module 7 -->
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 7 — Reference Tracks</span>
+      </div>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m7-l1"><span class="text-sm">• Why Reference Tracks Matter</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l2"><span class="text-sm">• Choosing References</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l3"><span class="text-sm">• Level Matching</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l4"><span class="text-sm">• What to Listen For</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l5"><span class="text-sm">• Switching Often</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l6"><span class="text-sm">• Learning Your Room</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l7"><span class="text-sm">• Confidence</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m7-l8"><span class="text-sm">• Module Close</span></a>
+      </div>
+    </div>
+    
+    <!-- Module 8 -->
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 8 — Translation & Real-World Checks</span>
+      </div>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m8-l1"><span class="text-sm">• What Translation Means</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l2"><span class="text-sm">• Common Playback Systems</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l3"><span class="text-sm">• Patterns, Not Perfection</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l4"><span class="text-sm">• Fixing Patterns</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l5"><span class="text-sm">• Note-Taking</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l6"><span class="text-sm">• Iteration</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l7"><span class="text-sm">• Confidence Growth</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m8-l8"><span class="text-sm">• Module Close</span></a>
+      </div>
+    </div>
+    
+    <!-- Module 9 -->
+    <div class="course-module collapsed border-b" style="border-color: var(--border-soft);">
+      <div class="module-header">
+        <span class="module-toggle">▸</span>
+        <span class="text-sm font-semibold">Module 9 — Listening Mindset</span>
+      </div>
+      <div class="module-lessons">
+        <a href="#" class="lesson-item" data-lesson-id="m9-l1"><span class="text-sm">• Acceptance</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l2"><span class="text-sm">• Decision Confidence</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l3"><span class="text-sm">• Breaks Matter</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l4"><span class="text-sm">• Long-Term Skill</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l5"><span class="text-sm">• Avoid Overthinking</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l6"><span class="text-sm">• Consistency Wins</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l7"><span class="text-sm">• Progress Over Gear</span></a>
+        <a href="#" class="lesson-item" data-lesson-id="m9-l8"><span class="text-sm">• Course Close</span></a>
       </div>
     </div>
     
@@ -666,17 +769,21 @@
             <path d="M8 5v14l11-7z"/>
           </svg>
           <p class="text-sm opacity-70">Video Player</p>
+          <p class="text-xs opacity-40 mt-2">Lesson video — click to start</p>
         </div>
       </div>
     </div>
+    
+    <!-- Divider -->
+    <div class="border-b" style="border-color: var(--border-soft);"></div>
     
     <!-- Lesson Content -->
     <div class="p-8 max-w-4xl">
       
       <!-- Lesson Header -->
       <div class="mb-8">
-        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-2" style="color: var(--text-muted);">Module 1 · Lesson 1</p>
-        <h1 id="lesson-title" class="text-3xl font-bold mb-4">Why your room matters more than your monitors</h1>
+        <p id="lesson-module" class="text-xs uppercase tracking-wider mb-3" style="color: var(--text-muted);">Module 1 of 9 · Lesson 1 of 8</p>
+        <h1 id="lesson-title" class="text-4xl font-bold mb-4 leading-tight">Why your room matters more than your monitors</h1>
         <p id="lesson-description" class="text-base leading-relaxed" style="color: var(--text-muted);">
           Understanding how room acoustics affect everything you hear and mix.
         </p>
@@ -737,7 +844,7 @@
       </div>
       
       <!-- Navigation -->
-      <div class="flex items-center justify-between pt-8 border-t" style="border-color: var(--border-soft);">
+      <div class="flex items-center justify-between pt-6 border-t" style="border-color: var(--border-soft);">
         <a href="#" id="prev-lesson" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
           ← Previous lesson
         </a>
@@ -759,12 +866,12 @@
     <!-- Celebration -->
     <div class="mb-8">
       <div class="text-6xl mb-4">🎉</div>
-      <h2 class="text-3xl font-bold mb-4">Course Complete!</h2>
-      <p class="text-lg mb-2" style="color: var(--text-muted);">
-        You've finished <span style="color: var(--text-main);">Listening Environment</span>
+      <h2 class="text-3xl font-bold mb-4">Course Complete</h2>
+      <p class="text-lg mb-4" style="color: var(--text-muted);">
+        You've completed <span style="color: var(--text-main);">Listening Environment</span>
       </p>
-      <p class="text-sm" style="color: var(--text-muted);">
-        10 lessons · ~50 minutes of focused learning
+      <p class="text-base leading-relaxed" style="color: var(--text-muted);">
+        You now have a reliable framework for trusting what you hear and making confident mix decisions.
       </p>
     </div>
     
@@ -793,24 +900,19 @@
     
     <!-- Next Steps -->
     <div class="mb-8">
-      <h3 class="text-lg font-semibold mb-4">What's next?</h3>
+      <h3 class="text-lg font-semibold mb-4">Apply what you've learned</h3>
       <div class="flex flex-col gap-3">
-        <a href="https://buy.stripe.com/test_28E14neDteada9MaY48g001" class="px-6 py-3 rounded-lg text-white transition hover:opacity-90" style="background: var(--accent);">
-          Unlock course for £35
-        </a>
-        <a href="learn-courses.html" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
-          Explore other courses
-        </a>
-        <a href="index.html#booking" class="px-6 py-3 rounded-lg border transition hover:opacity-70" style="border-color: var(--border-soft);">
+        <a href="index.html#book" class="px-6 py-3 rounded-lg text-white text-center transition hover:opacity-90" style="background: var(--accent);">
           Book a feedback session
         </a>
+        <a href="learn-courses.html" class="px-6 py-3 rounded-lg border text-center transition hover:opacity-70" style="border-color: var(--border-soft);">
+          Explore other courses
+        </a>
+        <button onclick="closeCompletionModal()" class="px-6 py-3 text-center transition hover:opacity-70" style="color: var(--text-muted);">
+          Review lessons
+        </button>
       </div>
     </div>
-    
-    <!-- Close -->
-    <button onclick="closeCompletionModal()" class="text-sm opacity-70 hover:opacity-100 transition" style="color: var(--text-muted);">
-      Close and review lessons
-    </button>
     
   </div>
 </div>
