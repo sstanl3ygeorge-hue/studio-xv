@@ -1045,6 +1045,7 @@
               <li><strong>Lessons</strong> → One-to-one training</li>
             </ul>
           </div>
+          <a href="#" id="enquiry-toggle" style="margin-top: 0.75rem; display: block; font-size: 0.8125rem; color: var(--text-muted); opacity: 0.7; text-decoration: none; cursor: pointer;">Not sure what to book? <span style="color: var(--accent); text-decoration: underline;">Make a free enquiry →</span></a>
         </div>
         <!-- Secondary input: shown contextually below -->
         <div id="secondary-input-wrapper" class="mt-4"></div>
@@ -2398,6 +2399,141 @@
       // Re-enable button
       bookingSubmit.disabled = false;
       bookingSubmit.textContent = 'Submit Booking Request';
+    }
+  });
+</script>
+
+<!-- ========================================== -->
+<!-- ENQUIRY MODAL -->
+<!-- ========================================== -->
+<div id="enquiry-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; overflow-y: auto; padding: 20px;">
+  <div style="max-width: 600px; margin: 40px auto; background: var(--bg-card); border-radius: 12px; padding: 32px; position: relative;">
+    <button id="enquiry-close" style="position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; opacity: 0.7; transition: opacity 0.2s;">&times;</button>
+    
+    <h2 style="font-size: 1.75rem; font-weight: bold; margin-bottom: 0.5rem; color: var(--text-main);">Make an Enquiry (Free)</h2>
+    <p style="font-size: 0.9375rem; color: var(--text-muted); margin-bottom: 1.5rem;">Not ready to book yet? Tell us about your project and we'll help you choose the right service.</p>
+    
+    <form id="enquiry-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--text-main);">Name *</label>
+        <input type="text" name="name" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--bg-section); color: var(--text-main); font-size: 0.9375rem;" />
+      </div>
+      
+      <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--text-main);">Email *</label>
+        <input type="email" name="email" required style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--bg-section); color: var(--text-main); font-size: 0.9375rem;" />
+      </div>
+      
+      <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--text-main);">Project Description *</label>
+        <textarea name="project" required rows="5" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--bg-section); color: var(--text-main); font-size: 0.9375rem; resize: vertical;" placeholder="Tell us about your project, what you're looking for, and any questions you have..."></textarea>
+      </div>
+      
+      <div>
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; color: var(--text-main);">Budget (optional)</label>
+        <input type="text" name="budget" style="width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--bg-section); color: var(--text-main); font-size: 0.9375rem;" placeholder="e.g. £200-£500" />
+      </div>
+      
+      <p style="font-size: 0.8125rem; color: var(--text-muted); opacity: 0.7; text-align: center; margin-top: 0.5rem;">This is a free enquiry. No payment required.</p>
+      
+      <button type="submit" id="enquiry-submit" style="width: 100%; padding: 14px; border-radius: 8px; background: var(--accent); color: white; font-weight: 600; font-size: 1rem; border: none; cursor: pointer; transition: all 0.2s;">
+        Send Enquiry
+      </button>
+    </form>
+    
+    <div id="enquiry-success" style="display: none; text-align: center; padding: 40px 20px;">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">✓</div>
+      <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.75rem; color: var(--text-main);">Enquiry Sent</h3>
+      <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 1.5rem;">Thanks — we'll be in touch within 24 hours.</p>
+      <button id="enquiry-success-close" style="padding: 12px 32px; border-radius: 8px; background: var(--accent); color: white; font-weight: 600; border: none; cursor: pointer;">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Enquiry modal toggle
+  const enquiryToggle = document.getElementById('enquiry-toggle');
+  const enquiryModal = document.getElementById('enquiry-modal');
+  const enquiryClose = document.getElementById('enquiry-close');
+  const enquiryForm = document.getElementById('enquiry-form');
+  const enquirySuccess = document.getElementById('enquiry-success');
+  const enquirySuccessClose = document.getElementById('enquiry-success-close');
+  const enquirySubmit = document.getElementById('enquiry-submit');
+  
+  // Add hover effect to enquiry button
+  enquirySubmit.addEventListener('mouseenter', () => {
+    enquirySubmit.style.opacity = '0.9';
+  });
+  enquirySubmit.addEventListener('mouseleave', () => {
+    enquirySubmit.style.opacity = '1';
+  });
+  
+  enquiryToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    enquiryModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  });
+  
+  enquiryClose.addEventListener('click', () => {
+    enquiryModal.style.display = 'none';
+    document.body.style.overflow = '';
+    enquiryForm.style.display = 'flex';
+    enquirySuccess.style.display = 'none';
+    enquiryForm.reset();
+  });
+  
+  enquirySuccessClose.addEventListener('click', () => {
+    enquiryModal.style.display = 'none';
+    document.body.style.overflow = '';
+    enquiryForm.style.display = 'flex';
+    enquirySuccess.style.display = 'none';
+    enquiryForm.reset();
+  });
+  
+  // Close modal on background click
+  enquiryModal.addEventListener('click', (e) => {
+    if (e.target === enquiryModal) {
+      enquiryModal.style.display = 'none';
+      document.body.style.overflow = '';
+      enquiryForm.style.display = 'flex';
+      enquirySuccess.style.display = 'none';
+      enquiryForm.reset();
+    }
+  });
+  
+  // Handle enquiry form submission
+  enquiryForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    enquirySubmit.disabled = true;
+    enquirySubmit.textContent = 'Sending...';
+    
+    try {
+      const formData = new FormData(enquiryForm);
+      const data = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        project: formData.get('project'),
+        budget: formData.get('budget') || 'Not specified'
+      };
+      
+      const response = await fetch('/.netlify/functions/submit-enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if (response.ok) {
+        enquiryForm.style.display = 'none';
+        enquirySuccess.style.display = 'block';
+      } else {
+        throw new Error('Failed to send enquiry');
+      }
+    } catch (error) {
+      console.error('Enquiry submission error:', error);
+      alert('Sorry, there was an error sending your enquiry. Please email us directly at bookings@studioxv.co.uk');
+      enquirySubmit.disabled = false;
+      enquirySubmit.textContent = 'Send Enquiry';
     }
   });
 </script>

@@ -351,7 +351,7 @@ const EMAIL_TEMPLATES = {
 
   // 24-HOUR SESSION REMINDER
   reminder24h: (data) => ({
-    subject: `Tomorrow: ${data.service} Session at ${data.sessionTime}`,
+    subject: `⏰ Session Tomorrow – ${data.service} at Studio XV`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -362,8 +362,8 @@ const EMAIL_TEMPLATES = {
           .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
           .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
           .content { padding: 30px 20px; background: #f9f9f9; }
-          .details { background: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .highlight { background: #fff5e6; padding: 15px; border-left: 4px solid #f97316; margin: 20px 0; }
+          .details { background: #fff; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb; }
+          .highlight { background: #fff5e6; padding: 18px; border-left: 4px solid #f97316; margin: 20px 0; line-height: 1.7; }
           .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
         </style>
       </head>
@@ -374,74 +374,75 @@ const EMAIL_TEMPLATES = {
         </div>
         
         <div class="content">
-          <h2>Your Session is Tomorrow! 🎵</h2>
-          <p>Hi ${data.customerName},</p>
-          <p>Just a friendly reminder that your ${data.service} session is scheduled for <strong>tomorrow at ${data.sessionTime}</strong>.</p>
+          <h2 style="margin-bottom: 0.5rem;">Session Reminder</h2>
+          <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Hi ${data.customerName || 'there'},</p>
+          <p>This is a reminder that your session is scheduled for tomorrow.</p>
           
           <div class="details">
-            <h3 style="margin-top: 0;">Session Details</h3>
-            <p><strong>Date:</strong> ${data.sessionDate}</p>
-            <p><strong>Time:</strong> ${data.sessionTime}</p>
-            <p><strong>Duration:</strong> ${data.durationLabel || 'Duration to be confirmed'}</p>
-            <p><strong>Service:</strong> ${data.service}</p>
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; color: #111827;">Booking Details</h3>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse: collapse;">
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Service</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.service}</td>
+              </tr>
+              ${data.packageName ? `<tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Package</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.packageName}</td>
+              </tr>` : ''}
+              ${data.sessionDate ? `<tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Date</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.sessionDate}</td>
+              </tr>` : ''}
+              ${data.sessionTime ? `<tr>
+                <td style="padding: 12px 0; border-bottom: none; font-size: 14px; font-weight: 400; color: #6b7280;">Time</td>
+                <td style="padding: 12px 0; border-bottom: none; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">${data.sessionTime}</td>
+              </tr>` : ''}
+            </table>
           </div>
 
-          ${data.balanceDue > 0 ? `
           <div class="highlight">
-            <strong>💰 Payment Due:</strong><br>
-            Remaining balance of <strong>£${data.balanceDue}</strong> is due at the session.
-          </div>
-          ` : ''}
-
-          <h3>Please Bring:</h3>
-          <ul>
-            <li>All session files and projects</li>
-            <li>Reference tracks (if applicable)</li>
-            <li>Any specific notes or ideas</li>
-            ${data.balanceDue > 0 ? '<li>Payment for remaining balance (£' + data.balanceDue + ')</li>' : ''}
-          </ul>
-
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${generateICSLink(data)}" class="button" style="display: inline-block; background: #f97316; color: #fff !important; padding: 12px 30px; text-decoration: none; border-radius: 6px;">📅 Add to Calendar</a>
+            <strong>Tomorrow Checklist:</strong><br><br>
+            • Arrive 10 minutes early<br>
+            • Bring session files or reference tracks${data.balanceDue > 0 ? '<br>• Balance payment ready' : ''}
           </div>
 
-          <p style="margin-top: 30px;">Looking forward to creating with you tomorrow!</p>
-          <p><strong>— Studio XV Team</strong></p>
+          ${data.balanceDue > 0 ? `<p style="margin-top: 20px;">Remaining balance of <strong>£${data.balanceDue}</strong> is due at the start of your session.</p>` : ''}
+
+          <p style="margin-top: 30px; margin-bottom: 0.5rem;">Questions or need to reschedule? Just reply to this email.</p>
+          
+          <p style="margin-top: 2rem; margin-bottom: 0;"><strong>— Studio XV</strong></p>
         </div>
 
         <div class="footer">
           <p><strong>${STUDIO_INFO.name}</strong></p>
           <p>${STUDIO_INFO.email} · ${STUDIO_INFO.phone}</p>
-          <p>Need to reschedule? Just reply to this email.</p>
         </div>
       </body>
       </html>
     `,
     text: `
-      Your Session is Tomorrow!
+      ⏰ Session Tomorrow – ${data.service} at Studio XV
 
-      Hi ${data.customerName},
+      Hi ${data.customerName || 'there'},
 
-      Just a reminder that your ${data.service} session is tomorrow at ${data.sessionTime}.
+      This is a reminder that your session is scheduled for tomorrow.
 
-      SESSION DETAILS:
-      Date: ${data.sessionDate}
-      Time: ${data.sessionTime}
-      Duration: ${data.durationLabel || 'Duration to be confirmed'}
+      BOOKING DETAILS:
       Service: ${data.service}
-      ${data.balanceDue > 0 ? `\nREMAINING BALANCE: £${data.balanceDue} (due at session)` : ''}
+      ${data.packageName ? `Package: ${data.packageName}` : ''}
+      ${data.sessionDate ? `Date: ${data.sessionDate}` : ''}
+      ${data.sessionTime ? `Time: ${data.sessionTime}` : ''}
 
-      PLEASE BRING:
-      • All session files and projects
-      • Reference tracks (if applicable)
-      • Any specific notes or ideas
-      ${data.balanceDue > 0 ? '• Payment for remaining balance (£' + data.balanceDue + ')' : ''}
+      TOMORROW CHECKLIST:
+      • Arrive 10 minutes early
+      • Bring session files or reference tracks
+      ${data.balanceDue > 0 ? '• Balance payment ready' : ''}
 
-      Looking forward to creating with you tomorrow!
+      ${data.balanceDue > 0 ? `Remaining balance of £${data.balanceDue} is due at the start of your session.\n` : ''}
+      Questions or need to reschedule? Just reply to this email.
 
-      — Studio XV Team
+      — Studio XV
       ${STUDIO_INFO.email} · ${STUDIO_INFO.phone}
-      Need to reschedule? Just reply to this email.
     `
   }),
 
@@ -515,7 +516,7 @@ const EMAIL_TEMPLATES = {
 
   // BALANCE DUE REMINDER
   balanceReminder: (data) => ({
-    subject: `Payment Reminder: £${(data.balanceDue || 0).toFixed(2)} Due for Tomorrow's Session`,
+    subject: `Payment Reminder – £${(data.balanceDue || 0).toFixed(2)} Balance Due for Your Session`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -524,51 +525,52 @@ const EMAIL_TEMPLATES = {
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
           .header { background: #000; color: #fff; padding: 30px 20px; text-align: center; }
           .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
+          .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
           .content { padding: 30px 20px; background: #f9f9f9; }
-          .payment-box { background: #fff; padding: 25px; border-radius: 8px; margin: 20px 0; text-align: center; border: 2px solid #f97316; }
-          .amount { font-size: 36px; color: #f97316; font-weight: bold; margin: 10px 0; }
-          .button { display: inline-block; background: #f97316; color: #fff !important; padding: 15px 40px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: bold; }
+          .details { background: #fff; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb; }
           .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
         </style>
       </head>
       <body>
         <div class="header">
-          <div style="font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px;">STUDIO</div>
+          <div class="studio">STUDIO</div>
           <h1>XV</h1>
         </div>
         
         <div class="content">
-          <h2>Balance Due for Your Session</h2>
-          <p>Hi ${data.customerName},</p>
-          <p>Your ${data.service} session is scheduled for <strong>tomorrow at ${data.sessionTime}</strong>.</p>
-          <p>The remaining balance for your session is:</p>
+          <h2 style="margin-bottom: 0.5rem;">Payment Reminder</h2>
+          <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Hi ${data.customerName || 'there'},</p>
+          <p>This is a reminder that a remaining balance is due for your upcoming session.</p>
           
-          <div class="payment-box">
-            <p style="margin: 0; color: #666;">Amount Due</p>
-            <div class="amount">£${(data.balanceDue || 0).toFixed(2)}</div>
-            <p style="margin: 0; color: #666; font-size: 14px;">Due on session day</p>
+          <div class="details">
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; color: #111827;">Payment Summary</h3>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse: collapse;">
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Total Cost</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #111827; text-align: right;">£${data.total || ((data.balanceDue || 0) + (data.deposit || 0)).toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; font-weight: 400; color: #6b7280;">Deposit Paid</td>
+                <td style="padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 15px; font-weight: 600; color: #10b981; text-align: right;">£${data.deposit || 0}</td>
+              </tr>
+              <tr>
+                <td style="padding: 12px 0; border-bottom: none; font-size: 14px; font-weight: 400; color: #6b7280;">Remaining Balance</td>
+                <td style="padding: 12px 0; border-bottom: none; font-size: 15px; font-weight: 600; color: #f97316; text-align: right;">£${(data.balanceDue || 0).toFixed(2)}</td>
+              </tr>
+            </table>
           </div>
+
+          <p>The remaining balance is due at the start of your session. A secure payment link is included below.</p>
 
           ${data.paymentLink ? `
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${data.paymentLink}" class="button">Pay Balance Online</a>
+            <a href="${data.paymentLink}" style="display: inline-block; background: #f97316; color: #fff !important; padding: 15px 40px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px;">Pay Remaining Balance</a>
           </div>
-          <p style="text-align: center; color: #666; font-size: 14px;">Please complete payment before your session</p>
-          ` : `
-          <p style="text-align: center; margin: 20px 0; color: #e63946;"><strong>Payment link unavailable.</strong> Please contact us to complete payment.</p>
-          `}
+          ` : ''}
 
-          <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Session Details:</strong></p>
-            <p style="margin: 5px 0;">📅 ${data.sessionDate} at ${data.sessionTime}</p>
-            <p style="margin: 5px 0;">⏱️ ${data.durationLabel || 'Duration to be confirmed'}</p>
-            <p style="margin: 5px 0;">🎵 ${data.service}</p>
-          </div>
-
-          <p>If you have any questions or need to arrange an alternative payment method, just reply to this email.</p>
+          <p style="margin-top: 30px; margin-bottom: 0.5rem;">Questions or need to reschedule? Just reply to this email.</p>
           
-          <p style="margin-top: 30px;">Looking forward to your session tomorrow!</p>
-          <p><strong>— Studio XV Team</strong></p>
+          <p style="margin-top: 2rem; margin-bottom: 0;"><strong>— Studio XV</strong></p>
         </div>
 
         <div class="footer">
@@ -579,29 +581,79 @@ const EMAIL_TEMPLATES = {
       </html>
     `,
     text: `
-      Balance Due for Your Session
+      Payment Reminder – £${(data.balanceDue || 0).toFixed(2)} Balance Due for Your Session
 
-      Hi ${data.customerName},
+      Hi ${data.customerName || 'there'},
 
-      Your ${data.service} session is scheduled for tomorrow at ${data.sessionTime}.
+      This is a reminder that a remaining balance is due for your upcoming session.
 
-      AMOUNT DUE: £${(data.balanceDue || 0).toFixed(2)}
+      PAYMENT SUMMARY:
+      Total Cost: £${data.total || ((data.balanceDue || 0) + (data.deposit || 0)).toFixed(2)}
+      Deposit Paid: £${data.deposit || 0}
+      Remaining Balance: £${(data.balanceDue || 0).toFixed(2)}
 
-      SESSION DETAILS:
-      📅 ${data.sessionDate} at ${data.sessionTime}
-      ⏱️ ${data.durationLabel || 'Duration to be confirmed'}
-      🎵 ${data.service}
+      The remaining balance is due at the start of your session. A secure payment link is included below.
 
-      ${data.paymentLink ? `Pay online: ${data.paymentLink}\n\nPlease complete payment before your session.` : 'Payment link unavailable. Please contact us to complete payment.'}
+      ${data.paymentLink ? `Pay online: ${data.paymentLink}\n` : ''}
+      Questions or need to reschedule? Just reply to this email.
 
-      If you have any questions, just reply to this email.
-
-      Looking forward to your session tomorrow!
-
-      — Studio XV Team
+      — Studio XV
       ${STUDIO_INFO.email} · ${STUDIO_INFO.phone}
     `
-  })
+  }),
+
+  // ADMIN NOTIFICATION (internal use only)
+  adminNotification: (data) => {
+    const isFullPayment = data.emailType === 'full_payment' || data.balanceDue === 0 || parseFloat(data.balanceDue) === 0;
+    const isSessionService = data.sessionDateFormatted && data.sessionTimeFormatted;
+    
+    // Dynamic subject line
+    const subject = isFullPayment && !isSessionService
+      ? `New Order — ${data.service} (Paid in Full) | £${data.deposit}`
+      : `New Booking — ${data.service} | £${data.deposit} deposit${isSessionService ? ` | ${data.sessionDateFormatted}` : ''}`;
+    
+    // Dynamic next actions
+    let nextActions = '';
+    if (isFullPayment && !isSessionService) {
+      nextActions = `NEXT ACTIONS:
+• Coordinate delivery with customer
+• No payment required (paid in full)`;
+    } else if (!isFullPayment) {
+      nextActions = `NEXT ACTIONS:
+• Confirm session date and time with customer
+• Collect balance of £${data.balanceDue} at session start`;
+    } else {
+      nextActions = `NEXT ACTIONS:
+• Session confirmed
+• No payment required (paid in full)`;
+    }
+
+    return {
+      subject,
+      text: `NEW BOOKING RECEIVED
+
+BOOKING DETAILS:
+Customer: ${data.customerName}
+Email: ${data.customerEmail}
+Service: ${data.service}
+Package: ${data.packageName}
+${data.durationHours ? `Duration: ${data.durationHours} ${data.durationHours === 1 ? 'hour' : 'hours'}` : ''}
+${data.addons ? `Add-ons: ${data.addons}` : ''}
+${isSessionService ? `Session: ${data.sessionDateFormatted} at ${data.sessionTimeFormatted}` : 'Session date: TO BE CONFIRMED'}
+
+PAYMENT SUMMARY:
+Total Cost: £${data.total}
+Paid Today: £${data.deposit}
+Balance Due: £${data.balanceDue}
+
+${nextActions}
+
+---
+Stripe Session ID: ${data.stripeSessionId || 'N/A'}
+${data.calendarStatus ? `Calendar: ${data.calendarStatus}` : ''}
+`
+    };
+  }
 };
 
 module.exports = { EMAIL_TEMPLATES, STUDIO_INFO };

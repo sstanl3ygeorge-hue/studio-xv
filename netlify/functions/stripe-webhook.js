@@ -278,29 +278,20 @@ exports.handler = async (event) => {
         try {
           console.log(`🔄 Attempting to send admin email to: ${process.env.MICROSOFT_USER_EMAIL}`);
           
-          const adminEmailBody = `NEW BOOKING RECEIVED
-
-Customer: ${bookingData.customerName}
-Email: ${bookingData.customerEmail}
-Service: ${bookingData.service}
-Package: ${bookingData.packageName}
-${bookingData.durationHours ? `Duration: ${bookingData.durationHours} hour(s)` : ''}
-${bookingData.addons ? `Add-ons: ${bookingData.addons}` : ''}
-${bookingData.sessionDateFormatted && bookingData.sessionTimeFormatted ? `Session: ${bookingData.sessionDateFormatted} at ${bookingData.sessionTimeFormatted}` : 'Session date: TO BE CONFIRMED'}
-
-PAYMENT:
-Total: £${bookingData.totalSessionPrice}
-Deposit Paid: £${bookingData.depositPaid}
-Balance Due: £${bookingData.balanceDue}
-
-Stripe Session ID: ${session.id}
-
-Calendar event creation ${typeof calendarError !== 'undefined' ? 'FAILED' : 'succeeded'}.`;
+          // Build admin email data (add extra fields)
+          const adminEmailData = {
+            ...emailData,
+            stripeSessionId: session.id,
+            calendarStatus: typeof calendarError !== 'undefined' ? 'FAILED' : 'succeeded'
+          };
+          
+          // Use centralized admin notification template
+          const adminEmail = EMAIL_TEMPLATES.adminNotification(adminEmailData);
 
           await sendGraphEmail({
             to: process.env.MICROSOFT_USER_EMAIL,
-            subject: `[New Booking] ${bookingData.service} - ${bookingData.customerName}`,
-            body: adminEmailBody,
+            subject: adminEmail.subject,
+            body: adminEmail.text,
             isHtml: false
           });
           console.log(`✅ Admin notification SUCCESSFULLY sent to ${process.env.MICROSOFT_USER_EMAIL}`);
