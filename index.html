@@ -1689,7 +1689,11 @@
     service: '',
     hours: 2,
     package: '',
-    addons: []
+    addons: [],
+    // 🎯 Raw numeric values for calculations and API calls
+    totalAmount: 0,
+    depositAmount: 0,
+    balanceAmount: 0
   };
 
   // ========================================
@@ -1987,6 +1991,10 @@
     const pkg = bookingState.package;
     
     if (!service || !pkg) {
+      // Clear numeric values
+      bookingState.totalAmount = 0;
+      bookingState.depositAmount = 0;
+      bookingState.balanceAmount = 0;
       updatePriceDisplay(0, 0, [], false);
       return;
     }
@@ -2021,6 +2029,12 @@
     
     // 🎯 Calculate deposit based on service type
     const deposit = isSessionService(service) ? Math.round(total * 0.5) : total;
+    const balance = total - deposit;
+    
+    // 🎯 Store numeric values in bookingState for API calls
+    bookingState.totalAmount = total;
+    bookingState.depositAmount = deposit;
+    bookingState.balanceAmount = balance;
     
     updatePriceDisplay(total, deposit, addonDetails, true);
   }
@@ -2304,7 +2318,7 @@
         basePrice = pricing[service].packages[pkg].price;
       }
       
-      // Calculate addon costs
+      // Calculate addon costs for line items
       const addonsList = [];
       bookingState.addons.forEach(addon => {
         if (pricing.addons[addon]?.percentage) {
@@ -2319,8 +2333,9 @@
         }
       });
       
-      const total = parseInt(totalDisplay.textContent);
-      const deposit = parseInt(depositDisplay.textContent);
+      // 🎯 Use numeric values from bookingState (already calculated in calculateTotal)
+      const total = bookingState.totalAmount;
+      const deposit = bookingState.depositAmount;
       
       // Get package name for display
       let packageName = pkg;

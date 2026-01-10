@@ -13,7 +13,10 @@ exports.handler = async (event, context) => {
   const SESSION_SERVICES = ['Recording', 'Mixing', 'Mastering', 'Lessons'];
   
   try {
+    console.log('🔍 [CREATE-CHECKOUT] Incoming request body:', event.body);
+    
     if (!event.body || event.body.length > 10_000) {
+      console.error('❌ [CREATE-CHECKOUT] Invalid or oversized payload');
       throw new Error('Invalid or oversized payload');
     }
 
@@ -30,8 +33,11 @@ exports.handler = async (event, context) => {
       customerEmail = ''
     } = JSON.parse(event.body);
 
+    console.log('🔍 [CREATE-CHECKOUT] Parsed data:', { service, packageName, hours, total, deposit, sessionDate, sessionTime, customerName, customerEmail });
+
     // 🛡️ VALIDATION - Service-aware
     if (!service || !packageName || !total) {
+      console.error('❌ [CREATE-CHECKOUT] Missing required fields:', { service, packageName, total });
       throw new Error('Missing required checkout fields: service, packageName, total');
     }
     
@@ -40,6 +46,7 @@ exports.handler = async (event, context) => {
     
     // Session services require deposit, non-session services use full payment
     if (isSessionService && !deposit) {
+      console.error('❌ [CREATE-CHECKOUT] Session service missing deposit:', { service, deposit });
       throw new Error('Session services require a deposit');
     }
     
@@ -113,7 +120,8 @@ exports.handler = async (event, context) => {
     };
 
   } catch (error) {
-    console.error('Checkout error:', error.message);
+    console.error('❌ [CREATE-CHECKOUT] Error:', error.message);
+    console.error('❌ [CREATE-CHECKOUT] Full error:', error);
 
     return {
       statusCode: 400,
