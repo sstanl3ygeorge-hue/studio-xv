@@ -249,112 +249,9 @@ exports.handler = async (event) => {
           const emailData = buildEmailData(bookingForEmail);
           validateEmailData(emailData);
           
-          // 📧 Choose email content based on emailType
-          const isFullPayment = bookingData.emailType === 'full_payment';
-          const emailSubject = isFullPayment
-            ? `Payment Complete: ${emailData.service} at Studio XV`
-            : `Booking Confirmed: ${emailData.service} Session at Studio XV`;
-          
-          const emailHeading = isFullPayment
-            ? 'Payment Complete!'
-            : 'Your Session is Confirmed';
-          
-          const emailIntro = isFullPayment
-            ? `Thank you for booking with Studio XV. Your payment has been received and your ${emailData.service.toLowerCase()} service is confirmed.`
-            : 'Thank you for booking with Studio XV. Your deposit has been received and your session is confirmed.';
-          
-          // Build next steps section based on payment type
-          let nextStepsHtml = '';
-          if (isFullPayment) {
-            nextStepsHtml = '<div class="highlight"><strong>Next Steps:</strong><br>';
-            if (emailData.sessionDateFormatted) {
-              nextStepsHtml += `• Your session is scheduled for ${emailData.sessionDateFormatted} at ${emailData.sessionTimeFormatted}<br>`;
-              nextStepsHtml += '• Please bring any files or references you would like to work with<br>';
-            } else {
-              nextStepsHtml += '• We will contact you within 24 hours to coordinate your service<br>';
-            }
-            nextStepsHtml += '• All details are included above for your reference</div>';
-          } else {
-            nextStepsHtml = `<div class="highlight"><strong>Next Steps:</strong><br>`;
-            nextStepsHtml += '• We will contact you within 24 hours to schedule your session<br>';
-            nextStepsHtml += `• The remaining balance of £${emailData.balanceDue} is due on the session day<br>`;
-            nextStepsHtml += '• Please bring any files or references you would like to work with</div>';
-          }
-          
-          const customerEmailHtml = `<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #000; color: #fff; padding: 30px 20px; text-align: center; }
-    .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
-    .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
-    .content { padding: 30px 20px; background: #f9f9f9; }
-    .details { background: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; }
-    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-    .detail-row:last-child { border-bottom: none; }
-    .label { font-weight: 600; color: #666; }
-    .value { color: #000; }
-    .highlight { background: #fff5e6; padding: 15px; border-left: 4px solid #f97316; margin: 20px 0; }
-    .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="studio">STUDIO</div>
-    <h1>XV</h1>
-  </div>
-  
-  <div class="content">
-    <h2>${emailHeading}</h2>
-    <p>Hi ${emailData.customerName},</p>
-    <p>${emailIntro}</p>
-    
-    <div class="details">
-      <h3 style="margin-top: 0;">Session Details</h3>
-      <div class="detail-row">
-        <span class="label">Service:</span>
-        <span class="value">${emailData.service}</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">Package:</span>
-        <span class="value">${emailData.packageName}</span>
-      </div>
-      ${emailData.durationHours ? `<div class="detail-row"><span class="label">Duration:</span><span class="value">${emailData.durationHours} ${emailData.durationHours === 1 ? 'hour' : 'hours'}</span></div>` : ''}
-      ${emailData.sessionDateFormatted ? `<div class="detail-row"><span class="label">Date:</span><span class="value">${emailData.sessionDateFormatted}</span></div>` : ''}
-      ${emailData.sessionTimeFormatted ? `<div class="detail-row"><span class="label">Time:</span><span class="value">${emailData.sessionTimeFormatted}</span></div>` : ''}
-    </div>
-
-    <div class="details">
-      <h3 style="margin-top: 0;">Payment Summary</h3>
-      <div class="detail-row">
-        <span class="label">Total Session Cost:</span>
-        <span class="value">£${emailData.total}</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">Deposit Paid:</span>
-        <span class="value" style="color: #10b981;">£${emailData.deposit}</span>
-      </div>
-      <div class="detail-row">
-        <span class="label">Balance Due:</span>
-        <span class="value" style="color: #f97316; font-weight: bold;">£${emailData.balanceDue}</span>
-      </div>
-    </div>
-
-    ${nextStepsHtml}
-
-    <p style="margin-top: 30px;">If you have any questions or need to reschedule, just reply to this email.</p>
-    
-    <p>Looking forward to creating something great together!</p>
-    <p><strong>— Studio XV Team</strong></p>
-  </div>
-
-  <div class="footer">
-    <p><strong>Studio XV</strong></p>
-    <p>bookings@studioxv.co.uk · +44 74 1831 5041</p>
-  </div>
-</body>
-</html>`;
+          // 📧 Use centralized email template system
+          const { EMAIL_TEMPLATES } = require('../../config/email-templates');
+          const emailContent = EMAIL_TEMPLATES.bookingConfirmation(emailData);
 
           const sendGridMsg = {
             to: emailData.customerEmail,
@@ -362,8 +259,9 @@ exports.handler = async (event) => {
               email: process.env.FROM_EMAIL,
               name: STUDIO_INFO.name
             },
-            subject: emailSubject,
-            html: customerEmailHtml
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text
           };
 
           await sgMail.send(sendGridMsg);

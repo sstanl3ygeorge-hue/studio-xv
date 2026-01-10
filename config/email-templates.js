@@ -25,10 +25,72 @@ const generateICSLink = (data) => {
 };
 
 const EMAIL_TEMPLATES = {
-  // BOOKING CONFIRMATION (after deposit paid)
-  bookingConfirmation: (data) => ({
-    subject: `Booking Confirmed: ${data.service} Session at Studio XV`,
-    html: `
+  // BOOKING CONFIRMATION (supports both deposit and full payment)
+  bookingConfirmation: (data) => {
+    // Determine if this is a full payment or deposit booking
+    const isFullPayment = data.emailType === 'full_payment' || data.balanceDue === 0;
+    
+    // Customize subject, heading, and intro based on payment type
+    const subject = isFullPayment
+      ? `✓ Payment Complete – ${data.service} at Studio XV`
+      : `✓ Booking Confirmed – ${data.service} at Studio XV`;
+    
+    const heading = isFullPayment ? 'Payment Complete' : 'Booking Confirmed';
+    
+    const intro = isFullPayment
+      ? `Your payment has been received. Your ${data.service.toLowerCase()} service is confirmed and ready to go.`
+      : 'Your deposit has been received and your session is confirmed.';
+    
+    // Payment label customization
+    const paymentLabel = isFullPayment ? 'Amount Paid' : 'Deposit Paid';
+    const balanceLabel = isFullPayment ? 'Balance Due' : 'Remaining Balance';
+    
+    // Build next steps section based on payment type
+    let nextStepsHtml = '<div class="highlight"><strong>What Happens Next:</strong><br><br>';
+    if (isFullPayment) {
+      if (data.sessionDateFormatted) {
+        nextStepsHtml += `<strong>Session Details:</strong><br>`;
+        nextStepsHtml += `Your session is scheduled for ${data.sessionDateFormatted} at ${data.sessionTimeFormatted}.<br><br>`;
+        nextStepsHtml += `<strong>What to Bring:</strong><br>`;
+        nextStepsHtml += `Session files, reference tracks, and any notes about your project.`;
+      } else {
+        nextStepsHtml += `<strong>Next Step:</strong><br>`;
+        nextStepsHtml += `We'll contact you within 24 hours to coordinate delivery and finalize details for your ${data.service.toLowerCase()} service.`;
+      }
+    } else {
+      nextStepsHtml += `<strong>1. Scheduling</strong><br>`;
+      nextStepsHtml += `We'll contact you within 24 hours to confirm your session date and time.<br><br>`;
+      nextStepsHtml += `<strong>2. Balance Payment</strong><br>`;
+      nextStepsHtml += `The remaining balance of <strong>£${data.balanceDue}</strong> is due at the start of your session.<br><br>`;
+      nextStepsHtml += `<strong>3. What to Bring</strong><br>`;
+      nextStepsHtml += `Session files, reference tracks, and any notes about your project.`;
+    }
+    nextStepsHtml += '</div>';
+    
+    // Build next steps for plain text version
+    let nextStepsText = 'WHAT HAPPENS NEXT:\n\n';
+    if (isFullPayment) {
+      if (data.sessionDateFormatted) {
+        nextStepsText += `Session Details:\n`;
+        nextStepsText += `Your session is scheduled for ${data.sessionDateFormatted} at ${data.sessionTimeFormatted}.\n\n`;
+        nextStepsText += `What to Bring:\n`;
+        nextStepsText += `Session files, reference tracks, and any notes about your project.`;
+      } else {
+        nextStepsText += `Next Step:\n`;
+        nextStepsText += `We'll contact you within 24 hours to coordinate delivery and finalize details for your ${data.service.toLowerCase()} service.`;
+      }
+    } else {
+      nextStepsText += `1. Scheduling\n`;
+      nextStepsText += `We'll contact you within 24 hours to confirm your session date and time.\n\n`;
+      nextStepsText += `2. Balance Payment\n`;
+      nextStepsText += `The remaining balance of £${data.balanceDue} is due at the start of your session.\n\n`;
+      nextStepsText += `3. What to Bring\n`;
+      nextStepsText += `Session files, reference tracks, and any notes about your project.`;
+    }
+    
+    return {
+      subject,
+      html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -43,9 +105,8 @@ const EMAIL_TEMPLATES = {
           .detail-row:last-child { border-bottom: none; }
           .label { font-weight: 600; color: #666; }
           .value { color: #000; }
-          .highlight { background: #fff5e6; padding: 15px; border-left: 4px solid #f97316; margin: 20px 0; }
+          .highlight { background: #fff5e6; padding: 18px; border-left: 4px solid #f97316; margin: 20px 0; line-height: 1.7; }
           .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-          .button { display: inline-block; background: #f97316; color: #fff !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
         </style>
       </head>
       <body>
@@ -55,106 +116,80 @@ const EMAIL_TEMPLATES = {
         </div>
         
         <div class="content">
-          <h2>Your Session is Confirmed</h2>
-          <p>Hi ${data.customerName || 'there'},</p>
-          <p>Thank you for booking with Studio XV. Your deposit has been received and your session is confirmed.</p>
+          <h2 style="margin-bottom: 0.5rem;">${heading}</h2>
+          <p style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Hi ${data.customerName || 'there'},</p>
+          <p>${intro}</p>
           
           <div class="details">
-            <h3 style="margin-top: 0;">Session Details</h3>
+            <h3 style="margin-top: 0;">Booking Details</h3>
             <div class="detail-row">
-              <span class="label">Service:</span>
+              <span class="label">Service</span>
               <span class="value">${data.service}</span>
             </div>
             <div class="detail-row">
-              <span class="label">Package:</span>
+              <span class="label">Package</span>
               <span class="value">${data.packageName}</span>
             </div>
-            <div class="info-row">
-              <span class="label">Duration:</span>
-              <span class="value">${data.durationLabel || 'Duration to be confirmed'}</span>
-            </div>
-            ${data.addons && data.addons.length > 0 ? `
-            <div class="detail-row">
-              <span class="label">Add-ons:</span>
-              <span class="value">${data.addons.map(a => a.label).join(', ')}</span>
-            </div>
-            ` : ''}
+            ${data.durationHours ? `<div class="detail-row"><span class="label">Duration</span><span class="value">${data.durationHours} ${data.durationHours === 1 ? 'hour' : 'hours'}</span></div>` : ''}
+            ${data.sessionDateFormatted ? `<div class="detail-row"><span class="label">Date</span><span class="value">${data.sessionDateFormatted}</span></div>` : ''}
+            ${data.sessionTimeFormatted ? `<div class="detail-row"><span class="label">Time</span><span class="value">${data.sessionTimeFormatted}</span></div>` : ''}
           </div>
 
           <div class="details">
             <h3 style="margin-top: 0;">Payment Summary</h3>
             <div class="detail-row">
-              <span class="label">Total Session Cost:</span>
+              <span class="label">Total Cost</span>
               <span class="value">£${data.total}</span>
             </div>
             <div class="detail-row">
-              <span class="label">Deposit Paid:</span>
-              <span class="value" style="color: #10b981;">${data.depositDisplayText || `£${data.deposit}`}</span>
+              <span class="label">${paymentLabel}</span>
+              <span class="value" style="color: #10b981;">£${data.deposit}</span>
             </div>
-            <div class="detail-row">
-              <span class="label">Balance Due:</span>
-              <span class="value" style="color: #f97316; font-weight: bold;">£${(data.balanceDue || 0).toFixed(2)}</span>
-            </div>
+            ${!isFullPayment ? `<div class="detail-row"><span class="label">${balanceLabel}</span><span class="value" style="color: #f97316; font-weight: bold;">£${data.balanceDue}</span></div>` : ''}
           </div>
 
-          <div class="highlight">
-            <strong>Next Steps:</strong><br>
-            • We'll contact you within 24 hours to schedule your session<br>
-            • The remaining balance of £${(data.balanceDue || 0).toFixed(2)} is due on the session day<br>
-            • Please bring any files or references you'd like to work with
-          </div>
+          ${nextStepsHtml}
 
-          <h3>What to Prepare:</h3>
-          <ul>
-            <li>Session files (stems, tracks, or project files)</li>
-            <li>Reference tracks that inspire your sound</li>
-            <li>Any specific notes or goals for the session</li>
-          </ul>
-
-          <p style="margin-top: 30px;">If you have any questions or need to reschedule, just reply to this email.</p>
+          <p style="margin-top: 30px; margin-bottom: 0.5rem;">Questions or need to reschedule? Just reply to this email.</p>
           
-          <p>Looking forward to creating something great together!</p>
-          <p><strong>— Studio XV Team</strong></p>
+          <p style="margin-top: 2rem; margin-bottom: 0;"><strong>— Studio XV</strong></p>
         </div>
 
         <div class="footer">
           <p><strong>${STUDIO_INFO.name}</strong></p>
           <p>${STUDIO_INFO.email} · ${STUDIO_INFO.phone}</p>
-          <p>${STUDIO_INFO.address}</p>
         </div>
       </body>
       </html>
     `,
-    text: `
-      Booking Confirmed: ${data.service} Session at Studio XV
+      text: `
+      ${subject}
 
       Hi ${data.customerName || 'there'},
 
-      Thank you for booking with Studio XV. Your deposit has been received and your session is confirmed.
+      ${intro}
 
-      SESSION DETAILS:
+      BOOKING DETAILS:
       Service: ${data.service}
       Package: ${data.packageName}
-      Duration: ${data.durationLabel || 'Duration to be confirmed'}
+      ${data.durationHours ? `Duration: ${data.durationHours} ${data.durationHours === 1 ? 'hour' : 'hours'}` : ''}
+      ${data.sessionDateFormatted ? `Date: ${data.sessionDateFormatted}` : ''}
+      ${data.sessionTimeFormatted ? `Time: ${data.sessionTimeFormatted}` : ''}
 
       PAYMENT SUMMARY:
-      Total Session Cost: £${data.total}
-      Deposit Paid: ${data.depositDisplayText || `£${data.deposit}`}
-      Balance Due: £${(data.balanceDue || 0).toFixed(2)}
+      Total Cost: £${data.total}
+      ${paymentLabel}: £${data.deposit}
+      ${!isFullPayment ? `${balanceLabel}: £${data.balanceDue}` : ''}
 
-      NEXT STEPS:
-      • We'll contact you within 24 hours to schedule your session
-      • The remaining balance of £${(data.balanceDue || 0).toFixed(2)} is due on the session day
-      • Please bring any files or references you'd like to work with
+      ${nextStepsText}
 
-      If you have any questions, just reply to this email.
+      Questions or need to reschedule? Just reply to this email.
 
-      Looking forward to creating something great together!
-
-      — Studio XV Team
+      — Studio XV
       ${STUDIO_INFO.email} · ${STUDIO_INFO.phone}
     `
-  }),
+    };
+  },
 
   // COURSE PURCHASE CONFIRMATION
   courseConfirmation: (data) => ({
