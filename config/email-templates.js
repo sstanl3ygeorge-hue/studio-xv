@@ -100,13 +100,17 @@ const EMAIL_TEMPLATES = {
           .header h1 { margin: 0; font-size: 32px; letter-spacing: 0.3em; }
           .header .studio { font-size: 12px; letter-spacing: 0.3em; opacity: 0.8; margin-bottom: 10px; }
           .content { padding: 30px 20px; background: #f9f9f9; }
-          .details { background: #fff; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+          .details { background: #fff; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb; }
+          .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
           .detail-row:last-child { border-bottom: none; }
-          .label { font-weight: 600; color: #666; }
-          .value { color: #000; }
+          .label { font-size: 14px; font-weight: 400; color: #6b7280; }
+          .value { font-size: 15px; font-weight: 600; color: #111827; text-align: right; }
           .highlight { background: #fff5e6; padding: 18px; border-left: 4px solid #f97316; margin: 20px 0; line-height: 1.7; }
           .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+          @media only screen and (max-width: 480px) {
+            .detail-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .value { text-align: left; }
+          }
         </style>
       </head>
       <body>
@@ -121,7 +125,7 @@ const EMAIL_TEMPLATES = {
           <p>${intro}</p>
           
           <div class="details">
-            <h3 style="margin-top: 0;">Booking Details</h3>
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; color: #111827;">Booking Details</h3>
             <div class="detail-row">
               <span class="label">Service</span>
               <span class="value">${data.service}</span>
@@ -136,7 +140,7 @@ const EMAIL_TEMPLATES = {
           </div>
 
           <div class="details">
-            <h3 style="margin-top: 0;">Payment Summary</h3>
+            <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 16px; color: #111827;">Payment Summary</h3>
             <div class="detail-row">
               <span class="label">Total Cost</span>
               <span class="value">£${data.total}</span>
@@ -145,7 +149,7 @@ const EMAIL_TEMPLATES = {
               <span class="label">${paymentLabel}</span>
               <span class="value" style="color: #10b981;">£${data.deposit}</span>
             </div>
-            ${!isFullPayment ? `<div class="detail-row"><span class="label">${balanceLabel}</span><span class="value" style="color: #f97316; font-weight: bold;">£${data.balanceDue}</span></div>` : ''}
+            ${!isFullPayment ? `<div class="detail-row"><span class="label">${balanceLabel}</span><span class="value" style="color: #f97316;">£${data.balanceDue}</span></div>` : ''}
           </div>
 
           ${nextStepsHtml}
